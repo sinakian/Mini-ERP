@@ -12,10 +12,17 @@ public class LoadInventoryDatabase {
     private static final Logger log = LoggerFactory.getLogger(LoadInventoryDatabase.class);
 
     @Bean(name = "inventoryDatabaseInitializer")
-    CommandLineRunner initBusinessDatabase(InventoryRepository repository) {
+    CommandLineRunner initInventoryDatabase(InventoryRepository repository) {
         return args -> {
             log.info("Preloading " + repository.save(new Inventory("Acme Corporation", "Manufacturer")));
             log.info("Preloading " + repository.save(new Inventory("Wayne Enterprises", "Conglomerate")));
+        };
+    }
+    @Bean(name = "inventoryItemDatabaseInitializer")
+    CommandLineRunner initInventoryItemDatabase(InventoryItemRepository repository) {
+        return args -> {
+            log.info("Preloading " + repository.save(new InventoryItem("Acme Corporation", "Manufacturer")));
+            log.info("Preloading " + repository.save(new InventoryItem("Wayne Enterprises", "Conglomerate")));
         };
     }
 }

@@ -24,7 +24,7 @@ class InventoryReceiptController {
     // end::get-aggregate-root[]
 
     @PostMapping
-    InventoryReceipt newBusiness(@RequestBody InventoryReceipt newInventoryReceipt) {
+    InventoryReceipt newInventoryReceipt(@RequestBody InventoryReceipt newInventoryReceipt) {
         return repository.save(newInventoryReceipt);
     }
 
@@ -38,13 +38,13 @@ class InventoryReceiptController {
     }
 
     @PutMapping("/{id}")
-    InventoryReceipt replaceBusiness(@RequestBody InventoryReceipt newInventoryReceipt, @PathVariable Long id) {
+    InventoryReceipt replaceInventoryReceipt(@RequestBody InventoryReceipt newInventoryReceipt, @PathVariable Long id) {
 
         return repository.findById(id)
-                .map(employee -> {
-                    employee.setName(newInventoryReceipt.getName());
-                    employee.setRole(newInventoryReceipt.getRole());
-                    return repository.save(employee);
+                .map(inventoryReceipt -> {
+                    inventoryReceipt.setName(newInventoryReceipt.getName());
+                    inventoryReceipt.setRole(newInventoryReceipt.getRole());
+                    return repository.save(inventoryReceipt);
                 })
                 .orElseGet(() -> {
                     newInventoryReceipt.setId(id);
@@ -53,7 +53,7 @@ class InventoryReceiptController {
     }
 
     @DeleteMapping("/{id}")
-    void deleteBusiness(@PathVariable Long id) {
+    void deleteInventoryReceipt(@PathVariable Long id) {
         repository.deleteById(id);
     }
 }

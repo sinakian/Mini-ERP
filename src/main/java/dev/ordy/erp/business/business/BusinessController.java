@@ -40,10 +40,10 @@ class BusinessController {
     Business replaceBusiness(@RequestBody Business newBusiness, @PathVariable Long id) {
 
         return repository.findById(id)
-                .map(employee -> {
-                    employee.setName(newBusiness.getName());
-                    employee.setRole(newBusiness.getRole());
-                    return repository.save(employee);
+                .map(business -> {
+                    business.setName(newBusiness.getName());
+                    business.setRole(newBusiness.getRole());
+                    return repository.save(business);
                 })
                 .orElseGet(() -> {
                     newBusiness.setId(id);

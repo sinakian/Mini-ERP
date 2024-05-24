@@ -46,10 +46,10 @@ class AccountController {
     Account replaceAccount(@RequestBody Account newAccount, @PathVariable Long id) {
 
         return repository.findById(id)
-                .map(employee -> {
-                    employee.setName(newAccount.getName());
-                    employee.setRole(newAccount.getRole());
-                    return repository.save(employee);
+                .map(account -> {
+                    account.setName(newAccount.getName());
+                    account.setRole(newAccount.getRole());
+                    return repository.save(account);
                 })
                 .orElseGet(() -> {
                     newAccount.setId(id);

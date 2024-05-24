@@ -24,7 +24,7 @@ class InventoryController {
     // end::get-aggregate-root[]
 
     @PostMapping
-    Inventory newBusiness(@RequestBody Inventory newInventory) {
+    Inventory newInventory(@RequestBody Inventory newInventory) {
         return repository.save(newInventory);
     }
 
@@ -38,13 +38,13 @@ class InventoryController {
     }
 
     @PutMapping("/{id}")
-    Inventory replaceBusiness(@RequestBody Inventory newInventory, @PathVariable Long id) {
+    Inventory replaceInventory(@RequestBody Inventory newInventory, @PathVariable Long id) {
 
         return repository.findById(id)
-                .map(employee -> {
-                    employee.setName(newInventory.getName());
-                    employee.setRole(newInventory.getRole());
-                    return repository.save(employee);
+                .map(inventory -> {
+                    inventory.setName(newInventory.getName());
+                    inventory.setRole(newInventory.getRole());
+                    return repository.save(inventory);
                 })
                 .orElseGet(() -> {
                     newInventory.setId(id);
@@ -53,7 +53,7 @@ class InventoryController {
     }
 
     @DeleteMapping("/{id}")
-    void deleteBusiness(@PathVariable Long id) {
+    void deleteInventory(@PathVariable Long id) {
         repository.deleteById(id);
     }
 }

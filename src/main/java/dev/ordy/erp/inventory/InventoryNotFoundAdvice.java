@@ -1,4 +1,4 @@
-package dev.ordy.erp.account;
+package dev.ordy.erp.inventory;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-class AccountNotFoundAdvice {
+class InventoryNotFoundAdvice {
 
-    @ExceptionHandler(AccountNotFoundException.class)
+    @ExceptionHandler(InventoryNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String accountNotFoundHandler(AccountNotFoundException ex) {
+    String inventoryNotFoundHandler(InventoryNotFoundException ex) {
         return ex.getMessage();
     }
 }

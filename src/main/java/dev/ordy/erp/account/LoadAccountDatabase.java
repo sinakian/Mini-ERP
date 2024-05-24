@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-class LoadDatabase {
+class LoadAccountDatabase {
 
-    private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
+    private static final Logger log = LoggerFactory.getLogger(LoadAccountDatabase.class);
 
-    @Bean
+    @Bean(name = "accountDatabaseInitializer")
     CommandLineRunner initDatabase(AccountRepository repository) {
 
         return args -> {

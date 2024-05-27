@@ -1,5 +1,9 @@
 package dev.ordy.erp.finance.accountBalance;
 
+
+import dev.ordy.erp.business.account.Account;
+import dev.ordy.erp.business.business.Business;
+
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,9 +23,19 @@ class AccountBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
     private String role;
 
+    @OneToOne
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
+
+    private Double balance;
+
+    @Enumerated(EnumType.STRING)
+    private BalanceStatus balanceStatus;
+
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -37,18 +51,31 @@ class AccountBalance {
 
     AccountBalance() {}
 
-    AccountBalance(String name, String role) {
-
-        this.name = name;
-        this.role = role;
+    AccountBalance(Account account, Double balance, BalanceStatus balanceStatus, Currency currency) {
+        this.account = account;
+        this.balance = balance;
+        this.balanceStatus = balanceStatus;
+        this.currency = currency;
     }
 
     public Long getId() {
         return this.id;
     }
 
-    public String getName() {
-        return this.name;
+    public Account getAccount() {
+        return this.account;
+    }
+
+    public Double getBalance() {
+        return this.balance;
+    }
+
+    public BalanceStatus getBalanceStatus() {
+        return this.balanceStatus;
+    }
+
+    public Currency getCurrency() {
+        return this.currency;
     }
 
     public String getRole() {
@@ -71,13 +98,24 @@ class AccountBalance {
         return lastModifiedBy;
     }
 
-
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
+    public void setBalanceStatus(BalanceStatus balanceStatus) {
+        this.balanceStatus = balanceStatus;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public void setRole(String role) {
@@ -86,23 +124,29 @@ class AccountBalance {
 
     @Override
     public boolean equals(Object o) {
-
-        if (this == o)
-            return true;
-        if (!(o instanceof AccountBalance))
-            return false;
-        AccountBalance accountBalance = (AccountBalance) o;
-        return Objects.equals(this.id, accountBalance.id) && Objects.equals(this.name, accountBalance.name)
-                && Objects.equals(this.role, accountBalance.role);
+        if (this == o) return true;
+        if (!(o instanceof AccountBalance)) return false;
+        AccountBalance that = (AccountBalance) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(account, that.account) &&
+                Objects.equals(balance, that.balance) &&
+                balanceStatus == that.balanceStatus &&
+                currency == that.currency;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.role);
+        return Objects.hash(id, account, balance, balanceStatus, currency);
     }
 
     @Override
     public String toString() {
-        return "Account Balance {" + "id=" + this.id + ", name='" + this.name + '\'' + ", role='" + this.role + '\'' + '}';
+        return "AccountBalance{" +
+                "id=" + id +
+                ", account=" + (account != null ? account.getId() : null) +
+                ", balance=" + balance +
+                ", balanceStatus=" + balanceStatus +
+                ", currency=" + currency +
+                '}';
     }
 }

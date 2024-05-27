@@ -42,7 +42,6 @@ class AccountBalanceController {
 
         return repository.findById(id)
                 .map(accountBalance -> {
-                    accountBalance.setName(newAccountBalance.getName());
                     accountBalance.setRole(newAccountBalance.getRole());
                     return repository.save(accountBalance);
                 })

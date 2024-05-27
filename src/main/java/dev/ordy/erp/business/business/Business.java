@@ -14,7 +14,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "BUSINESS")
 @EntityListeners(AuditingEntityListener.class)
-class Business {
+public class Business {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +37,7 @@ class Business {
 
     Business() {}
 
-    Business(String name, String role) {
+    public Business(String name, String role) {
 
         this.name = name;
         this.role = role;

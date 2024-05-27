@@ -47,7 +47,7 @@ class AccountController {
 
         return repository.findById(id)
                 .map(account -> {
-                    account.setName(newAccount.getName());
+                    account.setFullName(newAccount.getFullName());
                     account.setRole(newAccount.getRole());
                     return repository.save(account);
                 })

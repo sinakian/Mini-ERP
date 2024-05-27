@@ -1,5 +1,9 @@
 package dev.ordy.erp.business.item;
 
+import dev.ordy.erp.business.account.AccountCategory;
+import dev.ordy.erp.business.account.AccountType;
+import dev.ordy.erp.business.account.Gender;
+import dev.ordy.erp.business.business.Business;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,6 +26,18 @@ class Item {
     private String name;
     private String role;
 
+    @ManyToOne
+    @JoinColumn(name = "business_id", nullable = false)
+    private Business business;
+
+    @Enumerated(EnumType.STRING)
+    private InventoryPolicy inventoryPolicy;
+
+    @Enumerated(EnumType.STRING)
+    private ItemType itemType;
+
+    @Enumerated(EnumType.STRING)
+    private Unit unit;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -37,10 +53,13 @@ class Item {
 
     Item() {}
 
-    Item(String name, String role) {
-
+    Item(String name, String role,Business business,InventoryPolicy inventoryPolicy,ItemType itemType,Unit unit) {
         this.name = name;
         this.role = role;
+        this.business = business;
+        this.inventoryPolicy=inventoryPolicy;
+        this.itemType=itemType;
+        this.unit=unit;
     }
 
     public Long getId() {
@@ -71,6 +90,23 @@ class Item {
         return lastModifiedBy;
     }
 
+    public Business getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
+
+    public InventoryPolicy getInventoryPolicy(){
+        return this.inventoryPolicy;
+    }
+
+    public ItemType getItemType(){
+        return this.itemType;
+    }
+
+    public Unit getUnit(){return this.unit;}
 
     public void setId(Long id) {
         this.id = id;
@@ -82,6 +118,18 @@ class Item {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setInventoryPolicy(InventoryPolicy inventoryPolicy){
+        this.inventoryPolicy= inventoryPolicy;
+    }
+
+    public void setItemType(ItemType itemType){
+        this.itemType=itemType;
+    }
+
+    public void setUnit(Unit unit){
+        this.unit=unit;
     }
 
     @Override
@@ -103,6 +151,14 @@ class Item {
 
     @Override
     public String toString() {
-        return "Item{" + "id=" + this.id + ", name='" + this.name + '\'' + ", role='" + this.role + '\'' + '}';
+        return "Item{" + "id=" + id +
+                ", inventoryPolicy=" + inventoryPolicy +
+                ", itemType=" + itemType +
+                ", unit='" + unit +
+                ", name='" + name + '\'' +
+                ", role='" + role + '\'' +
+                ", businessId=" + (business != null ? business.getId() : null) +
+                ", businessName=" + (business != null ? business.getName() : null) +
+                '}';
     }
 }

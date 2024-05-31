@@ -1,4 +1,4 @@
-package dev.ordy.erp.supply;
+package dev.ordy.erp.supply.supplyRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

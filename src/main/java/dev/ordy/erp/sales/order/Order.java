@@ -1,5 +1,7 @@
 package dev.ordy.erp.sales.order;
 
+import dev.ordy.erp.business.business.Business;
+import dev.ordy.erp.business.account.Account;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,99 +12,222 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-
 @Entity
 @Table(name = "BUSINESS_ORDER")
 @EntityListeners(AuditingEntityListener.class)
-class Order {
+public class Order {
+
+    public enum Currency {
+        USD, EUR, GBP, INR, AUD, CAD, JPY, CNY
+    }
+
+    public enum OrderStatus {
+        DRAFT, PENDING, CANCELED, INVOICE, SALES_RETURN
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String role;
 
+    @ManyToOne
+    @JoinColumn(name = "business_id", nullable = false)
+    private Business business;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Account customer;
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    private LocalDateTime lastModifiedDate;
+    private double totalItemPrice;
+    private double totalLogisticPrice;
+    private double discountInPercent;
+    private double discountInCurrency;
+
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
+    private String paymentType;
 
     @CreatedBy
     private String createdBy;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
+
     @LastModifiedBy
     private String lastModifiedBy;
 
-    Order() {}
+    public Order() {}
 
-    Order(String name, String role) {
-
-        this.name = name;
-        this.role = role;
+    public Order(Business business, Account customer, double totalItemPrice, double totalLogisticPrice, double discountInPercent, double discountInCurrency, Currency currency, String paymentType, String createdBy, OrderStatus orderStatus) {
+        this.business = business;
+        this.customer = customer;
+        this.totalItemPrice = totalItemPrice;
+        this.totalLogisticPrice = totalLogisticPrice;
+        this.discountInPercent = discountInPercent;
+        this.discountInCurrency = discountInCurrency;
+        this.currency = currency;
+        this.paymentType = paymentType;
+        this.createdBy = createdBy;
+        this.orderStatus = orderStatus;
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
-    public String getName() {
-        return this.name;
+    public Business getBusiness() {
+        return business;
     }
 
-    public String getRole() {
-        return this.role;
+    public Account getCustomer() {
+        return customer;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public LocalDateTime getLastModifiedDate() {
-        return lastModifiedDate;
+    public double getTotalItemPrice() {
+        return totalItemPrice;
+    }
+
+    public double getTotalLogisticPrice() {
+        return totalLogisticPrice;
+    }
+
+    public double getDiscountInPercent() {
+        return discountInPercent;
+    }
+
+    public double getDiscountInCurrency() {
+        return discountInCurrency;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
     }
 
     public String getCreatedBy() {
         return createdBy;
     }
 
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }
-
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBusiness(Business business) {
+        this.business = business;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setCustomer(Account customer) {
+        this.customer = customer;
+    }
+
+    public void setTotalItemPrice(double totalItemPrice) {
+        this.totalItemPrice = totalItemPrice;
+    }
+
+    public void setTotalLogisticPrice(double totalLogisticPrice) {
+        this.totalLogisticPrice = totalLogisticPrice;
+    }
+
+    public void setDiscountInPercent(double discountInPercent) {
+        this.discountInPercent = discountInPercent;
+    }
+
+    public void setDiscountInCurrency(double discountInCurrency) {
+        this.discountInCurrency = discountInCurrency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
     }
 
     @Override
     public boolean equals(Object o) {
-
-        if (this == o)
-            return true;
-        if (!(o instanceof Order))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof Order)) return false;
         Order order = (Order) o;
-        return Objects.equals(this.id, order.id) && Objects.equals(this.name, order.name)
-                && Objects.equals(this.role, order.role);
+        return Double.compare(order.totalItemPrice, totalItemPrice) == 0 &&
+                Double.compare(order.totalLogisticPrice, totalLogisticPrice) == 0 &&
+                Double.compare(order.discountInPercent, discountInPercent) == 0 &&
+                Double.compare(order.discountInCurrency, discountInCurrency) == 0 &&
+                Objects.equals(id, order.id) &&
+                Objects.equals(business, order.business) &&
+                Objects.equals(customer, order.customer) &&
+                Objects.equals(createdAt, order.createdAt) &&
+                currency == order.currency &&
+                Objects.equals(paymentType, order.paymentType) &&
+                Objects.equals(createdBy, order.createdBy) &&
+                orderStatus == order.orderStatus &&
+                Objects.equals(lastModifiedDate, order.lastModifiedDate) &&
+                Objects.equals(lastModifiedBy, order.lastModifiedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.role);
+        return Objects.hash(id, business, customer, createdAt, totalItemPrice, totalLogisticPrice, discountInPercent, discountInCurrency, currency, paymentType, createdBy, orderStatus, lastModifiedDate, lastModifiedBy);
     }
 
     @Override
     public String toString() {
-        return "Order {" + "id=" + this.id + ", name='" + this.name + '\'' + ", role='" + this.role + '\'' + '}';
+        return "Order{" +
+                "id=" + id +
+                ", business=" + (business != null ? business.getId() : null) +
+                ", customer=" + (customer != null ? customer.getId() : null) +
+                ", createdAt=" + createdAt +
+                ", totalItemPrice=" + totalItemPrice +
+                ", totalLogisticPrice=" + totalLogisticPrice +
+                ", discountInPercent=" + discountInPercent +
+                ", discountInCurrency=" + discountInCurrency +
+                ", currency=" + currency +
+                ", paymentType='" + paymentType + '\'' +
+                ", createdBy='" + createdBy + '\'' +
+                ", orderStatus=" + orderStatus +
+                ", lastModifiedDate=" + lastModifiedDate +
+                ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                '}';
     }
 }

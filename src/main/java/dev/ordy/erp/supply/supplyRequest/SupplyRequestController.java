@@ -1,4 +1,4 @@
-package dev.ordy.erp.supply;
+package dev.ordy.erp.supply.supplyRequest;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -37,20 +37,20 @@ class SupplyRequestController {
                 .orElseThrow(() -> new SupplyRequestNotFoundException(id));
     }
 
-    @PutMapping("/{id}")
-    SupplyRequest replaceSupplyRequest(@RequestBody SupplyRequest newSupplyRequest, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(supplyRequest -> {
-                    supplyRequest.setName(newSupplyRequest.getName());
-                    supplyRequest.setRole(newSupplyRequest.getRole());
-                    return repository.save(supplyRequest);
-                })
-                .orElseGet(() -> {
-                    newSupplyRequest.setId(id);
-                    return repository.save(newSupplyRequest);
-                });
-    }
+//    @PutMapping("/{id}")
+//    SupplyRequest replaceSupplyRequest(@RequestBody SupplyRequest newSupplyRequest, @PathVariable Long id) {
+//
+//        return repository.findById(id)
+//                .map(supplyRequest -> {
+//                    supplyRequest.setName(newSupplyRequest.getName());
+//                    supplyRequest.setRole(newSupplyRequest.getRole());
+//                    return repository.save(supplyRequest);
+//                })
+//                .orElseGet(() -> {
+//                    newSupplyRequest.setId(id);
+//                    return repository.save(newSupplyRequest);
+//                });
+//    }
 
     @DeleteMapping("/{id}")
     void deleteSupplyRequest(@PathVariable Long id) {

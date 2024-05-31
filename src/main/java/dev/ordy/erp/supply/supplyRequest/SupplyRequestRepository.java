@@ -1,4 +1,4 @@
-package dev.ordy.erp.supply;
+package dev.ordy.erp.supply.supplyRequest;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

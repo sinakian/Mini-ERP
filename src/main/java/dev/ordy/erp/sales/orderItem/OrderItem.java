@@ -1,5 +1,9 @@
 package dev.ordy.erp.sales.orderItem;
 
+import dev.ordy.erp.sales.order.Order;
+import dev.ordy.erp.business.business.Business;
+import dev.ordy.erp.finance.itemPrice.ItemPrice;
+import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,18 +14,54 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-
 @Entity
 @Table(name = "ORDER_ITEM")
 @EntityListeners(AuditingEntityListener.class)
-class OrderItem {
+public class OrderItem {
+
+    public enum Unit {
+        UNIT, KG, LITRE, GRAM
+    }
+
+    public enum Currency {
+        USD, EUR, GBP, INR, AUD, CAD, JPY, CNY
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String role;
 
+    @ManyToOne
+    @JoinColumn(name = "business_id", nullable = false)
+    private Business business;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "item_id", nullable = false)
+    private InventoryItem item;
+
+    private double quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "item_price_id", nullable = false)
+    private ItemPrice itemPrice;
+
+    private double pricePerUnit;
+
+    @Enumerated(EnumType.STRING)
+    private Unit unit;
+
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
+    private double totalGrossPrice;
+    private double discountCurrency;
+    private double discountPercent;
+    private double tax;
+    private double totalNetPrice;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -35,74 +75,24 @@ class OrderItem {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    OrderItem() {}
+    public OrderItem() {}
 
-    OrderItem(String name, String role) {
-
-        this.name = name;
-        this.role = role;
+    public OrderItem(Business business, Order order, InventoryItem item, double quantity, ItemPrice itemPrice, double pricePerUnit, Unit unit, Currency currency, double totalGrossPrice, double discountCurrency, double discountPercent, double tax, double totalNetPrice, String createdBy) {
+        this.business = business;
+        this.order = order;
+        this.item = item;
+        this.quantity = quantity;
+        this.itemPrice = itemPrice;
+        this.pricePerUnit = pricePerUnit;
+        this.unit = unit;
+        this.currency = currency;
+        this.totalGrossPrice = totalGrossPrice;
+        this.discountCurrency = discountCurrency;
+        this.discountPercent = discountPercent;
+        this.tax = tax;
+        this.totalNetPrice = totalNetPrice;
+        this.createdBy = createdBy;
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getRole() {
-        return this.role;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public LocalDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-
-        if (this == o)
-            return true;
-        if (!(o instanceof OrderItem))
-            return false;
-        OrderItem orderItem = (OrderItem) o;
-        return Objects.equals(this.id, orderItem.id) && Objects.equals(this.name, orderItem.name)
-                && Objects.equals(this.role, orderItem.role);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.name, this.role);
-    }
-
-    @Override
-    public String toString() {
-        return "Order Item {" + "id=" + this.id + ", name='" + this.name + '\'' + ", role='" + this.role + '\'' + '}';
-    }
+    // Getters and setters omitted for brevity
 }

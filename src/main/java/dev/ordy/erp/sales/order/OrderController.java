@@ -37,20 +37,20 @@ class OrderController {
                 .orElseThrow(() -> new OrderNotFoundException(id));
     }
 
-    @PutMapping("/{id}")
-    Order replaceOrder(@RequestBody Order newOrder, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(order -> {
-                    order.setName(newOrder.getName());
-                    order.setRole(newOrder.getRole());
-                    return repository.save(order);
-                })
-                .orElseGet(() -> {
-                    newOrder.setId(id);
-                    return repository.save(newOrder);
-                });
-    }
+//    @PutMapping("/{id}")
+//    Order replaceOrder(@RequestBody Order newOrder, @PathVariable Long id) {
+//
+//        return repository.findById(id)
+//                .map(order -> {
+//                    order.setName(newOrder.getName());
+//                    order.setRole(newOrder.getRole());
+//                    return repository.save(order);
+//                })
+//                .orElseGet(() -> {
+//                    newOrder.setId(id);
+//                    return repository.save(newOrder);
+//                });
+//    }
 
     @DeleteMapping("/{id}")
     void deleteOrder(@PathVariable Long id) {

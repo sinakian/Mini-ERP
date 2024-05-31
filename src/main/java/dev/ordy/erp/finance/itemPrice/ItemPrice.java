@@ -1,5 +1,7 @@
 package dev.ordy.erp.finance.itemPrice;
 
+import dev.ordy.erp.business.item.Item;
+
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,18 +12,34 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-
 @Entity
-@Table(name = "ITEM-PRICE")
+@Table(name = "ITEM_PRICE")
 @EntityListeners(AuditingEntityListener.class)
-class ItemPrice {
+public class ItemPrice {
+
+    public enum Unit {
+        GRAM, KILOGRAM, EACH,WHOLE
+    }
+
+    public enum Currency {
+        TOMAN, RIAL, DOLLAR, EURO
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String role;
 
+    @ManyToOne
+    @JoinColumn(name = "item_id", nullable = false)
+    private Item item;
+
+    private Double price;
+
+    @Enumerated(EnumType.STRING)
+    private Unit unit;
+
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -37,72 +55,102 @@ class ItemPrice {
 
     ItemPrice() {}
 
-    ItemPrice(String name, String role) {
-
-        this.name = name;
-        this.role = role;
+    ItemPrice(Item item, Double price, Unit unit, Currency currency) {
+        this.item = item;
+        this.price = price;
+        this.unit = unit;
+        this.currency = currency;
     }
 
     public Long getId() {
         return this.id;
     }
 
-    public String getName() {
-        return this.name;
+    public Item getItem() {
+        return this.item;
     }
 
-    public String getRole() {
-        return this.role;
+    public Double getPrice() {
+        return this.price;
+    }
+
+    public Unit getUnit() {
+        return this.unit;
+    }
+
+    public Currency getCurrency() {
+        return this.currency;
     }
 
     public LocalDateTime getCreatedDate() {
-        return createdDate;
+        return this.createdDate;
     }
 
     public LocalDateTime getLastModifiedDate() {
-        return lastModifiedDate;
+        return this.lastModifiedDate;
     }
 
     public String getCreatedBy() {
-        return createdBy;
+        return this.createdBy;
     }
 
     public String getLastModifiedBy() {
-        return lastModifiedBy;
+        return this.lastModifiedBy;
     }
-
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     @Override
     public boolean equals(Object o) {
-
-        if (this == o)
-            return true;
-        if (!(o instanceof ItemPrice))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof ItemPrice)) return false;
         ItemPrice itemPrice = (ItemPrice) o;
-        return Objects.equals(this.id, itemPrice.id) && Objects.equals(this.name, itemPrice.name)
-                && Objects.equals(this.role, itemPrice.role);
+        return Objects.equals(id, itemPrice.id) &&
+                Objects.equals(item, itemPrice.item) &&
+                Objects.equals(price, itemPrice.price) &&
+                unit == itemPrice.unit &&
+                currency == itemPrice.currency &&
+                Objects.equals(createdDate, itemPrice.createdDate) &&
+                Objects.equals(lastModifiedDate, itemPrice.lastModifiedDate) &&
+                Objects.equals(createdBy, itemPrice.createdBy) &&
+                Objects.equals(lastModifiedBy, itemPrice.lastModifiedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.role);
+        return Objects.hash(id, item, price, unit, currency, createdDate, lastModifiedDate, createdBy, lastModifiedBy);
     }
 
     @Override
     public String toString() {
-        return "Item Price {" + "id=" + this.id + ", name='" + this.name + '\'' + ", role='" + this.role + '\'' + '}';
+        return "ItemPrice{" +
+                "id=" + id +
+                ", item=" + (item != null ? item.getId() : null) +
+                ", price=" + price +
+                ", unit=" + unit +
+                ", currency=" + currency +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                ", createdBy='" + createdBy + '\'' +
+                ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                '}';
     }
 }

@@ -18,7 +18,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "ITEM")
 @EntityListeners(AuditingEntityListener.class)
-class Item {
+public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

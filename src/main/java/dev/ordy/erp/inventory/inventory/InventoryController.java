@@ -42,7 +42,6 @@ class InventoryController {
 
         return repository.findById(id)
                 .map(inventory -> {
-                    inventory.setName(newInventory.getName());
                     inventory.setRole(newInventory.getRole());
                     return repository.save(inventory);
                 })

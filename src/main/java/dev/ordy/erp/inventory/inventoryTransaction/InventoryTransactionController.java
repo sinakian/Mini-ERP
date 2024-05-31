@@ -37,20 +37,20 @@ class InventoryTransactionController {
                 .orElseThrow(() -> new InventoryTransactionNotFoundException(id));
     }
 
-    @PutMapping("/{id}")
-    InventoryTransaction replaceInventoryTransaction(@RequestBody InventoryTransaction newInventoryTransaction, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(inventoryTransaction -> {
-                    inventoryTransaction.setName(newInventoryTransaction.getName());
-                    inventoryTransaction.setRole(newInventoryTransaction.getRole());
-                    return repository.save(inventoryTransaction);
-                })
-                .orElseGet(() -> {
-                    newInventoryTransaction.setId(id);
-                    return repository.save(newInventoryTransaction);
-                });
-    }
+//    @PutMapping("/{id}")
+//    InventoryTransaction replaceInventoryTransaction(@RequestBody InventoryTransaction newInventoryTransaction, @PathVariable Long id) {
+//
+//        return repository.findById(id)
+//                .map(inventoryTransaction -> {
+//                    inventoryTransaction.setName(newInventoryTransaction.getName());
+//                    inventoryTransaction.setRole(newInventoryTransaction.getRole());
+//                    return repository.save(inventoryTransaction);
+//                })
+//                .orElseGet(() -> {
+//                    newInventoryTransaction.setId(id);
+//                    return repository.save(newInventoryTransaction);
+//                });
+//    }
 
     @DeleteMapping("/{id}")
     void deleteInventoryTransaction(@PathVariable Long id) {

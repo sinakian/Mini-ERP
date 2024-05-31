@@ -42,8 +42,6 @@ class FinancialTransactionController {
 
         return repository.findById(id)
                 .map(financialTransaction -> {
-                    financialTransaction.setName(newFinancialTransaction.getName());
-                    financialTransaction.setRole(newFinancialTransaction.getRole());
                     return repository.save(financialTransaction);
                 })
                 .orElseGet(() -> {

@@ -37,20 +37,20 @@ class ItemPriceController {
                 .orElseThrow(() -> new ItemPriceNotFoundException(id));
     }
 
-    @PutMapping("/{id}")
-    ItemPrice replaceItemPrice(@RequestBody ItemPrice newItemPrice, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(itemPrice -> {
-                    itemPrice.setName(newItemPrice.getName());
-                    itemPrice.setRole(newItemPrice.getRole());
-                    return repository.save(itemPrice);
-                })
-                .orElseGet(() -> {
-                    newItemPrice.setId(id);
-                    return repository.save(newItemPrice);
-                });
-    }
+//    @PutMapping("/{id}")
+//    ItemPrice replaceItemPrice(@RequestBody ItemPrice newItemPrice, @PathVariable Long id) {
+//
+//        return repository.findById(id)
+//                .map(itemPrice -> {
+//                    itemPrice.setName(newItemPrice.getName());
+//                    itemPrice.setRole(newItemPrice.getRole());
+//                    return repository.save(itemPrice);
+//                })
+//                .orElseGet(() -> {
+//                    newItemPrice.setId(id);
+//                    return repository.save(newItemPrice);
+//                });
+//    }
 
     @DeleteMapping("/{id}")
     void deleteItemPrice(@PathVariable Long id) {

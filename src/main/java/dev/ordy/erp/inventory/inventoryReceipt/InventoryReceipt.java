@@ -1,5 +1,8 @@
 package dev.ordy.erp.inventory.inventoryReceipt;
 
+import dev.ordy.erp.business.business.Business; // Assuming you have a Business class in the business package
+import dev.ordy.erp.inventory.inventory.Inventory; // Assuming you have an Inventory class in the inventory package
+
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,18 +13,42 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-
 @Entity
 @Table(name = "INVENTORY_RECEIPT")
 @EntityListeners(AuditingEntityListener.class)
-class InventoryReceipt {
+public class InventoryReceipt {
+
+    public enum ReferenceType {
+        INVOICE, DIRECT, WASTE
+    }
+
+    public enum Status {
+        PENDING, DELIVERED, CANCELED
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String role;
 
+    @ManyToOne
+    @JoinColumn(name = "business_id", nullable = false)
+    private Business business;
+
+    @ManyToOne
+    @JoinColumn(name = "inventory_id", nullable = false)
+    private Inventory inventory;
+
+    private double quantity;
+    private LocalDateTime dueDate;
+    private LocalDateTime deliveredDate;
+
+    @Enumerated(EnumType.STRING)
+    private ReferenceType referenceType;
+
+    private String referenceId;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -37,22 +64,51 @@ class InventoryReceipt {
 
     InventoryReceipt() {}
 
-    InventoryReceipt(String name, String role) {
-
-        this.name = name;
-        this.role = role;
+    InventoryReceipt(Business business, Inventory inventory, double quantity, LocalDateTime dueDate, LocalDateTime deliveredDate, ReferenceType referenceType, String referenceId, Status status) {
+        this.business = business;
+        this.inventory = inventory;
+        this.quantity = quantity;
+        this.dueDate = dueDate;
+        this.deliveredDate = deliveredDate;
+        this.referenceType = referenceType;
+        this.referenceId = referenceId;
+        this.status = status;
     }
 
     public Long getId() {
         return this.id;
     }
 
-    public String getName() {
-        return this.name;
+    public Business getBusiness() {
+        return this.business;
     }
 
-    public String getRole() {
-        return this.role;
+    public Inventory getInventory() {
+        return this.inventory;
+    }
+
+    public double getQuantity() {
+        return this.quantity;
+    }
+
+    public LocalDateTime getDueDate() {
+        return this.dueDate;
+    }
+
+    public LocalDateTime getDeliveredDate() {
+        return this.deliveredDate;
+    }
+
+    public ReferenceType getReferenceType() {
+        return this.referenceType;
+    }
+
+    public String getReferenceId() {
+        return this.referenceId;
+    }
+
+    public Status getStatus() {
+        return this.status;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -71,38 +127,83 @@ class InventoryReceipt {
         return lastModifiedBy;
     }
 
-
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBusiness(Business business) {
+        this.business = business;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public void setDeliveredDate(LocalDateTime deliveredDate) {
+        this.deliveredDate = deliveredDate;
+    }
+
+    public void setReferenceType(ReferenceType referenceType) {
+        this.referenceType = referenceType;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override
     public boolean equals(Object o) {
-
-        if (this == o)
-            return true;
-        if (!(o instanceof InventoryReceipt))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof InventoryReceipt)) return false;
         InventoryReceipt receipt = (InventoryReceipt) o;
-        return Objects.equals(this.id, receipt.id) && Objects.equals(this.name, receipt.name)
-                && Objects.equals(this.role, receipt.role);
+        return Double.compare(receipt.quantity, quantity) == 0 &&
+                Objects.equals(id, receipt.id) &&
+                Objects.equals(business, receipt.business) &&
+                Objects.equals(inventory, receipt.inventory) &&
+                Objects.equals(dueDate, receipt.dueDate) &&
+                Objects.equals(deliveredDate, receipt.deliveredDate) &&
+                referenceType == receipt.referenceType &&
+                Objects.equals(referenceId, receipt.referenceId) &&
+                status == receipt.status &&
+                Objects.equals(createdDate, receipt.createdDate) &&
+                Objects.equals(lastModifiedDate, receipt.lastModifiedDate) &&
+                Objects.equals(createdBy, receipt.createdBy) &&
+                Objects.equals(lastModifiedBy, receipt.lastModifiedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.role);
+        return Objects.hash(id, business, inventory, quantity, dueDate, deliveredDate, referenceType, referenceId, status, createdDate, lastModifiedDate, createdBy, lastModifiedBy);
     }
 
     @Override
     public String toString() {
-        return "Inventory Receipt{" + "id=" + this.id + ", name='" + this.name + '\'' + ", role='" + this.role + '\'' + '}';
+        return "InventoryReceipt{" +
+                "id=" + id +
+                ", business=" + (business != null ? business.getId() : null) +
+                ", inventory=" + (inventory != null ? inventory.getId() : null) +
+                ", quantity=" + quantity +
+                ", dueDate=" + dueDate +
+                ", deliveredDate=" + deliveredDate +
+                ", referenceType=" + referenceType +
+                ", referenceId='" + referenceId + '\'' +
+                ", status=" + status +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                ", createdBy='" + createdBy + '\'' +
+                ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                '}';
     }
 }

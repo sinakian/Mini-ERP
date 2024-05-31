@@ -42,8 +42,6 @@ class InventoryItemController {
 
         return repository.findById(id)
                 .map(inventoryItem -> {
-                    inventoryItem.setName(newInventoryItem.getName());
-                    inventoryItem.setRole(newInventoryItem.getRole());
                     return repository.save(inventoryItem);
                 })
                 .orElseGet(() -> {

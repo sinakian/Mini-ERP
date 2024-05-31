@@ -37,20 +37,18 @@ class InventoryReceiptController {
                 .orElseThrow(() -> new InventoryReceiptNotFoundException(id));
     }
 
-    @PutMapping("/{id}")
-    InventoryReceipt replaceInventoryReceipt(@RequestBody InventoryReceipt newInventoryReceipt, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(inventoryReceipt -> {
-                    inventoryReceipt.setName(newInventoryReceipt.getName());
-                    inventoryReceipt.setRole(newInventoryReceipt.getRole());
-                    return repository.save(inventoryReceipt);
-                })
-                .orElseGet(() -> {
-                    newInventoryReceipt.setId(id);
-                    return repository.save(newInventoryReceipt);
-                });
-    }
+//    @PutMapping("/{id}")
+//    InventoryReceipt replaceInventoryReceipt(@RequestBody InventoryReceipt newInventoryReceipt, @PathVariable Long id) {
+//
+//        return repository.findById(id)
+//                .map(inventoryReceipt -> {
+//                    return repository.save(inventoryReceipt);
+//                })
+//                .orElseGet(() -> {
+//                    newInventoryReceipt.setId(id);
+//                    return repository.save(newInventoryReceipt);
+//                });
+//    }
 
     @DeleteMapping("/{id}")
     void deleteInventoryReceipt(@PathVariable Long id) {

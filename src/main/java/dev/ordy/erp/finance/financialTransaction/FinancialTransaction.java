@@ -63,9 +63,9 @@ public class FinancialTransaction {
 
     FinancialTransaction() {}
 
-    FinancialTransaction(FinancialTransactionType financialTransactionType, TransactionReferenceType transactionReferenceType,
-                         Currency currency, Account account, Double amount, Double lastBalance, BalanceStatus lastBalanceStatus,
-                         Double newBalance, BalanceStatus newBalanceStatus, String referenceId) {
+    public FinancialTransaction(FinancialTransactionType financialTransactionType, TransactionReferenceType transactionReferenceType,
+                                Currency currency, Account account, Double amount, Double lastBalance, BalanceStatus lastBalanceStatus,
+                                Double newBalance, BalanceStatus newBalanceStatus, String referenceId) {
         this.financialTransactionType = financialTransactionType;
         this.transactionReferenceType = transactionReferenceType;
         this.currency = currency;

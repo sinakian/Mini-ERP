@@ -18,7 +18,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "ACCOUNT_BALANCE")
 @EntityListeners(AuditingEntityListener.class)
-class AccountBalance {
+public class AccountBalance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +51,7 @@ class AccountBalance {
 
     AccountBalance() {}
 
-    AccountBalance(Account account, Double balance, BalanceStatus balanceStatus, Currency currency) {
+    public AccountBalance(Account account, Double balance, BalanceStatus balanceStatus, Currency currency) {
         this.account = account;
         this.balance = balance;
         this.balanceStatus = balanceStatus;

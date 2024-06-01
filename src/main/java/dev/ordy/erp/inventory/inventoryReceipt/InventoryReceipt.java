@@ -64,7 +64,7 @@ public class InventoryReceipt {
 
     InventoryReceipt() {}
 
-    InventoryReceipt(Business business, Inventory inventory, double quantity, LocalDateTime dueDate, LocalDateTime deliveredDate, ReferenceType referenceType, String referenceId, Status status) {
+    public InventoryReceipt(Business business, Inventory inventory, double quantity, LocalDateTime dueDate, LocalDateTime deliveredDate, ReferenceType referenceType, String referenceId, Status status) {
         this.business = business;
         this.inventory = inventory;
         this.quantity = quantity;

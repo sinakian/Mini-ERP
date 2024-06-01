@@ -63,7 +63,7 @@ public class InventoryReceiptItem {
 
     InventoryReceiptItem() {}
 
-    InventoryReceiptItem(InventoryReceipt inventoryReceipt, InventoryItem inventoryItem, double requestQuantity, double deliveredQuantity, double pendingQuantity, LocalDateTime dueDate, LocalDateTime deliveredDate, Unit unit, Status status) {
+    public InventoryReceiptItem(InventoryReceipt inventoryReceipt, InventoryItem inventoryItem, double requestQuantity, double deliveredQuantity, double pendingQuantity, LocalDateTime dueDate, LocalDateTime deliveredDate, Unit unit, Status status) {
         this.inventoryReceipt = inventoryReceipt;
         this.inventoryItem = inventoryItem;
         this.requestQuantity = requestQuantity;

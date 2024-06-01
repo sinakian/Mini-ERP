@@ -70,7 +70,7 @@ public class InventoryTransaction {
 
     InventoryTransaction() {}
 
-    InventoryTransaction(Business business, Inventory inventory, InventoryItem inventoryItem, double quantity, TransactionType transactionType, InventoryReceipt inventoryReceipt, InventoryReceiptItem inventoryReceiptItem, double oldBalance, double newBalance) {
+    public InventoryTransaction(Business business, Inventory inventory, InventoryItem inventoryItem, double quantity, TransactionType transactionType, InventoryReceipt inventoryReceipt, InventoryReceiptItem inventoryReceiptItem, double oldBalance, double newBalance) {
         this.business = business;
         this.inventory = inventory;
         this.inventoryItem = inventoryItem;

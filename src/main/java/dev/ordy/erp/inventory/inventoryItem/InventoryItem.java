@@ -57,7 +57,7 @@ public class InventoryItem {
 
     InventoryItem() {}
 
-    InventoryItem(Inventory inventory, Item item, double quantity, double availableQuantity, Unit unit, String name, String role) {
+    public InventoryItem(Inventory inventory, Item item, double quantity, double availableQuantity, Unit unit, String name, String role) {
         this.inventory = inventory;
         this.item = item;
         this.quantity = quantity;

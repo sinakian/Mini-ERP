@@ -50,7 +50,7 @@ public class Inventory {
 
     Inventory() {}
 
-    Inventory(Business business, InventoryType inventoryType, String title, String role) {
+    public Inventory(Business business, InventoryType inventoryType, String title, String role) {
         this.business = business;
         this.inventoryType = inventoryType;
         this.title = title;

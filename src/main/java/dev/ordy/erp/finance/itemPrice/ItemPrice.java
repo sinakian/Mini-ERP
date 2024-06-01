@@ -55,7 +55,7 @@ public class ItemPrice {
 
     ItemPrice() {}
 
-    ItemPrice(Item item, Double price, Unit unit, Currency currency) {
+    public ItemPrice(Item item, Double price, Unit unit, Currency currency) {
         this.item = item;
         this.price = price;
         this.unit = unit;

@@ -53,7 +53,7 @@ public class Item {
 
     Item() {}
 
-    Item(String name, String role,Business business,InventoryPolicy inventoryPolicy,ItemType itemType,Unit unit) {
+    public Item(String name, String role, Business business, InventoryPolicy inventoryPolicy, ItemType itemType, Unit unit) {
         this.name = name;
         this.role = role;
         this.business = business;

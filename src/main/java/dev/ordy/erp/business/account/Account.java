@@ -54,7 +54,7 @@ public class Account {
 
     Account() {}
 
-    Account(String firstName, String lastName, String fullName, String role, Business business, AccountType accountType, AccountCategory accountCategory, Gender gender) {
+    public Account(String firstName, String lastName, String fullName, String role, Business business, AccountType accountType, AccountCategory accountCategory, Gender gender) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.fullName = fullName;

@@ -3,6 +3,7 @@ package dev.ordy.erp.finance.accountBalance;
 
 import dev.ordy.erp.business.account.Account;
 import dev.ordy.erp.business.business.Business;
+import dev.ordy.erp.common.Currency;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;

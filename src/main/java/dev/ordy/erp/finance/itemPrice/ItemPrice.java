@@ -1,6 +1,8 @@
 package dev.ordy.erp.finance.itemPrice;
 
 import dev.ordy.erp.business.item.Item;
+import dev.ordy.erp.common.Unit;
+import dev.ordy.erp.common.Currency;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -16,14 +18,6 @@ import java.util.Objects;
 @Table(name = "ITEM_PRICE")
 @EntityListeners(AuditingEntityListener.class)
 public class ItemPrice {
-
-    public enum Unit {
-        GRAM, KILOGRAM, EACH,WHOLE
-    }
-
-    public enum Currency {
-        TOMAN, RIAL, DOLLAR, EURO
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

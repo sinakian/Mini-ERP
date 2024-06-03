@@ -2,6 +2,7 @@ package dev.ordy.erp.sales.order;
 
 import dev.ordy.erp.business.business.Business;
 import dev.ordy.erp.business.account.Account;
+import dev.ordy.erp.common.Currency;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,9 +18,6 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
 
-    public enum Currency {
-        USD, EUR, GBP, INR, AUD, CAD, JPY, CNY
-    }
 
     public enum OrderStatus {
         DRAFT, PENDING, CANCELED, INVOICE, SALES_RETURN

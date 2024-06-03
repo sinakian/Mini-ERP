@@ -1,7 +1,7 @@
 package dev.ordy.erp.inventory.inventoryReceipt;
 
 import dev.ordy.erp.business.business.Business; // Assuming you have a Business class in the business package
-import dev.ordy.erp.inventory.inventory.Inventory; // Assuming you have an Inventory class in the inventory package
+import dev.ordy.erp.inventory.inventory.Inventory;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;

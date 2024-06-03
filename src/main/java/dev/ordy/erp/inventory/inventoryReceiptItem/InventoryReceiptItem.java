@@ -2,6 +2,7 @@ package dev.ordy.erp.inventory.inventoryReceiptItem;
 
 import dev.ordy.erp.inventory.inventoryReceipt.InventoryReceipt;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
+import dev.ordy.erp.common.Unit;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,9 +18,6 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 public class InventoryReceiptItem {
 
-    public enum Unit {
-        PIECE, KILOGRAM, LITER // Example units, modify as needed
-    }
 
     public enum Status {
         DELIVERED, PENDING, CANCELED

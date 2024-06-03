@@ -2,6 +2,8 @@ package dev.ordy.erp.sales.orderItem;
 
 import dev.ordy.erp.sales.order.Order;
 import dev.ordy.erp.business.business.Business;
+import dev.ordy.erp.common.Unit;
+import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.finance.itemPrice.ItemPrice;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
 import jakarta.persistence.*;
@@ -18,14 +20,6 @@ import java.util.Objects;
 @Table(name = "ORDER_ITEM")
 @EntityListeners(AuditingEntityListener.class)
 public class OrderItem {
-
-    public enum Unit {
-        UNIT, KG, LITRE, GRAM
-    }
-
-    public enum Currency {
-        USD, EUR, GBP, INR, AUD, CAD, JPY, CNY
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,6 +1,7 @@
 package dev.ordy.erp.supply.supplyRequestItem;
 
 import dev.ordy.erp.business.business.Business;
+import dev.ordy.erp.common.Unit;
 import dev.ordy.erp.supply.supplyRequest.SupplyRequest;
 import dev.ordy.erp.business.item.Item;
 import jakarta.persistence.*;
@@ -18,9 +19,6 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 public class SupplyRequestItem {
 
-    public enum Unit {
-        UNIT, KILOGRAM, LITER, PIECE
-    }
 
     public enum Status {
         PENDING, DELIVERED, CANCELED

@@ -2,6 +2,7 @@ package dev.ordy.erp.inventory.inventoryItem;
 
 import dev.ordy.erp.business.item.Item;
 import dev.ordy.erp.inventory.inventory.Inventory;
+import dev.ordy.erp.common.Unit;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -18,9 +19,6 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 public class InventoryItem {
 
-    public enum Unit {
-        PIECE, KILOGRAM, LITER, METER
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

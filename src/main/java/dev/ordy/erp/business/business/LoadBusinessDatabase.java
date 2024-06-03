@@ -2,10 +2,12 @@ package dev.ordy.erp.business.business;
 
 import dev.ordy.erp.business.account.*;
 import dev.ordy.erp.business.item.*;
+import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.finance.accountBalance.AccountBalance;
 import dev.ordy.erp.finance.accountBalance.AccountBalanceRepository;
 import dev.ordy.erp.finance.accountBalance.BalanceStatus;
-import dev.ordy.erp.finance.accountBalance.Currency;
+import dev.ordy.erp.common.Unit;
+import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransaction;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransactionRepository;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransactionType;
@@ -133,7 +135,7 @@ public class LoadBusinessDatabase {
         FinancialTransaction transaction1 = new FinancialTransaction(
                 FinancialTransactionType.CREDIT,
                 TransactionReferenceType.CREDIT_RECEIPT,
-                dev.ordy.erp.finance.financialTransaction.Currency.TOMAN,
+                Currency.TOMAN,
                 account1,
                 500.0,
                 1000.0,
@@ -146,7 +148,7 @@ public class LoadBusinessDatabase {
         FinancialTransaction transaction2 = new FinancialTransaction(
                 FinancialTransactionType.DEBT,
                 TransactionReferenceType.DEBT_RECEIPT,
-                dev.ordy.erp.finance.financialTransaction.Currency.TOMAN,
+                Currency.TOMAN,
                 account2,
                 300.0,
                 1500.0,
@@ -164,15 +166,15 @@ public class LoadBusinessDatabase {
         ItemPrice itemPrice1 = new ItemPrice(
                 item1,
                 100.0,
-                ItemPrice.Unit.KILOGRAM,
-                ItemPrice.Currency.TOMAN
+                Unit.KILOGRAM,
+                Currency.TOMAN
         );
 
         ItemPrice itemPrice2 = new ItemPrice(
                 item2,
                 200.0,
-                ItemPrice.Unit.KILOGRAM,
-                ItemPrice.Currency.TOMAN
+                Unit.KILOGRAM,
+                Currency.TOMAN
         );
 
         itemPriceRepository.save(itemPrice1);
@@ -205,7 +207,7 @@ public class LoadBusinessDatabase {
                 item1,
                 100.0,
                 80.0,
-                InventoryItem.Unit.KILOGRAM,
+                Unit.KILOGRAM,
                 "Inventory Item 1",
                 "Inventory Staff"
         );
@@ -215,7 +217,7 @@ public class LoadBusinessDatabase {
                 item2,
                 200.0,
                 150.0,
-                InventoryItem.Unit.KILOGRAM,
+                Unit.KILOGRAM,
                 "Inventory Item 2",
                 "Inventory Staff"
         );
@@ -260,7 +262,7 @@ public class LoadBusinessDatabase {
                 10.0,
                 LocalDateTime.now().plusDays(7),
                 LocalDateTime.now(),
-                InventoryReceiptItem.Unit.PIECE,
+                Unit.PIECE,
                 InventoryReceiptItem.Status.DELIVERED
         );
 
@@ -272,7 +274,7 @@ public class LoadBusinessDatabase {
                 20.0,
                 LocalDateTime.now().plusDays(5),
                 null, // No delivered date yet
-                InventoryReceiptItem.Unit.KILOGRAM,
+                Unit.KILOGRAM,
                 InventoryReceiptItem.Status.PENDING
         );
 
@@ -317,7 +319,7 @@ public class LoadBusinessDatabase {
                 50.0,
                 10.0,
                 20.0,
-                Order.Currency.USD,
+                Currency.USD,
                 "Credit Card",
                 "Admin",
                 Order.OrderStatus.PENDING
@@ -330,7 +332,7 @@ public class LoadBusinessDatabase {
                 70.0,
                 15.0,
                 30.0,
-                Order.Currency.EUR,
+                Currency.EUR,
                 "PayPal",
                 "Admin",
                 Order.OrderStatus.INVOICE
@@ -349,8 +351,8 @@ public class LoadBusinessDatabase {
                 5.0,
                 itemPrice1,
                 10.0,
-                OrderItem.Unit.UNIT,
-                OrderItem.Currency.USD,
+                Unit.UNIT,
+                Currency.USD,
                 100.0,
                 20.0,
                 5.0,
@@ -366,8 +368,8 @@ public class LoadBusinessDatabase {
                 3.0,
                 itemPrice2,
                 15.0,
-                OrderItem.Unit.KG,
-                OrderItem.Currency.EUR,
+                Unit.KILOGRAM,
+                Currency.EUR,
                 150.0,
                 25.0,
                 7.0,
@@ -422,7 +424,7 @@ public class LoadBusinessDatabase {
                 25.0,
                 25.0,
                 0.0,
-                SupplyRequestItem.Unit.PIECE,
+                Unit.PIECE,
                 LocalDateTime.now(),
                 SupplyRequestItem.Status.PENDING,
                 "Admin"
@@ -436,7 +438,7 @@ public class LoadBusinessDatabase {
                 75.0,
                 25.0,
                 0.0,
-                SupplyRequestItem.Unit.KILOGRAM,
+                Unit.KILOGRAM,
                 LocalDateTime.now(),
                 SupplyRequestItem.Status.DELIVERED,
                 "Admin"

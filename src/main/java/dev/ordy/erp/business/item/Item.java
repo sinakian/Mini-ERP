@@ -1,5 +1,6 @@
 package dev.ordy.erp.business.item;
 
+import dev.ordy.erp.common.Unit;
 import dev.ordy.erp.business.account.AccountCategory;
 import dev.ordy.erp.business.account.AccountType;
 import dev.ordy.erp.business.account.Gender;

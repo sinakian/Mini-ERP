@@ -3,6 +3,7 @@ package dev.ordy.erp.sales.invoice;
 import dev.ordy.erp.business.account.Account;
 import dev.ordy.erp.business.business.Business;
 import dev.ordy.erp.common.Currency;
+import dev.ordy.erp.sales.order.Order;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -35,6 +36,10 @@ public class Invoice {
     @JoinColumn(name = "customer_id", nullable = false)
     private Account customer;
 
+    @OneToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -62,9 +67,10 @@ public class Invoice {
 
     public Invoice() {}
 
-    public Invoice(Business business, Account customer, double totalItemPrice, double totalLogisticPrice, double discountInPercent, double discountInCurrency, Currency currency, String paymentType, String createdBy, InvoiceStatus invoiceStatus) {
+    public Invoice(Business business, Account customer,Order order, double totalItemPrice, double totalLogisticPrice, double discountInPercent, double discountInCurrency, Currency currency, String paymentType, String createdBy, InvoiceStatus invoiceStatus) {
         this.business = business;
         this.customer = customer;
+        this.order = order;
         this.totalItemPrice = totalItemPrice;
         this.totalLogisticPrice = totalLogisticPrice;
         this.discountInPercent = discountInPercent;
@@ -85,6 +91,10 @@ public class Invoice {
 
     public Account getCustomer() {
         return customer;
+    }
+
+    public Order getOrder() {
+        return order;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -143,6 +153,10 @@ public class Invoice {
         this.customer = customer;
     }
 
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     public void setTotalItemPrice(double totalItemPrice) {
         this.totalItemPrice = totalItemPrice;
     }
@@ -195,6 +209,7 @@ public class Invoice {
                 Objects.equals(id, invoice.id) &&
                 Objects.equals(business, invoice.business) &&
                 Objects.equals(customer, invoice.customer) &&
+                Objects.equals(order, invoice.order) &&
                 Objects.equals(createdAt, invoice.createdAt) &&
                 currency == invoice.currency &&
                 Objects.equals(paymentType, invoice.paymentType) &&
@@ -206,7 +221,7 @@ public class Invoice {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, business, customer, createdAt, totalItemPrice, totalLogisticPrice, discountInPercent, discountInCurrency, currency, paymentType, createdBy, invoiceStatus, lastModifiedDate, lastModifiedBy);
+        return Objects.hash(id, business, customer,order, createdAt, totalItemPrice, totalLogisticPrice, discountInPercent, discountInCurrency, currency, paymentType, createdBy, invoiceStatus, lastModifiedDate, lastModifiedBy);
     }
 
     @Override
@@ -215,6 +230,7 @@ public class Invoice {
                 "id=" + id +
                 ", business=" + (business != null ? business.getId() : null) +
                 ", customer=" + (customer != null ? customer.getId() : null) +
+                ", order=" + (order != null ? order.getId() : null) +
                 ", createdAt=" + createdAt +
                 ", totalItemPrice=" + totalItemPrice +
                 ", totalLogisticPrice=" + totalLogisticPrice +

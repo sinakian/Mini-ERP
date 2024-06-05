@@ -20,6 +20,14 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 public class FinancialReceipt {
 
+    public enum ReferenceType{
+        INVOICE,DEPOSIT,WITHDRAW
+    }
+
+    public enum ReceiptType{
+        CREDIT,DEBIT
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,13 +37,18 @@ public class FinancialReceipt {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    private Double balance;
-
-    @Enumerated(EnumType.STRING)
-    private BalanceStatus balanceStatus;
+    private Double amount;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
+
+    @Enumerated(EnumType.STRING)
+    private ReferenceType referenceType;
+
+    @Enumerated(EnumType.STRING)
+    private ReceiptType receiptType;
+
+    private String referenceId;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -51,10 +64,11 @@ public class FinancialReceipt {
 
     FinancialReceipt() {}
 
-    public FinancialReceipt(Account account, Double balance, BalanceStatus balanceStatus, Currency currency) {
+    public FinancialReceipt(Account account,Double amount,ReferenceType referenceType,ReceiptType receiptType,String referenceId,Double balance, BalanceStatus balanceStatus, Currency currency) {
         this.account = account;
-        this.balance = balance;
-        this.balanceStatus = balanceStatus;
+        this.amount = amount;
+        this.referenceType = referenceType;
+        this.receiptType=receiptType;
         this.currency = currency;
     }
 
@@ -66,12 +80,20 @@ public class FinancialReceipt {
         return this.account;
     }
 
-    public Double getBalance() {
-        return this.balance;
+    public Double getAmount() {
+        return this.amount;
     }
 
-    public BalanceStatus getBalanceStatus() {
-        return this.balanceStatus;
+    public ReferenceType getReferenceType() {
+        return this.referenceType;
+    }
+
+    public ReceiptType getReceiptType() {
+        return this.receiptType;
+    }
+
+    public String getReferenceId() {
+        return this.referenceId;
     }
 
     public Currency getCurrency() {
@@ -106,13 +128,13 @@ public class FinancialReceipt {
         this.account = account;
     }
 
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
+    public void setAmount(Double amount) {this.amount = amount;}
 
-    public void setBalanceStatus(BalanceStatus balanceStatus) {
-        this.balanceStatus = balanceStatus;
-    }
+    public void setReferenceType(ReferenceType referenceType){ this.referenceType=referenceType; }
+
+    public void setReferenceId(String referenceId){this.referenceId=referenceId;}
+
+    public void setReceiptType(ReceiptType receiptType){this.receiptType=receiptType;}
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
@@ -129,14 +151,17 @@ public class FinancialReceipt {
         FinancialReceipt that = (FinancialReceipt) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(account, that.account) &&
-                Objects.equals(balance, that.balance) &&
-                balanceStatus == that.balanceStatus &&
+                Objects.equals(amount, that.amount) &&
+                referenceType == that.referenceType &&
+                receiptType == that.receiptType &&
+                Objects.equals(referenceId, that.referenceId) &&
                 currency == that.currency;
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, account, balance, balanceStatus, currency);
+        return Objects.hash(id, account, amount, referenceType,referenceId,receiptType, currency);
     }
 
     @Override
@@ -144,8 +169,10 @@ public class FinancialReceipt {
         return "Financial Receipt{" +
                 "id=" + id +
                 ", account=" + (account != null ? account.getId() : null) +
-                ", balance=" + balance +
-                ", balanceStatus=" + balanceStatus +
+                ", amount=" + amount +
+                ", referenceType=" + referenceType +
+                ", referenceId=" + referenceId +
+                ", receiptType=" + receiptType +
                 ", currency=" + currency +
                 '}';
     }

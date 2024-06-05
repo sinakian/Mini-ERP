@@ -5,6 +5,7 @@ import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.common.Unit;
 import dev.ordy.erp.finance.itemPrice.ItemPrice;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
+import dev.ordy.erp.sales.invoice.Invoice;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,6 +27,10 @@ public class InvoiceItem {
     @ManyToOne
     @JoinColumn(name = "business_id", nullable = false)
     private Business business;
+
+    @ManyToOne
+    @JoinColumn(name = "invoice_id", nullable = false)
+    private Invoice invoice;
 
 
     @ManyToOne
@@ -66,8 +71,9 @@ public class InvoiceItem {
 
     public InvoiceItem() {}
 
-    public InvoiceItem(Business business, InventoryItem item, double quantity, ItemPrice itemPrice, double pricePerUnit, Unit unit, Currency currency, double totalGrossPrice, double discountCurrency, double discountPercent, double tax, double totalNetPrice, String createdBy) {
+    public InvoiceItem(Business business,Invoice invoice, InventoryItem item, double quantity, ItemPrice itemPrice, double pricePerUnit, Unit unit, Currency currency, double totalGrossPrice, double discountCurrency, double discountPercent, double tax, double totalNetPrice, String createdBy) {
         this.business = business;
+        this.invoice = invoice;
         this.item = item;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
@@ -82,5 +88,4 @@ public class InvoiceItem {
         this.createdBy = createdBy;
     }
 
-    // Getters and setters omitted for brevity
 }

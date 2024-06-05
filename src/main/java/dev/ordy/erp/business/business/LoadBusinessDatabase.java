@@ -5,7 +5,7 @@ import dev.ordy.erp.business.item.*;
 import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.finance.accountBalance.AccountBalance;
 import dev.ordy.erp.finance.accountBalance.AccountBalanceRepository;
-import dev.ordy.erp.finance.accountBalance.BalanceStatus;
+import dev.ordy.erp.common.BalanceStatus;
 import dev.ordy.erp.common.Unit;
 import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransaction;
@@ -139,9 +139,9 @@ public class LoadBusinessDatabase {
                 account1,
                 500.0,
                 1000.0,
-                dev.ordy.erp.finance.financialTransaction.BalanceStatus.DEBT,
+                BalanceStatus.DEBT,
                 1500.0,
-                dev.ordy.erp.finance.financialTransaction.BalanceStatus.CREDIT,
+                BalanceStatus.CREDIT,
                 "REF12345"
         );
 
@@ -152,9 +152,9 @@ public class LoadBusinessDatabase {
                 account2,
                 300.0,
                 1500.0,
-                dev.ordy.erp.finance.financialTransaction.BalanceStatus.CREDIT,
+                BalanceStatus.CREDIT,
                 1200.0,
-                dev.ordy.erp.finance.financialTransaction.BalanceStatus.CREDIT,
+                BalanceStatus.CREDIT,
                 "REF67890"
         );
 

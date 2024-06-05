@@ -9,9 +9,11 @@ import java.util.List;
 class FinancialTransactionController {
 
     private final FinancialTransactionRepository repository;
+    private final FinancialTransactionService transactionService;
 
-    FinancialTransactionController(FinancialTransactionRepository repository) {
+    FinancialTransactionController(FinancialTransactionRepository repository, FinancialTransactionService transactionService) {
         this.repository = repository;
+        this.transactionService = transactionService;
     }
 
 
@@ -23,9 +25,21 @@ class FinancialTransactionController {
     }
     // end::get-aggregate-root[]
 
+//    @PostMapping
+//    FinancialTransaction newFinancialTransaction(@RequestBody FinancialTransaction newFinancialTransaction) {
+//        return repository.save(newFinancialTransaction);
+//    }
+
     @PostMapping
     FinancialTransaction newFinancialTransaction(@RequestBody FinancialTransaction newFinancialTransaction) {
-        return repository.save(newFinancialTransaction);
+        return transactionService.createTransaction(
+                newFinancialTransaction.getFinancialTransactionType(),
+                newFinancialTransaction.getTransactionReferenceType(),
+                newFinancialTransaction.getCurrency(),
+                newFinancialTransaction.getAccount(),
+                newFinancialTransaction.getAmount(),
+                newFinancialTransaction.getReferenceId()
+        );
     }
 
     // Single item

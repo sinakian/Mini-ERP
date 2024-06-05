@@ -1,4 +1,4 @@
-package dev.ordy.erp.finance.accountBalance;
+package dev.ordy.erp.common;
 
 public enum BalanceStatus {
     DEBT,

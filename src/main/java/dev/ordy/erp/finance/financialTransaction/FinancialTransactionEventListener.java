@@ -24,7 +24,7 @@ public class FinancialTransactionEventListener {
 
     @EventListener
     @Transactional
-    public void handleFinancialTransactionEvent(FinancialTransactionEvent event) {
+    public void handleFinancialTransactionEvent(FinancialTransactionCreateEvent event) {
         FinancialTransaction transaction = event.getTransaction();
         Account account = transaction.getAccount();
 

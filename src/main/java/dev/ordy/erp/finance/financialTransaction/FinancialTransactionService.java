@@ -50,7 +50,7 @@ public class FinancialTransactionService {
         financialTransactionRepository.save(transaction);
 
         // Publish the event
-        eventPublisher.publishEvent(new FinancialTransactionEvent(this, transaction));
+        eventPublisher.publishEvent(new FinancialTransactionCreateEvent(this, transaction));
 
         // Log transaction creation
         logger.info("Created transaction: {}", transaction);

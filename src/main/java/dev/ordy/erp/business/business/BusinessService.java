@@ -19,7 +19,7 @@ public class BusinessService {
     @Transactional
     public Business createBusiness(Business business) {
         Business savedBusiness = businessRepository.save(business);
-        eventPublisher.publishEvent(new BusinessEvent(this, savedBusiness));
+        eventPublisher.publishEvent(new BusinessCreateEvent(this, savedBusiness));
         return savedBusiness;
     }
 }

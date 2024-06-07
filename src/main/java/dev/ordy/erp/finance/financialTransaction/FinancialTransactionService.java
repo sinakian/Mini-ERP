@@ -2,7 +2,9 @@ package dev.ordy.erp.finance.financialTransaction;
 
 import dev.ordy.erp.business.account.Account;
 import dev.ordy.erp.common.Currency;
-import dev.ordy.erp.common.BalanceStatus;
+import dev.ordy.erp.finance.accountBalance.BalanceStatus;
+import dev.ordy.erp.finance.financialTransaction.enums.FinancialTransactionType;
+import dev.ordy.erp.finance.financialTransaction.enums.TransactionReferenceType;
 import dev.ordy.erp.finance.accountBalance.AccountBalance;
 import dev.ordy.erp.finance.accountBalance.AccountBalanceRepository;
 import org.slf4j.Logger;

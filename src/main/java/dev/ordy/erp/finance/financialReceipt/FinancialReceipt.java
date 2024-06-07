@@ -2,8 +2,10 @@ package dev.ordy.erp.finance.financialReceipt;
 
 
 import dev.ordy.erp.business.account.Account;
-import dev.ordy.erp.common.BalanceStatus;
-import dev.ordy.erp.common.Currency;
+import dev.ordy.erp.common.*;
+import dev.ordy.erp.finance.accountBalance.BalanceStatus;
+import dev.ordy.erp.finance.financialReceipt.enums.FinancialReceiptReferenceType;
+import dev.ordy.erp.finance.financialReceipt.enums.FinancialReceiptType;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,13 +22,6 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 public class FinancialReceipt {
 
-    public enum ReferenceType{
-        INVOICE,DEPOSIT,WITHDRAW
-    }
-
-    public enum ReceiptType{
-        CREDIT,DEBIT
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,10 +38,10 @@ public class FinancialReceipt {
     private Currency currency;
 
     @Enumerated(EnumType.STRING)
-    private ReferenceType referenceType;
+    private FinancialReceiptReferenceType referenceType;
 
     @Enumerated(EnumType.STRING)
-    private ReceiptType receiptType;
+    private FinancialReceiptType receiptType;
 
     private String referenceId;
 
@@ -64,7 +59,7 @@ public class FinancialReceipt {
 
     FinancialReceipt() {}
 
-    public FinancialReceipt(Account account,Double amount,ReferenceType referenceType,ReceiptType receiptType,String referenceId,Double balance, BalanceStatus balanceStatus, Currency currency) {
+    public FinancialReceipt(Account account, Double amount, FinancialReceiptReferenceType referenceType, FinancialReceiptType receiptType, String referenceId, Double balance, BalanceStatus balanceStatus, Currency currency) {
         this.account = account;
         this.amount = amount;
         this.referenceType = referenceType;
@@ -84,11 +79,11 @@ public class FinancialReceipt {
         return this.amount;
     }
 
-    public ReferenceType getReferenceType() {
+    public FinancialReceiptReferenceType getReferenceType() {
         return this.referenceType;
     }
 
-    public ReceiptType getReceiptType() {
+    public FinancialReceiptType getReceiptType() {
         return this.receiptType;
     }
 
@@ -130,11 +125,11 @@ public class FinancialReceipt {
 
     public void setAmount(Double amount) {this.amount = amount;}
 
-    public void setReferenceType(ReferenceType referenceType){ this.referenceType=referenceType; }
+    public void setReferenceType(FinancialReceiptReferenceType referenceType){ this.referenceType=referenceType; }
 
     public void setReferenceId(String referenceId){this.referenceId=referenceId;}
 
-    public void setReceiptType(ReceiptType receiptType){this.receiptType=receiptType;}
+    public void setReceiptType(FinancialReceiptType receiptType){this.receiptType=receiptType;}
 
     public void setCurrency(Currency currency) {
         this.currency = currency;

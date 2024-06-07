@@ -1,8 +1,9 @@
-package dev.ordy.erp.business.account;
+package dev.ordy.erp.common;
 
 public enum Gender {
     MALE,
     FEMALE,
     OTHER,
-    LEGAL
+    LEGAL,
+    MYBUSINESS
 }

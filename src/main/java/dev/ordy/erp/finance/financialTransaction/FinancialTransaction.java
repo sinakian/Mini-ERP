@@ -2,8 +2,10 @@ package dev.ordy.erp.finance.financialTransaction;
 
 import dev.ordy.erp.business.account.Account;
 import dev.ordy.erp.common.Currency;
-import dev.ordy.erp.common.BalanceStatus;
+import dev.ordy.erp.finance.accountBalance.BalanceStatus;
 
+import dev.ordy.erp.finance.financialTransaction.enums.FinancialTransactionType;
+import dev.ordy.erp.finance.financialTransaction.enums.TransactionReferenceType;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;

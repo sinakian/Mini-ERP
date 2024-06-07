@@ -3,10 +3,10 @@ package dev.ordy.erp.finance.financialTransaction;
 import dev.ordy.erp.finance.accountBalance.AccountBalance;
 import dev.ordy.erp.finance.accountBalance.AccountBalanceRepository;
 import dev.ordy.erp.business.account.Account;
-import dev.ordy.erp.common.BalanceStatus;
+import dev.ordy.erp.finance.accountBalance.BalanceStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +17,7 @@ public class FinancialTransactionEventListener {
 
     private final AccountBalanceRepository accountBalanceRepository;
 
-    @Autowired
+
     public FinancialTransactionEventListener(AccountBalanceRepository accountBalanceRepository) {
         this.accountBalanceRepository = accountBalanceRepository;
     }

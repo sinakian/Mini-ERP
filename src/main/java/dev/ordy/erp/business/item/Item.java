@@ -1,9 +1,8 @@
 package dev.ordy.erp.business.item;
 
+import dev.ordy.erp.business.item.enums.InventoryPolicy;
+import dev.ordy.erp.business.item.enums.ItemType;
 import dev.ordy.erp.common.Unit;
-import dev.ordy.erp.business.account.AccountCategory;
-import dev.ordy.erp.business.account.AccountType;
-import dev.ordy.erp.business.account.Gender;
 import dev.ordy.erp.business.business.Business;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;

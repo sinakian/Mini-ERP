@@ -1,4 +1,4 @@
-package dev.ordy.erp.business.item;
+package dev.ordy.erp.business.item.enums;
 
 public enum InventoryPolicy {
     UNLIMITED,

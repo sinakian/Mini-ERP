@@ -25,10 +25,6 @@ class FinancialTransactionController {
     }
     // end::get-aggregate-root[]
 
-//    @PostMapping
-//    FinancialTransaction newFinancialTransaction(@RequestBody FinancialTransaction newFinancialTransaction) {
-//        return repository.save(newFinancialTransaction);
-//    }
 
     @PostMapping
     FinancialTransaction newFinancialTransaction(@RequestBody FinancialTransaction newFinancialTransaction) {

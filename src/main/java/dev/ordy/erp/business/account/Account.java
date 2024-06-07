@@ -3,6 +3,9 @@ package dev.ordy.erp.business.account;
 import java.util.Objects;
 import java.time.LocalDateTime;
 
+import dev.ordy.erp.business.account.enums.AccountCategory;
+import dev.ordy.erp.business.account.enums.AccountType;
+import dev.ordy.erp.common.Gender;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,6 +19,8 @@ import dev.ordy.erp.business.business.Business;
 @Table(name = "BUSINESS_ACCOUNT")
 @EntityListeners(AuditingEntityListener.class)
 public class Account {
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,52 +6,37 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/inventory-items")
-class InventoryItemController {
+public class InventoryItemController {
 
-    private final InventoryItemRepository repository;
+    private final InventoryItemService inventoryItemService;
 
-    InventoryItemController(InventoryItemRepository repository) {
-        this.repository = repository;
+    public InventoryItemController(InventoryItemService inventoryItemService) {
+        this.inventoryItemService = inventoryItemService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<InventoryItem> all() {
-        return repository.findAll();
+    public List<InventoryItem> all() {
+        return inventoryItemService.getAllInventoryItems();
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
-    InventoryItem newInventoryItem(@RequestBody InventoryItem newInventoryItem) {
-        return repository.save(newInventoryItem);
+    public InventoryItem newInventoryItem(@RequestBody InventoryItem newInventoryItem) {
+        return inventoryItemService.createInventoryItem(newInventoryItem);
     }
 
-    // Single item
-
     @GetMapping("/{id}")
-    InventoryItem one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public InventoryItem one(@PathVariable Long id) {
+        return inventoryItemService.getInventoryItemById(id)
                 .orElseThrow(() -> new InventoryItemNotFoundException(id));
     }
 
     @PutMapping("/{id}")
-    InventoryItem replaceInventoryItem(@RequestBody InventoryItem newInventoryItem, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(inventoryItem -> {
-                    return repository.save(inventoryItem);
-                })
-                .orElseGet(() -> {
-                    newInventoryItem.setId(id);
-                    return repository.save(newInventoryItem);
-                });
+    public InventoryItem replaceInventoryItem(@RequestBody InventoryItem newInventoryItem, @PathVariable Long id) {
+        return inventoryItemService.updateInventoryItem(id, newInventoryItem);
     }
 
     @DeleteMapping("/{id}")
-    void deleteInventoryItem(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteInventoryItem(@PathVariable Long id) {
+        inventoryItemService.deleteInventoryItem(id);
     }
 }

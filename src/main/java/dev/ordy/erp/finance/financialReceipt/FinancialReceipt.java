@@ -59,13 +59,16 @@ public class FinancialReceipt {
 
     FinancialReceipt() {}
 
-    public FinancialReceipt(Account account, Double amount, FinancialReceiptReferenceType referenceType, FinancialReceiptType receiptType, String referenceId, Double balance, BalanceStatus balanceStatus, Currency currency) {
-        this.account = account;
-        this.amount = amount;
-        this.referenceType = referenceType;
+    public FinancialReceipt(Account account, Double amount, FinancialReceiptReferenceType referenceType,
+                            FinancialReceiptType receiptType, String referenceId, Currency currency) {
+        this.account=account;
+        this.amount=amount;
+        this.referenceType=referenceType;
         this.receiptType=receiptType;
-        this.currency = currency;
+        this.referenceId=referenceId;
+        this.currency=currency;
     }
+
 
     public Long getId() {
         return this.id;

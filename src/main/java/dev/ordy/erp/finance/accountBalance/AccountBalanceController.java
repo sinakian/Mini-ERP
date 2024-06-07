@@ -1,58 +1,51 @@
 package dev.ordy.erp.finance.accountBalance;
 
+import dev.ordy.erp.business.account.Account;
+import dev.ordy.erp.business.account.AccountService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/account-balances")
 class AccountBalanceController {
 
-    private final AccountBalanceRepository repository;
+    private final AccountBalanceService accountBalanceService;
+    private final AccountService accountService;
 
-    AccountBalanceController(AccountBalanceRepository repository) {
-        this.repository = repository;
+    AccountBalanceController(AccountBalanceService accountBalanceService, AccountService accountService) {
+        this.accountBalanceService = accountBalanceService;
+        this.accountService = accountService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
-    @GetMapping
-    List<AccountBalance> all() {
-        return repository.findAll();
+    @GetMapping("/{accountId}")
+    AccountBalance getAccountBalance(@PathVariable Long accountId) {
+        // Assume you have a method to get an Account object by its ID
+        Optional<Account> account = accountService.getAccountById(accountId);
+        return accountBalanceService.getAccountBalanceByAccount(account)
+                .orElseThrow(() -> new RuntimeException("Account balance not found for account id: " + accountId));
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
     AccountBalance newAccountBalance(@RequestBody AccountBalance newAccountBalance) {
-        return repository.save(newAccountBalance);
-    }
-
-    // Single item
-
-    @GetMapping("/{id}")
-    AccountBalance one(@PathVariable Long id) {
-
-        return repository.findById(id)
-                .orElseThrow(() -> new AccountBalanceNotFoundException(id));
+        return accountBalanceService.createAccountBalance(
+                newAccountBalance.getAccount(),
+                newAccountBalance.getBalance(),
+                newAccountBalance.getBalanceStatus(),
+                newAccountBalance.getCurrency()
+        );
     }
 
     @PutMapping("/{id}")
     AccountBalance replaceAccountBalance(@RequestBody AccountBalance newAccountBalance, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(accountBalance -> {
-                    accountBalance.setRole(newAccountBalance.getRole());
-                    return repository.save(accountBalance);
-                })
-                .orElseGet(() -> {
-                    newAccountBalance.setId(id);
-                    return repository.save(newAccountBalance);
-                });
+        newAccountBalance.setId(id);
+        accountBalanceService.updateAccountBalance(newAccountBalance);
+        return newAccountBalance;
     }
 
     @DeleteMapping("/{id}")
     void deleteAccountBalance(@PathVariable Long id) {
-        repository.deleteById(id);
+        accountBalanceService.deleteAccountBalance(id);
     }
 }

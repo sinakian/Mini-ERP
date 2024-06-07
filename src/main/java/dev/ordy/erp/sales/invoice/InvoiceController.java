@@ -6,54 +6,32 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/invoices")
-class InvoiceController {
+public class InvoiceController {
 
-    private final InvoiceRepository repository;
+    private final InvoiceService invoiceService;
 
-    InvoiceController(InvoiceRepository repository) {
-        this.repository = repository;
+    public InvoiceController(InvoiceService invoiceService) {
+        this.invoiceService = invoiceService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<Invoice> all() {
-        return repository.findAll();
+    public List<Invoice> all() {
+        return invoiceService.getAllInvoices();
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
-    Invoice newInvoice(@RequestBody Invoice newInvoice) {
-        return repository.save(newInvoice);
+    public Invoice newInvoice(@RequestBody Invoice newInvoice) {
+        return invoiceService.createInvoice(newInvoice);
     }
 
-    // Single item
-
     @GetMapping("/{id}")
-    Invoice one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public Invoice one(@PathVariable Long id) {
+        return invoiceService.getInvoiceById(id)
                 .orElseThrow(() -> new InvoiceNotFoundException(id));
     }
 
-//    @PutMapping("/{id}")
-//    Invoice replaceInvoice(@RequestBody Invoice newInvoice, @PathVariable Long id) {
-//
-//        return repository.findById(id)
-//                .map(order -> {
-//                    order.setName(newInvoice.getName());
-//                    order.setRole(newInvoice.getRole());
-//                    return repository.save(order);
-//                })
-//                .orElseGet(() -> {
-//                    newInvoice.setId(id);
-//                    return repository.save(newInvoice);
-//                });
-//    }
-
     @DeleteMapping("/{id}")
-    void deleteInvoice(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteInvoice(@PathVariable Long id) {
+        invoiceService.deleteInvoice(id);
     }
 }

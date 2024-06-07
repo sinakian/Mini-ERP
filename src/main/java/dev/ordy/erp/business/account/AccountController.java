@@ -1,64 +1,51 @@
 package dev.ordy.erp.business.account;
 
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-class AccountController {
+@RequestMapping("/accounts")
+public class AccountController {
 
-    private final AccountRepository repository;
+    private final AccountService accountService;
 
-    AccountController(AccountRepository repository) {
-        this.repository = repository;
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
-    @GetMapping("/accounts")
-    List<Account> all() {
-        return repository.findAll();
-    }
-    // end::get-aggregate-root[]
-
-    @PostMapping("/accounts")
-    Account newAccount(@RequestBody Account newAccount) {
-        return repository.save(newAccount);
-    }
-
-    // Single item
-
-    @GetMapping("/accounts/{id}")
-    Account one(@PathVariable Long id) {
-
-        return repository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(id));
+    @PostMapping
+    public Account createAccount(@RequestBody Account newAccount) {
+        return accountService.createAccount(
+                newAccount.getFirstName(),
+                newAccount.getLastName(),
+                newAccount.getFullName(),
+                newAccount.getRole(),
+                newAccount.getBusiness(),
+                newAccount.getAccountType(),
+                newAccount.getAccountCategory(),
+                newAccount.getGender()
+        );
     }
 
-    @PutMapping("/accounts/{id}")
-    Account replaceAccount(@RequestBody Account newAccount, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(account -> {
-                    account.setFullName(newAccount.getFullName());
-                    account.setRole(newAccount.getRole());
-                    return repository.save(account);
-                })
-                .orElseGet(() -> {
-                    newAccount.setId(id);
-                    return repository.save(newAccount);
-                });
+    @GetMapping
+    public List<Account> getAllAccounts() {
+        return accountService.getAllAccounts();
     }
 
-    @DeleteMapping("/accounts/{id}")
-    void deleteAccount(@PathVariable Long id) {
-        repository.deleteById(id);
+    @GetMapping("/{id}")
+    public Optional<Account> getAccountById(@PathVariable Long id) {
+        return accountService.getAccountById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Account updateAccount(@PathVariable Long id, @RequestBody Account updatedAccount) {
+        return accountService.updateAccount(id, updatedAccount);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id);
     }
 }

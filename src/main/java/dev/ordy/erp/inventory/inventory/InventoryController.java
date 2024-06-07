@@ -6,53 +6,42 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/inventories")
-class InventoryController {
+public class InventoryController {
 
-    private final InventoryRepository repository;
+    private final InventoryService inventoryService;
 
-    InventoryController(InventoryRepository repository) {
-        this.repository = repository;
+    public InventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<Inventory> all() {
-        return repository.findAll();
+    public List<Inventory> all() {
+        return inventoryService.getAllInventories();
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
-    Inventory newInventory(@RequestBody Inventory newInventory) {
-        return repository.save(newInventory);
+    public Inventory newInventory(@RequestBody Inventory newInventory) {
+        return inventoryService.createInventory(
+                newInventory.getBusiness(),
+                newInventory.getInventoryType(),
+                newInventory.getTitle(),
+                newInventory.getRole()
+        );
     }
 
-    // Single item
-
     @GetMapping("/{id}")
-    Inventory one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public Inventory one(@PathVariable Long id) {
+        return inventoryService.getInventoryById(id)
                 .orElseThrow(() -> new InventoryNotFoundException(id));
     }
 
     @PutMapping("/{id}")
-    Inventory replaceInventory(@RequestBody Inventory newInventory, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(inventory -> {
-                    inventory.setRole(newInventory.getRole());
-                    return repository.save(inventory);
-                })
-                .orElseGet(() -> {
-                    newInventory.setId(id);
-                    return repository.save(newInventory);
-                });
+    public Inventory replaceInventory(@RequestBody Inventory newInventory, @PathVariable Long id) {
+        return inventoryService.updateInventory(id, newInventory);
     }
 
     @DeleteMapping("/{id}")
-    void deleteInventory(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteInventory(@PathVariable Long id) {
+        inventoryService.deleteInventory(id);
     }
 }

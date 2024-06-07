@@ -6,54 +6,32 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/supply-requests")
-class SupplyRequestController {
+public class SupplyRequestController {
 
-    private final SupplyRequestRepository repository;
+    private final SupplyRequestService supplyRequestService;
 
-    SupplyRequestController(SupplyRequestRepository repository) {
-        this.repository = repository;
+    public SupplyRequestController(SupplyRequestService supplyRequestService) {
+        this.supplyRequestService = supplyRequestService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<SupplyRequest> all() {
-        return repository.findAll();
+    public List<SupplyRequest> all() {
+        return supplyRequestService.getAllSupplyRequests();
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
-    SupplyRequest newSupplyRequest(@RequestBody SupplyRequest newSupplyRequest) {
-        return repository.save(newSupplyRequest);
+    public SupplyRequest newSupplyRequest(@RequestBody SupplyRequest newSupplyRequest) {
+        return supplyRequestService.createSupplyRequest(newSupplyRequest);
     }
 
-    // Single item
-
     @GetMapping("/{id}")
-    SupplyRequest one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public SupplyRequest one(@PathVariable Long id) {
+        return supplyRequestService.getSupplyRequestById(id)
                 .orElseThrow(() -> new SupplyRequestNotFoundException(id));
     }
 
-//    @PutMapping("/{id}")
-//    SupplyRequest replaceSupplyRequest(@RequestBody SupplyRequest newSupplyRequest, @PathVariable Long id) {
-//
-//        return repository.findById(id)
-//                .map(supplyRequest -> {
-//                    supplyRequest.setName(newSupplyRequest.getName());
-//                    supplyRequest.setRole(newSupplyRequest.getRole());
-//                    return repository.save(supplyRequest);
-//                })
-//                .orElseGet(() -> {
-//                    newSupplyRequest.setId(id);
-//                    return repository.save(newSupplyRequest);
-//                });
-//    }
-
     @DeleteMapping("/{id}")
-    void deleteSupplyRequest(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteSupplyRequest(@PathVariable Long id) {
+        supplyRequestService.deleteSupplyRequest(id);
     }
 }

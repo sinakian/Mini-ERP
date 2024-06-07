@@ -6,54 +6,32 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
-class OrderController {
+public class OrderController {
 
-    private final OrderRepository repository;
+    private final OrderService orderService;
 
-    OrderController(OrderRepository repository) {
-        this.repository = repository;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<Order> all() {
-        return repository.findAll();
+    public List<Order> all() {
+        return orderService.getAllOrders();
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
-    Order newOrder(@RequestBody Order newOrder) {
-        return repository.save(newOrder);
+    public Order newOrder(@RequestBody Order newOrder) {
+        return orderService.createOrder(newOrder);
     }
 
-    // Single item
-
     @GetMapping("/{id}")
-    Order one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public Order one(@PathVariable Long id) {
+        return orderService.getOrderById(id)
                 .orElseThrow(() -> new OrderNotFoundException(id));
     }
 
-//    @PutMapping("/{id}")
-//    Order replaceOrder(@RequestBody Order newOrder, @PathVariable Long id) {
-//
-//        return repository.findById(id)
-//                .map(order -> {
-//                    order.setName(newOrder.getName());
-//                    order.setRole(newOrder.getRole());
-//                    return repository.save(order);
-//                })
-//                .orElseGet(() -> {
-//                    newOrder.setId(id);
-//                    return repository.save(newOrder);
-//                });
-//    }
-
     @DeleteMapping("/{id}")
-    void deleteOrder(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteOrder(@PathVariable Long id) {
+        orderService.deleteOrder(id);
     }
 }

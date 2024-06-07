@@ -6,54 +6,32 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/invoice-items")
-class InvoiceItemController {
+public class InvoiceItemController {
 
-    private final InvoiceItemRepository repository;
+    private final InvoiceItemService invoiceItemService;
 
-    InvoiceItemController(InvoiceItemRepository repository) {
-        this.repository = repository;
+    public InvoiceItemController(InvoiceItemService invoiceItemService) {
+        this.invoiceItemService = invoiceItemService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<InvoiceItem> all() {
-        return repository.findAll();
+    public List<InvoiceItem> all() {
+        return invoiceItemService.getAllInvoiceItems();
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
-    InvoiceItem newInvoiceItem(@RequestBody InvoiceItem newInvoiceItem) {
-        return repository.save(newInvoiceItem);
+    public InvoiceItem newInvoiceItem(@RequestBody InvoiceItem newInvoiceItem) {
+        return invoiceItemService.createInvoiceItem(newInvoiceItem);
     }
 
-    // Single item
-
     @GetMapping("/{id}")
-    InvoiceItem one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public InvoiceItem one(@PathVariable Long id) {
+        return invoiceItemService.getInvoiceItemById(id)
                 .orElseThrow(() -> new InvoiceItemNotFoundException(id));
     }
 
-//    @PutMapping("/{id}")
-//    InvoiceItem replaceInvoiceItem(@RequestBody InvoiceItem newInvoiceItem, @PathVariable Long id) {
-//
-//        return repository.findById(id)
-//                .map(orderItem -> {
-//                    orderItem.setName(newInvoiceItem.getName());
-//                    orderItem.setRole(newInvoiceItem.getRole());
-//                    return repository.save(orderItem);
-//                })
-//                .orElseGet(() -> {
-//                    newInvoiceItem.setId(id);
-//                    return repository.save(newInvoiceItem);
-//                });
-//    }
-
     @DeleteMapping("/{id}")
-    void deleteInvoiceItem(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteInvoiceItem(@PathVariable Long id) {
+        invoiceItemService.deleteInvoiceItem(id);
     }
 }

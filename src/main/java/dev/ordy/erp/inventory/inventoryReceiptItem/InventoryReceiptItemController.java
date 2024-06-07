@@ -6,54 +6,37 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/inventory-receipt-items")
-class InventoryReceiptItemController {
+public class InventoryReceiptItemController {
 
-    private final InventoryReceiptItemRepository repository;
+    private final InventoryReceiptItemService inventoryReceiptItemService;
 
-    InventoryReceiptItemController(InventoryReceiptItemRepository repository) {
-        this.repository = repository;
+    public InventoryReceiptItemController(InventoryReceiptItemService inventoryReceiptItemService) {
+        this.inventoryReceiptItemService = inventoryReceiptItemService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<InventoryReceiptItem> all() {
-        return repository.findAll();
+    public List<InventoryReceiptItem> all() {
+        return inventoryReceiptItemService.getAllInventoryReceiptItems();
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
-    InventoryReceiptItem newInventoryReceiptItem(@RequestBody InventoryReceiptItem newInventoryReceiptItem) {
-        return repository.save(newInventoryReceiptItem);
+    public InventoryReceiptItem newInventoryReceiptItem(@RequestBody InventoryReceiptItem newInventoryReceiptItem) {
+        return inventoryReceiptItemService.createInventoryReceiptItem(newInventoryReceiptItem);
     }
 
-    // Single item
-
     @GetMapping("/{id}")
-    InventoryReceiptItem one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public InventoryReceiptItem one(@PathVariable Long id) {
+        return inventoryReceiptItemService.getInventoryReceiptItemById(id)
                 .orElseThrow(() -> new InventoryReceiptItemNotFoundException(id));
     }
 
-//    @PutMapping("/{id}")
-//    InventoryReceiptItem replaceInventoryReceiptItem(@RequestBody InventoryReceiptItem newInventoryReceiptItem, @PathVariable Long id) {
-//
-//        return repository.findById(id)
-//                .map(inventoryReceiptItem -> {
-//                    inventoryReceiptItem.setName(newInventoryReceiptItem.getName());
-//                    inventoryReceiptItem.setRole(newInventoryReceiptItem.getRole());
-//                    return repository.save(inventoryReceiptItem);
-//                })
-//                .orElseGet(() -> {
-//                    newInventoryReceiptItem.setId(id);
-//                    return repository.save(newInventoryReceiptItem);
-//                });
-//    }
+    @PutMapping("/{id}")
+    public InventoryReceiptItem replaceInventoryReceiptItem(@RequestBody InventoryReceiptItem newInventoryReceiptItem, @PathVariable Long id) {
+        return inventoryReceiptItemService.updateInventoryReceiptItem(id, newInventoryReceiptItem);
+    }
 
     @DeleteMapping("/{id}")
-    void deleteInventoryReceiptItem(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteInventoryReceiptItem(@PathVariable Long id) {
+        inventoryReceiptItemService.deleteInventoryReceiptItem(id);
     }
 }

@@ -6,54 +6,42 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/item-prices")
-class ItemPriceController {
+public class ItemPriceController {
 
-    private final ItemPriceRepository repository;
+    private final ItemPriceService itemPriceService;
 
-    ItemPriceController(ItemPriceRepository repository) {
-        this.repository = repository;
+    public ItemPriceController(ItemPriceService itemPriceService) {
+        this.itemPriceService = itemPriceService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<ItemPrice> all() {
-        return repository.findAll();
+    public List<ItemPrice> all() {
+        return itemPriceService.getAllItemPrices();
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
-    ItemPrice newItemPrice(@RequestBody ItemPrice newItemPrice) {
-        return repository.save(newItemPrice);
+    public ItemPrice newItemPrice(@RequestBody ItemPrice newItemPrice) {
+        return itemPriceService.createItemPrice(
+                newItemPrice.getItem(),
+                newItemPrice.getPrice(),
+                newItemPrice.getUnit(),
+                newItemPrice.getCurrency()
+        );
     }
 
-    // Single item
-
     @GetMapping("/{id}")
-    ItemPrice one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public ItemPrice one(@PathVariable Long id) {
+        return itemPriceService.getItemPriceById(id)
                 .orElseThrow(() -> new ItemPriceNotFoundException(id));
     }
 
-//    @PutMapping("/{id}")
-//    ItemPrice replaceItemPrice(@RequestBody ItemPrice newItemPrice, @PathVariable Long id) {
-//
-//        return repository.findById(id)
-//                .map(itemPrice -> {
-//                    itemPrice.setName(newItemPrice.getName());
-//                    itemPrice.setRole(newItemPrice.getRole());
-//                    return repository.save(itemPrice);
-//                })
-//                .orElseGet(() -> {
-//                    newItemPrice.setId(id);
-//                    return repository.save(newItemPrice);
-//                });
-//    }
+    @PutMapping("/{id}")
+    public ItemPrice replaceItemPrice(@RequestBody ItemPrice newItemPrice, @PathVariable Long id) {
+        return itemPriceService.updateItemPrice(id, newItemPrice);
+    }
 
     @DeleteMapping("/{id}")
-    void deleteItemPrice(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteItemPrice(@PathVariable Long id) {
+        itemPriceService.deleteItemPrice(id);
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Component
 public class FinancialTransactionEventListener {
     private static final Logger logger = LoggerFactory.getLogger(FinancialTransactionEventListener.class);
@@ -28,7 +30,7 @@ public class FinancialTransactionEventListener {
         FinancialTransaction transaction = event.getTransaction();
         Account account = transaction.getAccount();
 
-        AccountBalance accountBalance = accountBalanceRepository.findByAccount(account)
+        AccountBalance accountBalance = accountBalanceRepository.findByAccount(Optional.ofNullable(account))
                 .orElseThrow(() -> new RuntimeException("Account balance not found for account id: " + account.getId()));
 
         Double newBalance = transaction.getNewBalance();

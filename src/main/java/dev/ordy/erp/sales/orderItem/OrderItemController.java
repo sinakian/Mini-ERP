@@ -6,54 +6,32 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/order-items")
-class OrderItemController {
+public class OrderItemController {
 
-    private final OrderItemRepository repository;
+    private final OrderItemService orderItemService;
 
-    OrderItemController(OrderItemRepository repository) {
-        this.repository = repository;
+    public OrderItemController(OrderItemService orderItemService) {
+        this.orderItemService = orderItemService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<OrderItem> all() {
-        return repository.findAll();
+    public List<OrderItem> all() {
+        return orderItemService.getAllOrderItems();
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
-    OrderItem newOrderItem(@RequestBody OrderItem newOrderItem) {
-        return repository.save(newOrderItem);
+    public OrderItem newOrderItem(@RequestBody OrderItem newOrderItem) {
+        return orderItemService.createOrderItem(newOrderItem);
     }
 
-    // Single item
-
     @GetMapping("/{id}")
-    OrderItem one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public OrderItem one(@PathVariable Long id) {
+        return orderItemService.getOrderItemById(id)
                 .orElseThrow(() -> new OrderItemNotFoundException(id));
     }
 
-//    @PutMapping("/{id}")
-//    OrderItem replaceOrderItem(@RequestBody OrderItem newOrderItem, @PathVariable Long id) {
-//
-//        return repository.findById(id)
-//                .map(orderItem -> {
-//                    orderItem.setName(newOrderItem.getName());
-//                    orderItem.setRole(newOrderItem.getRole());
-//                    return repository.save(orderItem);
-//                })
-//                .orElseGet(() -> {
-//                    newOrderItem.setId(id);
-//                    return repository.save(newOrderItem);
-//                });
-//    }
-
     @DeleteMapping("/{id}")
-    void deleteOrderItem(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteOrderItem(@PathVariable Long id) {
+        orderItemService.deleteOrderItem(id);
     }
 }

@@ -10,6 +10,7 @@ class ItemPriceNotFoundAdvice {
 
     @ExceptionHandler(ItemPriceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+
     String itemPriceNotFoundHandler(ItemPriceNotFoundException ex) {
         return ex.getMessage();
     }

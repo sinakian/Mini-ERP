@@ -8,52 +8,38 @@ import java.util.List;
 @RequestMapping("/items")
 class ItemController {
 
-    private final ItemRepository repository;
+    private final ItemService itemService;
 
-    ItemController(ItemRepository repository) {
-        this.repository = repository;
+    ItemController(ItemService itemService) {
+        this.itemService = itemService;
     }
-
 
     // Aggregate root
     // tag::get-aggregate-root[]
     @GetMapping
     List<Item> all() {
-        return repository.findAll();
+        return itemService.getAllItems();
     }
     // end::get-aggregate-root[]
 
     @PostMapping
     Item newItem(@RequestBody Item newItem) {
-        return repository.save(newItem);
+        return itemService.createItem(newItem.getName(), newItem.getRole(), newItem.getBusiness(), newItem.getInventoryPolicy(), newItem.getItemType(), newItem.getUnit());
     }
 
-    // Single item
 
     @GetMapping("/{id}")
     Item one(@PathVariable Long id) {
-
-        return repository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id));
+        return itemService.getItemById(id);
     }
 
     @PutMapping("/{id}")
     Item replaceItem(@RequestBody Item newItem, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(business -> {
-                    business.setName(newItem.getName());
-                    business.setRole(newItem.getRole());
-                    return repository.save(business);
-                })
-                .orElseGet(() -> {
-                    newItem.setId(id);
-                    return repository.save(newItem);
-                });
+        return itemService.updateItem(id, newItem.getName(), newItem.getRole(), newItem.getInventoryPolicy(), newItem.getItemType(), newItem.getUnit());
     }
 
     @DeleteMapping("/{id}")
     void deleteItem(@PathVariable Long id) {
-        repository.deleteById(id);
+        itemService.deleteItem(id);
     }
 }

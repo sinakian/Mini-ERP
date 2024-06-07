@@ -13,6 +13,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class FinancialTransactionService {
     private static final Logger logger = LoggerFactory.getLogger(FinancialTransactionService.class);
@@ -32,7 +35,7 @@ public class FinancialTransactionService {
     @Transactional
     public FinancialTransaction createTransaction(FinancialTransactionType transactionType, TransactionReferenceType referenceType,
                                                   Currency currency, Account account, Double amount, String referenceId) {
-        AccountBalance accountBalance = accountBalanceRepository.findByAccount(account)
+        AccountBalance accountBalance = accountBalanceRepository.findByAccount(Optional.ofNullable(account))
                 .orElseThrow(() -> new RuntimeException("Account balance not found for account id: " + account.getId()));
 
         Double lastBalance = accountBalance.getBalance();
@@ -56,5 +59,25 @@ public class FinancialTransactionService {
         logger.info("Created transaction: {}", transaction);
 
         return transaction;
+    }
+
+    @Transactional(readOnly = true)
+    public List<FinancialTransaction> getAllTransactions() {
+        return financialTransactionRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<FinancialTransaction> getTransactionById(Long id) {
+        return financialTransactionRepository.findById(id);
+    }
+
+    @Transactional
+    public FinancialTransaction updateTransaction(FinancialTransaction transaction) {
+        return financialTransactionRepository.save(transaction);
+    }
+
+    @Transactional
+    public void deleteTransaction(Long id) {
+        financialTransactionRepository.deleteById(id);
     }
 }

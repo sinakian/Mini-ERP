@@ -6,28 +6,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/financial-transactions")
-class FinancialTransactionController {
+public class FinancialTransactionController {
 
-    private final FinancialTransactionRepository repository;
     private final FinancialTransactionService transactionService;
 
-    FinancialTransactionController(FinancialTransactionRepository repository, FinancialTransactionService transactionService) {
-        this.repository = repository;
+    public FinancialTransactionController(FinancialTransactionService transactionService) {
         this.transactionService = transactionService;
     }
 
-
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<FinancialTransaction> all() {
-        return repository.findAll();
+    public List<FinancialTransaction> all() {
+        return transactionService.getAllTransactions();
     }
-    // end::get-aggregate-root[]
-
 
     @PostMapping
-    FinancialTransaction newFinancialTransaction(@RequestBody FinancialTransaction newFinancialTransaction) {
+    public FinancialTransaction newFinancialTransaction(@RequestBody FinancialTransaction newFinancialTransaction) {
         return transactionService.createTransaction(
                 newFinancialTransaction.getFinancialTransactionType(),
                 newFinancialTransaction.getTransactionReferenceType(),
@@ -38,30 +31,32 @@ class FinancialTransactionController {
         );
     }
 
-    // Single item
-
     @GetMapping("/{id}")
-    FinancialTransaction one(@PathVariable Long id) {
-
-        return repository.findById(id)
+    public FinancialTransaction one(@PathVariable Long id) {
+        return transactionService.getTransactionById(id)
                 .orElseThrow(() -> new FinancialTransactionNotFoundException(id));
     }
 
     @PutMapping("/{id}")
-    FinancialTransaction replaceFinancialTransaction(@RequestBody FinancialTransaction newFinancialTransaction, @PathVariable Long id) {
-
-        return repository.findById(id)
+    public FinancialTransaction replaceFinancialTransaction(@RequestBody FinancialTransaction newFinancialTransaction, @PathVariable Long id) {
+        return transactionService.getTransactionById(id)
                 .map(financialTransaction -> {
-                    return repository.save(financialTransaction);
+                    financialTransaction.setFinancialTransactionType(newFinancialTransaction.getFinancialTransactionType());
+                    financialTransaction.setTransactionReferenceType(newFinancialTransaction.getTransactionReferenceType());
+                    financialTransaction.setCurrency(newFinancialTransaction.getCurrency());
+                    financialTransaction.setAccount(newFinancialTransaction.getAccount());
+                    financialTransaction.setAmount(newFinancialTransaction.getAmount());
+                    financialTransaction.setReferenceId(newFinancialTransaction.getReferenceId());
+                    return transactionService.updateTransaction(financialTransaction);
                 })
                 .orElseGet(() -> {
                     newFinancialTransaction.setId(id);
-                    return repository.save(newFinancialTransaction);
+                    return transactionService.updateTransaction(newFinancialTransaction);
                 });
     }
 
     @DeleteMapping("/{id}")
-    void deleteFinancialTransaction(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteFinancialTransaction(@PathVariable Long id) {
+        transactionService.deleteTransaction(id);
     }
 }

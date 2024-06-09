@@ -5,6 +5,7 @@ import dev.ordy.erp.business.account.Account;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +21,10 @@ public class AccountBalanceService {
     public AccountBalance createAccountBalance(Account account, Double balance, BalanceStatus balanceStatus, Currency currency) {
         AccountBalance accountBalance = new AccountBalance(account, balance, balanceStatus, currency);
         return accountBalanceRepository.save(accountBalance);
+    }
+
+    public List<AccountBalance> getAllAccountBalances() {
+        return accountBalanceRepository.findAll();
     }
 
     public Optional<AccountBalance> getAccountBalanceByAccount(Optional<Account> account) {

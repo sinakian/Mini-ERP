@@ -19,6 +19,11 @@ class AccountBalanceController {
         this.accountService = accountService;
     }
 
+    @GetMapping
+    public List<AccountBalance> getAllAccountBalances() {
+        return accountBalanceService.getAllAccountBalances();
+    }
+
     @GetMapping("/{accountId}")
     AccountBalance getAccountBalance(@PathVariable Long accountId) {
         // Assume you have a method to get an Account object by its ID

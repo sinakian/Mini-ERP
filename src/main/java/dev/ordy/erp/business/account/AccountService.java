@@ -6,6 +6,7 @@ import dev.ordy.erp.business.account.enums.AccountType;
 import dev.ordy.erp.common.Gender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,15 +16,19 @@ import java.util.Optional;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository,ApplicationEventPublisher eventPublisher) {
         this.accountRepository = accountRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public Account createAccount(String firstName, String lastName, String fullName, String role, Business business,
                                  AccountType accountType, AccountCategory accountCategory, Gender gender) {
         Account account = new Account(firstName, lastName, fullName, role, business, accountType, accountCategory, gender);
-        return accountRepository.save(account);
+        accountRepository.save(account);
+        eventPublisher.publishEvent(new AccountCreateEvent(this,account));
+        return account;
     }
 
     public List<Account> getAllAccounts() {

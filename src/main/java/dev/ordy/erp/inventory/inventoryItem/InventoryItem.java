@@ -26,6 +26,7 @@ public class InventoryItem {
 
     @ManyToOne
     @JoinColumn(name = "inventory_id", nullable = false)
+
     private Inventory inventory;
 
     @ManyToOne
@@ -53,7 +54,7 @@ public class InventoryItem {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    InventoryItem() {}
+    public InventoryItem() {}
 
     public InventoryItem(Inventory inventory, Item item, double quantity, double availableQuantity, Unit unit, String name, String role) {
         this.inventory = inventory;

@@ -1,5 +1,6 @@
 package dev.ordy.erp.inventory.inventory;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import dev.ordy.erp.business.business.Business;
 
 import jakarta.persistence.*;
@@ -27,6 +28,7 @@ public class Inventory {
 
     @ManyToOne
     @JoinColumn(name = "business_id", nullable = false)
+    @JsonBackReference
     private Business business;
 
     @Enumerated(EnumType.STRING)

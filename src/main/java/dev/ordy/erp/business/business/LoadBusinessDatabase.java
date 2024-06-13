@@ -52,6 +52,7 @@ public class LoadBusinessDatabase {
     @Bean
     CommandLineRunner initDatabase(
             BusinessRepository businessRepository,
+            BusinessService businessService,
             AccountRepository accountRepository,
             ItemRepository itemRepository,
             AccountBalanceRepository accountBalanceRepository,
@@ -82,7 +83,8 @@ public class LoadBusinessDatabase {
                 orderRepository,
                 orderItemRepository,
                 supplyRequestRepository,
-                supplyRequestItemRepository);
+                supplyRequestItemRepository,
+                businessService);
     }
 
     @Transactional
@@ -101,13 +103,13 @@ public class LoadBusinessDatabase {
             OrderRepository orderRepository,
             OrderItemRepository orderItemRepository,
             SupplyRequestRepository supplyRequestRepository,
-            SupplyRequestItemRepository supplyRequestItemRepository) {
+            SupplyRequestItemRepository supplyRequestItemRepository, BusinessService businessService) {
 
         // Business Entities
-        Business business1 = new Business("Acme Corporation", "Manufacturer");
-        Business business2 = new Business("Wayne Enterprises", "Conglomerate");
-        businessRepository.save(business1);
-        businessRepository.save(business2);
+        Business business1 = new Business("Acme Corporation", "Manufacturer",Currency.TOMAN,null,null);
+        Business business2 = new Business("Wayne Enterprises", "Conglomerate",Currency.TOMAN,null,null);
+        businessService.createBusiness(business1);
+        businessService.createBusiness(business2);
         log.info("Preloaded businesses");
 
         // Account Entities
@@ -192,6 +194,7 @@ public class LoadBusinessDatabase {
                 "Storage"
         );
 
+
         Inventory inventory2 = new Inventory(
                 business2,
                 Inventory.InventoryType.PRODUCT,
@@ -199,8 +202,14 @@ public class LoadBusinessDatabase {
                 "Sales"
         );
 
+
         inventoryRepository.save(inventory1);
         inventoryRepository.save(inventory2);
+        business1.setDefaultProductInventory(inventory1);
+        business2.setDefaultProductInventory(inventory2);
+        businessService.updateBusiness(business1.getId(), business1);
+        businessService.updateBusiness(business2.getId(), business2);
+
         log.info("Preloaded inventories");
 
 

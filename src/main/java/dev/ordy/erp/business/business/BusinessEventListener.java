@@ -34,12 +34,14 @@ public class BusinessEventListener implements ApplicationListener<BusinessCreate
         Account account = accountService.createAccount("Default", "Business", "Default Business Account", "MYBUSINESS", business, AccountType.MYBUSINESS, AccountCategory.MYBUSINESS, null);
 
         // Create product Inventory
-        Inventory inventory1 = new Inventory(business, Inventory.InventoryType.PRODUCT, "Product Inventory", "MYBUSINESS");
-        inventoryRepository.save(inventory1);
+        Inventory productInventory = new Inventory(business, Inventory.InventoryType.PRODUCT, "Product Inventory", "MYBUSINESS");
+        inventoryRepository.save(productInventory);
+        business.setDefaultProductInventory(productInventory);
 
         // Create Material Inventory
-        Inventory inventory2 = new Inventory(business, Inventory.InventoryType.MATERIAL, "Material Inventory", "MYBUSINESS");
-        inventoryRepository.save(inventory2);
+        Inventory materialInventory = new Inventory(business, Inventory.InventoryType.MATERIAL, "Material Inventory", "MYBUSINESS");
+        inventoryRepository.save(materialInventory);
+        business.setDefaultMaterialInventory(materialInventory);
 
         // Log a message
         System.out.println("Business Creation Event is completely done");

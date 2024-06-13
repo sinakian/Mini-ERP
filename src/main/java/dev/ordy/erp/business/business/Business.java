@@ -1,5 +1,9 @@
 package dev.ordy.erp.business.business;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import dev.ordy.erp.common.Currency;
+import dev.ordy.erp.inventory.inventory.Inventory;
 import jakarta.persistence.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.annotation.CreatedBy;
@@ -23,6 +27,23 @@ public class Business {
     private String name;
     private String role;
 
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
+
+
+    @OneToOne
+    @JoinColumn(name = "product_inventory_id", nullable = true)
+    @JsonManagedReference
+    private Inventory defaultProductInventory;
+
+    @OneToOne
+    @JoinColumn(name = "material_inventory_id", nullable = true)
+    @JsonManagedReference
+    private Inventory defaultMaterialInventory;
+
+
+
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -40,10 +61,13 @@ public class Business {
 
     Business() {}
 
-    public Business(String name, String role) {
+    public Business(String name, String role,Currency currency,Inventory defaultMaterialInventory,Inventory defaultProductInventory) {
 
         this.name = name;
         this.role = role;
+        this.currency=currency;
+        this.defaultMaterialInventory=defaultMaterialInventory;
+        this.defaultProductInventory=defaultProductInventory;
     }
 
     public Long getId() {
@@ -56,6 +80,17 @@ public class Business {
 
     public String getRole() {
         return this.role;
+    }
+
+    public Currency getCurrency() {
+        return this.currency;
+    }
+
+    public Inventory getDefaultProductInventory() {
+        return defaultProductInventory;
+    }
+    public Inventory getDefaultMaterialInventory() {
+        return defaultMaterialInventory;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -87,6 +122,17 @@ public class Business {
         this.role = role;
     }
 
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+    public void setDefaultProductInventory(Inventory defaultProductInventory) {
+        this.defaultProductInventory = defaultProductInventory;
+    }
+    public void setDefaultMaterialInventory(Inventory defaultMaterialInventory) {
+        this.defaultMaterialInventory = defaultMaterialInventory;
+    }
+
+
     @Override
     public boolean equals(Object o) {
 
@@ -106,6 +152,11 @@ public class Business {
 
     @Override
     public String toString() {
-        return "Business{" + "id=" + this.id + ", name='" + this.name + '\'' + ", role='" + this.role + '\'' + '}';
+        return "Business{" + "id=" + this.id +
+                ", name='" + this.name + '\'' +
+                ", role='" + this.role + '\'' +
+                ", default product inventory='" + this.defaultProductInventory +
+                ", default material inventory='" + this.defaultMaterialInventory +
+                '}';
     }
 }

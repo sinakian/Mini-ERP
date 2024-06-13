@@ -1,9 +1,11 @@
 package dev.ordy.erp.business.item;
 
+import dev.ordy.erp.business.account.AccountCreateEvent;
 import dev.ordy.erp.business.business.Business;
 import dev.ordy.erp.business.item.enums.InventoryPolicy;
 import dev.ordy.erp.business.item.enums.ItemType;
 import dev.ordy.erp.common.Unit;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -13,15 +15,19 @@ import java.util.Optional;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository,ApplicationEventPublisher eventPublisher) {
         this.itemRepository = itemRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
     public Item createItem(String name, String role, Business business, InventoryPolicy inventoryPolicy, ItemType itemType, Unit unit) {
         Item item = new Item(name, role, business, inventoryPolicy, itemType, unit);
-        return itemRepository.save(item);
+        itemRepository.save(item);
+        eventPublisher.publishEvent(new ItemCreateEvent(this,item));
+        return item;
     }
 
     @Transactional
@@ -56,6 +62,8 @@ public class ItemService {
     public List<Item> getAllItems() {
         return itemRepository.findAll();
     }
+
+
 
     // Add more methods as needed
 }

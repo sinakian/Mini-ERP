@@ -32,12 +32,12 @@ public class Business {
 
 
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_inventory_id", nullable = true)
     @JsonManagedReference
     private Inventory defaultProductInventory;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "material_inventory_id", nullable = true)
     @JsonManagedReference
     private Inventory defaultMaterialInventory;

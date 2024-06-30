@@ -29,6 +29,13 @@ public class InventoryItemService {
         return inventoryItemRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
+    public double getAvailableQuantity(Long inventoryItemId) {
+        InventoryItem inventoryItem = inventoryItemRepository.findById(inventoryItemId)
+                .orElseThrow(() -> new IllegalArgumentException("Inventory item not found"));
+        return inventoryItem.getAvailableQuantity();
+    }
+
     @Transactional
     public InventoryItem createInventoryItem(InventoryItem inventoryItem) {
         try {
@@ -55,4 +62,16 @@ public class InventoryItemService {
     public void deleteInventoryItem(Long id) {
         inventoryItemRepository.deleteById(id);
     }
+
+    @Transactional
+    public InventoryItem updateAvailableBalance(Long id, double newAvailableBalance) {
+        return inventoryItemRepository.findById(id)
+                .map(inventoryItem -> {
+                    inventoryItem.setAvailableQuantity(newAvailableBalance);
+                    return inventoryItemRepository.save(inventoryItem);
+                })
+                .orElseThrow(() -> new InventoryItemNotFoundException(id));
+    }
+
+
 }

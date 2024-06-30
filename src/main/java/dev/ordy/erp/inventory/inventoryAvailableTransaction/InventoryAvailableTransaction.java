@@ -1,4 +1,4 @@
-package dev.ordy.erp.inventory.inventoryTransaction;
+package dev.ordy.erp.inventory.inventoryAvailableTransaction;
 
 import dev.ordy.erp.business.business.Business;
 import dev.ordy.erp.inventory.inventory.Inventory;
@@ -16,13 +16,14 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "INVENTORY_TRANSACTION")
+@Table(name = "INVENTORY_AVAILABLE_TRANSACTION")
 @EntityListeners(AuditingEntityListener.class)
-public class InventoryTransaction {
+public class InventoryAvailableTransaction {
 
     public enum TransactionType {
         IN, OUT
     }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,12 +46,13 @@ public class InventoryTransaction {
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
+
     @ManyToOne
-    @JoinColumn(name = "inventory_receipt_id")
+    @JoinColumn(name = "inventory_request_id")
     private InventoryRequest inventoryRequest;
 
     @ManyToOne
-    @JoinColumn(name = "inventory_receipt_item_id")
+    @JoinColumn(name = "inventory_request_item_id")
     private InventoryRequestItem inventoryRequestItem;
 
     private double oldBalance;
@@ -68,9 +70,9 @@ public class InventoryTransaction {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    InventoryTransaction() {}
+    InventoryAvailableTransaction() {}
 
-    public InventoryTransaction(Business business, Inventory inventory, InventoryItem inventoryItem, double quantity, TransactionType transactionType, InventoryRequest inventoryRequest, InventoryRequestItem inventoryRequestItem, double oldBalance, double newBalance) {
+    public InventoryAvailableTransaction(Business business, Inventory inventory, InventoryItem inventoryItem, double quantity, TransactionType transactionType, InventoryRequest inventoryRequest, InventoryRequestItem inventoryRequestItem, double oldBalance, double newBalance) {
         this.business = business;
         this.inventory = inventory;
         this.inventoryItem = inventoryItem;
@@ -181,8 +183,8 @@ public class InventoryTransaction {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof InventoryTransaction)) return false;
-        InventoryTransaction transaction = (InventoryTransaction) o;
+        if (!(o instanceof InventoryAvailableTransaction)) return false;
+        InventoryAvailableTransaction transaction = (InventoryAvailableTransaction) o;
         return Double.compare(transaction.quantity, quantity) == 0 &&
                 Double.compare(transaction.oldBalance, oldBalance) == 0 &&
                 Double.compare(transaction.newBalance, newBalance) == 0 &&

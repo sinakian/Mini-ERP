@@ -1,6 +1,6 @@
-package dev.ordy.erp.inventory.inventoryReceiptItem;
+package dev.ordy.erp.inventory.inventoryRequestItem;
 
-import dev.ordy.erp.inventory.inventoryReceipt.InventoryReceipt;
+import dev.ordy.erp.inventory.inventoryRequest.InventoryRequest;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
 import dev.ordy.erp.common.Unit;
 import jakarta.persistence.*;
@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "INVENTORY_RECEIPT_ITEM")
+@Table(name = "INVENTORY_REQUEST_ITEM")
 @EntityListeners(AuditingEntityListener.class)
-public class InventoryReceiptItem {
+public class InventoryRequestItem {
 
 
     public enum Status {
@@ -28,8 +28,8 @@ public class InventoryReceiptItem {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "inventory_receipt_id", nullable = false)
-    private InventoryReceipt inventoryReceipt;
+    @JoinColumn(name = "inventory_request_id", nullable = false)
+    private InventoryRequest inventoryRequest;
 
     @ManyToOne
     @JoinColumn(name = "inventory_item_id", nullable = false)
@@ -59,10 +59,10 @@ public class InventoryReceiptItem {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    InventoryReceiptItem() {}
+    InventoryRequestItem() {}
 
-    public InventoryReceiptItem(InventoryReceipt inventoryReceipt, InventoryItem inventoryItem, double requestQuantity, double deliveredQuantity, double pendingQuantity, LocalDateTime dueDate, LocalDateTime deliveredDate, Unit unit, Status status) {
-        this.inventoryReceipt = inventoryReceipt;
+    public InventoryRequestItem(InventoryRequest inventoryRequest, InventoryItem inventoryItem, double requestQuantity, double deliveredQuantity, double pendingQuantity, LocalDateTime dueDate, LocalDateTime deliveredDate, Unit unit, Status status) {
+        this.inventoryRequest = inventoryRequest;
         this.inventoryItem = inventoryItem;
         this.requestQuantity = requestQuantity;
         this.deliveredQuantity = deliveredQuantity;
@@ -77,8 +77,8 @@ public class InventoryReceiptItem {
         return this.id;
     }
 
-    public InventoryReceipt getInventoryReceipt() {
-        return this.inventoryReceipt;
+    public InventoryRequest getInventoryRequest() {
+        return this.inventoryRequest;
     }
 
     public InventoryItem getInventoryItem() {
@@ -133,8 +133,8 @@ public class InventoryReceiptItem {
         this.id = id;
     }
 
-    public void setInventoryReceipt(InventoryReceipt inventoryReceipt) {
-        this.inventoryReceipt = inventoryReceipt;
+    public void setInventoryRequest(InventoryRequest inventoryRequest) {
+        this.inventoryRequest = inventoryRequest;
     }
 
     public void setInventoryItem(InventoryItem inventoryItem) {
@@ -172,34 +172,34 @@ public class InventoryReceiptItem {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof InventoryReceiptItem)) return false;
-        InventoryReceiptItem receiptItem = (InventoryReceiptItem) o;
-        return Double.compare(receiptItem.requestQuantity, requestQuantity) == 0 &&
-                Double.compare(receiptItem.deliveredQuantity, deliveredQuantity) == 0 &&
-                Double.compare(receiptItem.pendingQuantity, pendingQuantity) == 0 &&
-                Objects.equals(id, receiptItem.id) &&
-                Objects.equals(inventoryReceipt, receiptItem.inventoryReceipt) &&
-                Objects.equals(inventoryItem, receiptItem.inventoryItem) &&
-                Objects.equals(dueDate, receiptItem.dueDate) &&
-                Objects.equals(deliveredDate, receiptItem.deliveredDate) &&
-                unit == receiptItem.unit &&
-                status == receiptItem.status &&
-                Objects.equals(createdDate, receiptItem.createdDate) &&
-                Objects.equals(lastModifiedDate, receiptItem.lastModifiedDate) &&
-                Objects.equals(createdBy, receiptItem.createdBy) &&
-                Objects.equals(lastModifiedBy, receiptItem.lastModifiedBy);
+        if (!(o instanceof InventoryRequestItem)) return false;
+        InventoryRequestItem requestItem = (InventoryRequestItem) o;
+        return Double.compare(requestItem.requestQuantity, requestQuantity) == 0 &&
+                Double.compare(requestItem.deliveredQuantity, deliveredQuantity) == 0 &&
+                Double.compare(requestItem.pendingQuantity, pendingQuantity) == 0 &&
+                Objects.equals(id, requestItem.id) &&
+                Objects.equals(inventoryRequest, requestItem.inventoryRequest) &&
+                Objects.equals(inventoryItem, requestItem.inventoryItem) &&
+                Objects.equals(dueDate, requestItem.dueDate) &&
+                Objects.equals(deliveredDate, requestItem.deliveredDate) &&
+                unit == requestItem.unit &&
+                status == requestItem.status &&
+                Objects.equals(createdDate, requestItem.createdDate) &&
+                Objects.equals(lastModifiedDate, requestItem.lastModifiedDate) &&
+                Objects.equals(createdBy, requestItem.createdBy) &&
+                Objects.equals(lastModifiedBy, requestItem.lastModifiedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, inventoryReceipt, inventoryItem, requestQuantity, deliveredQuantity, pendingQuantity, dueDate, deliveredDate, unit, status, createdDate, lastModifiedDate, createdBy, lastModifiedBy);
+        return Objects.hash(id, inventoryRequest, inventoryItem, requestQuantity, deliveredQuantity, pendingQuantity, dueDate, deliveredDate, unit, status, createdDate, lastModifiedDate, createdBy, lastModifiedBy);
     }
 
     @Override
     public String toString() {
-        return "InventoryReceiptItem{" +
+        return "InventoryRequestItem{" +
                 "id=" + id +
-                ", inventoryReceipt=" + (inventoryReceipt != null ? inventoryReceipt.getId() : null) +
+                ", inventoryRequest=" + (inventoryRequest != null ? inventoryRequest.getId() : null) +
                 ", inventoryItem=" + (inventoryItem != null ? inventoryItem.getId() : null) +
                 ", requestQuantity=" + requestQuantity +
                 ", deliveredQuantity=" + deliveredQuantity +

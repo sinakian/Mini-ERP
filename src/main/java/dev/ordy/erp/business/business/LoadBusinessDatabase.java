@@ -21,10 +21,10 @@ import dev.ordy.erp.inventory.inventory.Inventory;
 import dev.ordy.erp.inventory.inventory.InventoryRepository;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItemRepository;
-import dev.ordy.erp.inventory.inventoryReceipt.InventoryReceipt;
-import dev.ordy.erp.inventory.inventoryReceipt.InventoryReceiptRepository;
-import dev.ordy.erp.inventory.inventoryReceiptItem.InventoryReceiptItem;
-import dev.ordy.erp.inventory.inventoryReceiptItem.InventoryReceiptItemRepository;
+import dev.ordy.erp.inventory.inventoryRequest.InventoryRequest;
+import dev.ordy.erp.inventory.inventoryRequest.InventoryRequestRepository;
+import dev.ordy.erp.inventory.inventoryRequestItem.InventoryRequestItem;
+import dev.ordy.erp.inventory.inventoryRequestItem.InventoryRequestItemRepository;
 import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransaction;
 import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransactionRepository;
 import dev.ordy.erp.sales.order.Order;
@@ -60,8 +60,8 @@ public class LoadBusinessDatabase {
             ItemPriceRepository itemPriceRepository,
             InventoryRepository inventoryRepository,
             InventoryItemRepository inventoryItemRepository,
-            InventoryReceiptRepository inventoryReceiptRepository,
-            InventoryReceiptItemRepository inventoryReceiptItemRepository,
+            InventoryRequestRepository inventoryRequestRepository,
+            InventoryRequestItemRepository inventoryRequestItemRepository,
             InventoryTransactionRepository inventoryTransactionRepository,
             OrderRepository orderRepository,
             OrderItemRepository orderItemRepository,
@@ -77,8 +77,8 @@ public class LoadBusinessDatabase {
                 itemPriceRepository,
                 inventoryRepository,
                 inventoryItemRepository,
-                inventoryReceiptRepository,
-                inventoryReceiptItemRepository,
+                inventoryRequestRepository,
+                inventoryRequestItemRepository,
                 inventoryTransactionRepository,
                 orderRepository,
                 orderItemRepository,
@@ -97,8 +97,8 @@ public class LoadBusinessDatabase {
             ItemPriceRepository itemPriceRepository,
             InventoryRepository inventoryRepository,
             InventoryItemRepository inventoryItemRepository,
-            InventoryReceiptRepository inventoryReceiptRepository,
-            InventoryReceiptItemRepository inventoryReceiptItemRepository,
+            InventoryRequestRepository inventoryRequestRepository,
+            InventoryRequestItemRepository inventoryRequestItemRepository,
             InventoryTransactionRepository inventoryTransactionRepository,
             OrderRepository orderRepository,
             OrderItemRepository orderItemRepository,
@@ -239,35 +239,35 @@ public class LoadBusinessDatabase {
         log.info("Preloaded inventory items");
 
         //Inventory Receipt
-        InventoryReceipt inventoryReceipt1 = new InventoryReceipt(
+        InventoryRequest inventoryRequest1 = new InventoryRequest(
                 business1,
                 inventory1,
                 100.0,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(7),
-                InventoryReceipt.ReferenceType.INVOICE,
+                InventoryRequest.ReferenceType.INVOICE,
                 "INV001",
-                InventoryReceipt.Status.PENDING
+                InventoryRequest.Status.PENDING
         );
 
-        InventoryReceipt inventoryReceipt2 = new InventoryReceipt(
+        InventoryRequest inventoryRequest2 = new InventoryRequest(
                 business2,
                 inventory2,
                 200.0,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(5),
-                InventoryReceipt.ReferenceType.DIRECT,
+                InventoryRequest.ReferenceType.DIRECT,
                 "DIR002",
-                InventoryReceipt.Status.DELIVERED
+                InventoryRequest.Status.DELIVERED
         );
 
-        inventoryReceiptRepository.save(inventoryReceipt1);
-        inventoryReceiptRepository.save(inventoryReceipt2);
+        inventoryRequestRepository.save(inventoryRequest1);
+        inventoryRequestRepository.save(inventoryRequest2);
         log.info("Preloaded inventory receipts");
 
         //Inventory Receipt Item
-        InventoryReceiptItem inventoryReceiptItem1 = new InventoryReceiptItem(
-                inventoryReceipt1,
+        InventoryRequestItem inventoryRequestItem1 = new InventoryRequestItem(
+                inventoryRequest1,
                 inventoryItem1,
                 50.0,
                 40.0,
@@ -275,11 +275,11 @@ public class LoadBusinessDatabase {
                 LocalDateTime.now().plusDays(7),
                 LocalDateTime.now(),
                 Unit.PIECE,
-                InventoryReceiptItem.Status.DELIVERED
+                InventoryRequestItem.Status.DELIVERED
         );
 
-        InventoryReceiptItem inventoryReceiptItem2 = new InventoryReceiptItem(
-                inventoryReceipt2,
+        InventoryRequestItem inventoryRequestItem2 = new InventoryRequestItem(
+                inventoryRequest2,
                 inventoryItem2,
                 100.0,
                 80.0,
@@ -287,11 +287,11 @@ public class LoadBusinessDatabase {
                 LocalDateTime.now().plusDays(5),
                 null, // No delivered date yet
                 Unit.KILOGRAM,
-                InventoryReceiptItem.Status.PENDING
+                InventoryRequestItem.Status.PENDING
         );
 
-        inventoryReceiptItemRepository.save(inventoryReceiptItem1);
-        inventoryReceiptItemRepository.save(inventoryReceiptItem2);
+        inventoryRequestItemRepository.save(inventoryRequestItem1);
+        inventoryRequestItemRepository.save(inventoryRequestItem2);
         log.info("Preloaded inventory receipt items");
 
         //inventory Transaction
@@ -301,8 +301,8 @@ public class LoadBusinessDatabase {
                 inventoryItem1,
                 20.0,
                 InventoryTransaction.TransactionType.IN,
-                inventoryReceipt1,
-                inventoryReceiptItem1,
+                inventoryRequest1,
+                inventoryRequestItem1,
                 100.0,
                 120.0
         );
@@ -313,8 +313,8 @@ public class LoadBusinessDatabase {
                 inventoryItem2,
                 30.0,
                 InventoryTransaction.TransactionType.OUT,
-                inventoryReceipt2,
-                inventoryReceiptItem2,
+                inventoryRequest2,
+                inventoryRequestItem2,
                 200.0,
                 170.0
         );

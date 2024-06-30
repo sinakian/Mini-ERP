@@ -1,4 +1,4 @@
-package dev.ordy.erp.inventory.inventoryReceipt;
+package dev.ordy.erp.inventory.inventoryRequest;
 
 import dev.ordy.erp.business.business.Business; // Assuming you have a Business class in the business package
 import dev.ordy.erp.inventory.inventory.Inventory;
@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "INVENTORY_RECEIPT")
+@Table(name = "INVENTORY_REQUEST")
 @EntityListeners(AuditingEntityListener.class)
-public class InventoryReceipt {
+public class InventoryRequest {
 
     public enum ReferenceType {
         INVOICE, DIRECT, WASTE
@@ -62,9 +62,9 @@ public class InventoryReceipt {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    InventoryReceipt() {}
+    InventoryRequest() {}
 
-    public InventoryReceipt(Business business, Inventory inventory, double quantity, LocalDateTime dueDate, LocalDateTime deliveredDate, ReferenceType referenceType, String referenceId, Status status) {
+    public InventoryRequest(Business business, Inventory inventory, double quantity, LocalDateTime dueDate, LocalDateTime deliveredDate, ReferenceType referenceType, String referenceId, Status status) {
         this.business = business;
         this.inventory = inventory;
         this.quantity = quantity;
@@ -166,21 +166,21 @@ public class InventoryReceipt {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof InventoryReceipt)) return false;
-        InventoryReceipt receipt = (InventoryReceipt) o;
-        return Double.compare(receipt.quantity, quantity) == 0 &&
-                Objects.equals(id, receipt.id) &&
-                Objects.equals(business, receipt.business) &&
-                Objects.equals(inventory, receipt.inventory) &&
-                Objects.equals(dueDate, receipt.dueDate) &&
-                Objects.equals(deliveredDate, receipt.deliveredDate) &&
-                referenceType == receipt.referenceType &&
-                Objects.equals(referenceId, receipt.referenceId) &&
-                status == receipt.status &&
-                Objects.equals(createdDate, receipt.createdDate) &&
-                Objects.equals(lastModifiedDate, receipt.lastModifiedDate) &&
-                Objects.equals(createdBy, receipt.createdBy) &&
-                Objects.equals(lastModifiedBy, receipt.lastModifiedBy);
+        if (!(o instanceof InventoryRequest)) return false;
+        InventoryRequest request = (InventoryRequest) o;
+        return Double.compare(request.quantity, quantity) == 0 &&
+                Objects.equals(id, request.id) &&
+                Objects.equals(business, request.business) &&
+                Objects.equals(inventory, request.inventory) &&
+                Objects.equals(dueDate, request.dueDate) &&
+                Objects.equals(deliveredDate, request.deliveredDate) &&
+                referenceType == request.referenceType &&
+                Objects.equals(referenceId, request.referenceId) &&
+                status == request.status &&
+                Objects.equals(createdDate, request.createdDate) &&
+                Objects.equals(lastModifiedDate, request.lastModifiedDate) &&
+                Objects.equals(createdBy, request.createdBy) &&
+                Objects.equals(lastModifiedBy, request.lastModifiedBy);
     }
 
     @Override
@@ -190,7 +190,7 @@ public class InventoryReceipt {
 
     @Override
     public String toString() {
-        return "InventoryReceipt{" +
+        return "Inventory Request{" +
                 "id=" + id +
                 ", business=" + (business != null ? business.getId() : null) +
                 ", inventory=" + (inventory != null ? inventory.getId() : null) +

@@ -1,4 +1,4 @@
-package dev.ordy.erp.inventory.inventoryReceipt;
+package dev.ordy.erp.inventory.inventoryRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-class InventoryReceiptNotFoundAdvice {
+class InventoryRequestNotFoundAdvice {
 
-    @ExceptionHandler(InventoryReceiptNotFoundException.class)
+    @ExceptionHandler(InventoryRequestNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String inventoryReceiptNotFoundHandler(InventoryReceiptNotFoundException ex) {
+    String inventoryRequestNotFoundHandler(InventoryRequestNotFoundException ex) {
         return ex.getMessage();
     }
 }

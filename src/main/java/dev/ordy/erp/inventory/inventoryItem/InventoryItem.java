@@ -33,8 +33,8 @@ public class InventoryItem {
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
-    private double quantity;
-    private double availableQuantity;
+    private double realBalance;
+    private double availableBalance;
 
     @Enumerated(EnumType.STRING)
     private Unit unit;
@@ -56,11 +56,11 @@ public class InventoryItem {
 
     public InventoryItem() {}
 
-    public InventoryItem(Inventory inventory, Item item, double quantity, double availableQuantity, Unit unit, String name, String role) {
+    public InventoryItem(Inventory inventory, Item item, double realBalance, double availableBalance, Unit unit, String name, String role) {
         this.inventory = inventory;
         this.item = item;
-        this.quantity = quantity;
-        this.availableQuantity = availableQuantity;
+        this.realBalance = realBalance;
+        this.availableBalance = availableBalance;
         this.unit = unit;
         this.name = name;
         this.role = role;
@@ -79,11 +79,11 @@ public class InventoryItem {
     }
 
     public double getQuantity() {
-        return this.quantity;
+        return this.realBalance;
     }
 
     public double getAvailableQuantity() {
-        return this.availableQuantity;
+        return this.availableBalance;
     }
 
     public Unit getUnit() {
@@ -126,12 +126,12 @@ public class InventoryItem {
         this.item = item;
     }
 
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
+    public void setQuantity(double realBalance) {
+        this.realBalance = realBalance;
     }
 
-    public void setAvailableQuantity(double availableQuantity) {
-        this.availableQuantity = availableQuantity;
+    public void setAvailableQuantity(double availableBalance) {
+        this.availableBalance = availableBalance;
     }
 
     public void setUnit(Unit unit) {
@@ -151,8 +151,8 @@ public class InventoryItem {
         if (this == o) return true;
         if (!(o instanceof InventoryItem)) return false;
         InventoryItem item = (InventoryItem) o;
-        return Double.compare(item.quantity, quantity) == 0 &&
-                Double.compare(item.availableQuantity, availableQuantity) == 0 &&
+        return Double.compare(item.realBalance, realBalance) == 0 &&
+                Double.compare(item.availableBalance, availableBalance) == 0 &&
                 Objects.equals(id, item.id) &&
                 Objects.equals(inventory, item.inventory) &&
                 Objects.equals(this.item, item.item) &&
@@ -167,7 +167,7 @@ public class InventoryItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, inventory, item, quantity, availableQuantity, unit, name, role, createdDate, lastModifiedDate, createdBy, lastModifiedBy);
+        return Objects.hash(id, inventory, item, realBalance, availableBalance, unit, name, role, createdDate, lastModifiedDate, createdBy, lastModifiedBy);
     }
 
     @Override
@@ -176,8 +176,8 @@ public class InventoryItem {
                 "id=" + id +
                 ", inventory=" + (inventory != null ? inventory.getId() : null) +
                 ", item=" + (item != null ? item.getId() : null) +
-                ", quantity=" + quantity +
-                ", availableQuantity=" + availableQuantity +
+                ", realBalance=" + realBalance +
+                ", availableBalance=" + availableBalance +
                 ", unit=" + unit +
                 ", name='" + name + '\'' +
                 ", role='" + role + '\'' +

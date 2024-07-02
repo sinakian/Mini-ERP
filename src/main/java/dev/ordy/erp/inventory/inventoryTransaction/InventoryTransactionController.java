@@ -26,8 +26,7 @@ public class InventoryTransactionController {
 
     @GetMapping("/{id}")
     public InventoryTransaction one(@PathVariable Long id) {
-        return inventoryTransactionService.getInventoryTransactionById(id)
-                .orElseThrow(() -> new InventoryTransactionNotFoundException(id));
+        return inventoryTransactionService.getInventoryTransactionById(id);
     }
 
     @DeleteMapping("/{id}")

@@ -1,5 +1,7 @@
 package dev.ordy.erp.inventory.inventoryItem;
 
+import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransaction;
+import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransactionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -7,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class InventoryItemService {
@@ -15,7 +17,8 @@ public class InventoryItemService {
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryItemService.class);
     private final InventoryItemRepository inventoryItemRepository;
 
-    public InventoryItemService(InventoryItemRepository inventoryItemRepository) {
+
+    public InventoryItemService(InventoryItemRepository inventoryItemRepository, InventoryTransactionService inventoryTransactionService) {
         this.inventoryItemRepository = inventoryItemRepository;
     }
 
@@ -25,9 +28,11 @@ public class InventoryItemService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<InventoryItem> getInventoryItemById(Long id) {
-        return inventoryItemRepository.findById(id);
+    public InventoryItem getInventoryItemById(Long id) {
+        return inventoryItemRepository.findById(id)
+                .orElseThrow(() -> new InventoryItemNotFoundException(id));
     }
+
 
     @Transactional(readOnly = true)
     public double getAvailableQuantity(Long inventoryItemId) {
@@ -72,6 +77,18 @@ public class InventoryItemService {
                 })
                 .orElseThrow(() -> new InventoryItemNotFoundException(id));
     }
+
+    @Transactional
+    public InventoryItem changeBalance(Long inventoryItemId, InventoryTransaction transaction) {
+        double newBalance=transaction.getNewBalance();
+        InventoryItem inventoryItem =transaction.getInventoryItem();
+        inventoryItem.setQuantity(newBalance);
+        return inventoryItemRepository.save(inventoryItem);
+    }
+
+
+
+
 
 
 }

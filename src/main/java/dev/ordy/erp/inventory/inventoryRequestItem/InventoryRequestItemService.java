@@ -22,8 +22,9 @@ public class InventoryRequestItemService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<InventoryRequestItem> getInventoryRequestItemById(Long id) {
-        return inventoryRequestItemRepository.findById(id);
+    public InventoryRequestItem getInventoryRequestItemById(Long id) {
+        return inventoryRequestItemRepository.findById(id)
+                .orElseThrow(() -> new InventoryRequestItemNotFoundException(id));
     }
 
     @Transactional(readOnly = true)

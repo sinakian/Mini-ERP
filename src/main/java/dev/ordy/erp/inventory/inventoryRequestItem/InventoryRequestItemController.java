@@ -26,8 +26,7 @@ public class InventoryRequestItemController {
 
     @GetMapping("/{id}")
     public InventoryRequestItem one(@PathVariable Long id) {
-        return inventoryRequestItemService.getInventoryRequestItemById(id)
-                .orElseThrow(() -> new InventoryRequestItemNotFoundException(id));
+        return inventoryRequestItemService.getInventoryRequestItemById(id);
     }
 
     @PutMapping("/{id}")

@@ -1,5 +1,6 @@
 package dev.ordy.erp.sales.invoice;
 
+import dev.ordy.erp.sales.order.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,25 @@ public class InvoiceService {
 
     @Transactional
     public Invoice createInvoice(Invoice invoice) {
+        return invoiceRepository.save(invoice);
+    }
+
+    @Transactional
+    public Invoice createInvoiceByOrder(Order order) {
+        Invoice invoice= new Invoice(
+                order.getBusiness(),
+                order.getCustomer(),
+                order,
+                order.getTotalItemPrice(),
+                order.getTotalLogisticPrice(),
+                order.getDiscountInPercent(),
+                order.getDiscountInCurrency(),
+                order.getTotal(),
+                order.getCurrency(),
+                order.getPaymentType(),
+                order.getCreatedBy(),
+                Invoice.InvoiceStatus.INVOICE
+        );
         return invoiceRepository.save(invoice);
     }
 

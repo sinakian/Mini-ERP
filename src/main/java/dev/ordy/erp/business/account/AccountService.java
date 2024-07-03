@@ -23,9 +23,7 @@ public class AccountService {
         this.eventPublisher = eventPublisher;
     }
 
-    public Account createAccount(String firstName, String lastName, String fullName, String role, Business business,
-                                 AccountType accountType, AccountCategory accountCategory, Gender gender) {
-        Account account = new Account(firstName, lastName, fullName, role, business, accountType, accountCategory, gender);
+    public Account createAccount(Account account) {
         accountRepository.save(account);
         eventPublisher.publishEvent(new AccountCreateEvent(this,account));
         return account;

@@ -4,6 +4,7 @@ import dev.ordy.erp.business.account.Account;
 import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.finance.accountBalance.BalanceStatus;
 
+import dev.ordy.erp.finance.financialReceipt.FinancialReceipt;
 import dev.ordy.erp.finance.financialTransaction.enums.FinancialTransactionType;
 import dev.ordy.erp.finance.financialTransaction.enums.TransactionReferenceType;
 import jakarta.persistence.*;
@@ -40,6 +41,10 @@ public class FinancialTransaction {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
+    @OneToOne
+    @JoinColumn(name = "financialReceipt_id",nullable = false)
+    private FinancialReceipt financialReceipt;
+
     private Double amount;
 
     private Double lastBalance;
@@ -52,7 +57,7 @@ public class FinancialTransaction {
     @Enumerated(EnumType.STRING)
     private BalanceStatus newBalanceStatus;
 
-    private String referenceId;
+    private long referenceId;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -69,13 +74,14 @@ public class FinancialTransaction {
     FinancialTransaction() {}
 
     public FinancialTransaction(FinancialTransactionType financialTransactionType, TransactionReferenceType transactionReferenceType,
-                                Currency currency, Account account, Double amount, Double lastBalance, BalanceStatus lastBalanceStatus,
-                                Double newBalance, BalanceStatus newBalanceStatus, String referenceId) {
+                                Currency currency, Account account,FinancialReceipt financialReceipt,Double amount, Double lastBalance, BalanceStatus lastBalanceStatus,
+                                Double newBalance, BalanceStatus newBalanceStatus, long referenceId) {
         this.financialTransactionType = financialTransactionType;
         this.transactionReferenceType = transactionReferenceType;
         this.currency = currency;
         this.account = account;
         this.amount = amount;
+        this.financialReceipt=financialReceipt;
         this.lastBalance = lastBalance;
         this.lastBalanceStatus = lastBalanceStatus;
         this.newBalance = newBalance;
@@ -103,6 +109,10 @@ public class FinancialTransaction {
         return this.account;
     }
 
+    public FinancialReceipt getFinancialReceipt() {
+        return this.financialReceipt;
+    }
+
     public Double getAmount() {
         return this.amount;
     }
@@ -123,7 +133,7 @@ public class FinancialTransaction {
         return this.newBalanceStatus;
     }
 
-    public String getReferenceId() {
+    public long getReferenceId() {
         return this.referenceId;
     }
 
@@ -163,6 +173,10 @@ public class FinancialTransaction {
         this.account = account;
     }
 
+    public void setFinancialReceipt(FinancialReceipt financialReceipt) {
+        this.financialReceipt = financialReceipt;
+    }
+
     public void setAmount(Double amount) {
         this.amount = amount;
     }
@@ -183,7 +197,7 @@ public class FinancialTransaction {
         this.newBalanceStatus = newBalanceStatus;
     }
 
-    public void setReferenceId(String referenceId) {
+    public void setReferenceId(long referenceId) {
         this.referenceId = referenceId;
     }
 
@@ -222,6 +236,7 @@ public class FinancialTransaction {
                 ", transactionReferenceType=" + transactionReferenceType +
                 ", currency=" + currency +
                 ", account=" + (account != null ? account.getId() : null) +
+                ", account=" + (financialReceipt != null ? financialReceipt.getId() : null) +
                 ", amount=" + amount +
                 ", lastBalance=" + lastBalance +
                 ", lastBalanceStatus=" + lastBalanceStatus +

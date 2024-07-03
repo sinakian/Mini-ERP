@@ -31,7 +31,8 @@ public class BusinessEventListener implements ApplicationListener<BusinessCreate
         Business business = event.getBusiness();
 
         // Create Account
-        Account account = accountService.createAccount("Default", "Business", "Default Business Account", "MYBUSINESS", business, AccountType.MYBUSINESS, AccountCategory.MYBUSINESS, null);
+        Account account = new Account("Default", "Business", "Default Business Account", "MYBUSINESS", business, AccountType.MYBUSINESS, AccountCategory.MYBUSINESS, null);
+        accountService.createAccount(account);
 
         // Create product Inventory
         Inventory productInventory = new Inventory(business, Inventory.InventoryType.PRODUCT, "Product Inventory", "MYBUSINESS");

@@ -26,6 +26,7 @@ public class FinancialTransactionController {
                 newFinancialTransaction.getTransactionReferenceType(),
                 newFinancialTransaction.getCurrency(),
                 newFinancialTransaction.getAccount(),
+                newFinancialTransaction.getFinancialReceipt(),
                 newFinancialTransaction.getAmount(),
                 newFinancialTransaction.getReferenceId()
         );

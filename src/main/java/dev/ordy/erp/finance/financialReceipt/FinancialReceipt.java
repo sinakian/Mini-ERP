@@ -43,7 +43,7 @@ public class FinancialReceipt {
     @Enumerated(EnumType.STRING)
     private FinancialReceiptType receiptType;
 
-    private String referenceId;
+    private long referenceId;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -60,7 +60,7 @@ public class FinancialReceipt {
     FinancialReceipt() {}
 
     public FinancialReceipt(Account account, Double amount, FinancialReceiptReferenceType referenceType,
-                            FinancialReceiptType receiptType, String referenceId, Currency currency) {
+                            FinancialReceiptType receiptType, long referenceId, Currency currency) {
         this.account=account;
         this.amount=amount;
         this.referenceType=referenceType;
@@ -90,7 +90,7 @@ public class FinancialReceipt {
         return this.receiptType;
     }
 
-    public String getReferenceId() {
+    public long getReferenceId() {
         return this.referenceId;
     }
 
@@ -130,7 +130,7 @@ public class FinancialReceipt {
 
     public void setReferenceType(FinancialReceiptReferenceType referenceType){ this.referenceType=referenceType; }
 
-    public void setReferenceId(String referenceId){this.referenceId=referenceId;}
+    public void setReferenceId(long referenceId){this.referenceId=referenceId;}
 
     public void setReceiptType(FinancialReceiptType receiptType){this.receiptType=receiptType;}
 

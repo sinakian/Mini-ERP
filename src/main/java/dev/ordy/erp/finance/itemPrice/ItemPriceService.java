@@ -28,6 +28,12 @@ public class ItemPriceService {
         return itemPriceRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
+    public ItemPrice getItemPriceByItem(Item item) {
+        return itemPriceRepository.findByItem(item)
+                .orElseThrow(() -> new ItemPriceNotFoundException(item.getId()));
+    }
+
     @Transactional
     public ItemPrice createItemPrice(Item item, Double price, Unit unit, Currency currency) {
         ItemPrice itemPrice = new ItemPrice(item, price, unit, currency);

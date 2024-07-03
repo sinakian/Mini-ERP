@@ -47,7 +47,6 @@ public class InventoryItemService {
             return inventoryItemRepository.save(inventoryItem);
         } catch (DataIntegrityViolationException e) {
             LOGGER.error("Error occurred while saving InventoryItem: {}", e.getMessage());
-            // You can add additional logging or error handling here if needed
             throw e; // Re-throw the exception to propagate it up the call stack
         }
     }
@@ -79,7 +78,7 @@ public class InventoryItemService {
     }
 
     @Transactional
-    public InventoryItem changeBalance(Long inventoryItemId, InventoryTransaction transaction) {
+    public InventoryItem changeBalance(InventoryTransaction transaction) {
         double newBalance=transaction.getNewBalance();
         InventoryItem inventoryItem =transaction.getInventoryItem();
         inventoryItem.setQuantity(newBalance);

@@ -17,6 +17,7 @@ import dev.ordy.erp.finance.financialTransaction.enums.FinancialTransactionType;
 import dev.ordy.erp.finance.financialTransaction.enums.TransactionReferenceType;
 import dev.ordy.erp.finance.itemPrice.ItemPrice;
 import dev.ordy.erp.finance.itemPrice.ItemPriceRepository;
+import dev.ordy.erp.finance.itemPrice.ItemPriceService;
 import dev.ordy.erp.inventory.inventory.Inventory;
 import dev.ordy.erp.inventory.inventory.InventoryRepository;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
@@ -51,13 +52,11 @@ public class LoadBusinessDatabase {
 
     @Bean
     CommandLineRunner initDatabase(
-            BusinessRepository businessRepository,
             BusinessService businessService,
-            AccountRepository accountRepository,
-            ItemRepository itemRepository,
-            AccountBalanceRepository accountBalanceRepository,
+            AccountService accountService,
+            ItemService itemService,
+            ItemPriceService itemPriceService,
             FinancialTransactionRepository financialTransactionRepository,
-            ItemPriceRepository itemPriceRepository,
             InventoryRepository inventoryRepository,
             InventoryItemRepository inventoryItemRepository,
             InventoryRequestRepository inventoryRequestRepository,
@@ -69,12 +68,10 @@ public class LoadBusinessDatabase {
             SupplyRequestItemRepository supplyRequestItemRepository) {
 
         return args -> loadData(
-                businessRepository,
-                accountRepository,
-                itemRepository,
-                accountBalanceRepository,
+                accountService,
+                itemService,
+                itemPriceService,
                 financialTransactionRepository,
-                itemPriceRepository,
                 inventoryRepository,
                 inventoryItemRepository,
                 inventoryRequestRepository,
@@ -89,12 +86,10 @@ public class LoadBusinessDatabase {
 
     @Transactional
     void loadData(
-            BusinessRepository businessRepository,
-            AccountRepository accountRepository,
-            ItemRepository itemRepository,
-            AccountBalanceRepository accountBalanceRepository,
+            AccountService accountService,
+            ItemService itemService,
+            ItemPriceService itemPriceService,
             FinancialTransactionRepository financialTransactionRepository,
-            ItemPriceRepository itemPriceRepository,
             InventoryRepository inventoryRepository,
             InventoryItemRepository inventoryItemRepository,
             InventoryRequestRepository inventoryRequestRepository,
@@ -115,76 +110,49 @@ public class LoadBusinessDatabase {
         // Account Entities
         Account account1 = new Account("John", "Doe", "John Doe", "Customer", business1, AccountType.LEGAL, AccountCategory.CUSTOMER, Gender.MALE);
         Account account2 = new Account("Jane", "Smith", "Jane Smith", "Customer", business2, AccountType.NATURAL, AccountCategory.CUSTOMER, Gender.FEMALE);
-        accountRepository.save(account1);
-        accountRepository.save(account2);
+        accountService.createAccount(account1);
+        accountService.createAccount(account2);
         log.info("Preloaded accounts");
 
 
         // Item Entities
-        Item item1 = new Item("Item A", "Role A", business1, InventoryPolicy.FLEXIBLE, ItemType.PRODUCT, Unit.KILOGRAM);
-        Item item2 = new Item("Item B", "Role B", business2, InventoryPolicy.LIMITED, ItemType.SERVICE, Unit.KILOGRAM);
-        itemRepository.save(item1);
-        itemRepository.save(item2);
+        Item item1 = itemService.createItem("Item A", "Role A", business1, InventoryPolicy.FLEXIBLE, ItemType.PRODUCT, Unit.KILOGRAM);
+        Item item2 = itemService.createItem("Item B", "Role B", business2, InventoryPolicy.LIMITED, ItemType.SERVICE, Unit.KILOGRAM);
         log.info("Preloaded items");
 
-        //finance
 
-        //Account Balance
-        AccountBalance accountBalance1 = new AccountBalance(account1, 1000.0, BalanceStatus.CREDIT, Currency.TOMAN);
-        AccountBalance accountBalance2 = new AccountBalance(account2, 1500.0, BalanceStatus.DEBT, Currency.TOMAN);
-        accountBalanceRepository.save(accountBalance1);
-        accountBalanceRepository.save(accountBalance2);
-        log.info("Preloaded account balances");
 
         //Financial Transaction
-        FinancialTransaction transaction1 = new FinancialTransaction(
-                FinancialTransactionType.CREDIT,
-                TransactionReferenceType.CREDIT_RECEIPT,
-                Currency.TOMAN,
-                account1,
-                500.0,
-                1000.0,
-                BalanceStatus.DEBT,
-                1500.0,
-                BalanceStatus.CREDIT,
-                "REF12345"
-        );
+//        FinancialTransaction transaction1 = new FinancialTransaction(
+//                FinancialTransactionType.CREDIT,
+//                TransactionReferenceType.CREDIT_RECEIPT,
+//                Currency.TOMAN,
+//                account1,
+//                500.0,
+//                1000.0,
+//                BalanceStatus.DEBT,
+//                1500.0,
+//                BalanceStatus.CREDIT,
+//                "REF12345"
+//        );
+//
+//        FinancialTransaction transaction2 = new FinancialTransaction(
+//                FinancialTransactionType.DEBT,
+//                TransactionReferenceType.DEBT_RECEIPT,
+//                Currency.TOMAN,
+//                account2,
+//                300.0,
+//                1500.0,
+//                BalanceStatus.CREDIT,
+//                1200.0,
+//                BalanceStatus.CREDIT,
+//                "REF67890"
+//        );
+//
+//        financialTransactionRepository.save(transaction1);
+//        financialTransactionRepository.save(transaction2);
+//        log.info("Preloaded financial transactions");
 
-        FinancialTransaction transaction2 = new FinancialTransaction(
-                FinancialTransactionType.DEBT,
-                TransactionReferenceType.DEBT_RECEIPT,
-                Currency.TOMAN,
-                account2,
-                300.0,
-                1500.0,
-                BalanceStatus.CREDIT,
-                1200.0,
-                BalanceStatus.CREDIT,
-                "REF67890"
-        );
-
-        financialTransactionRepository.save(transaction1);
-        financialTransactionRepository.save(transaction2);
-        log.info("Preloaded financial transactions");
-
-        //Item Price
-        ItemPrice itemPrice1 = new ItemPrice(
-                item1,
-                100.0,
-                Unit.KILOGRAM,
-                Currency.TOMAN
-        );
-
-        ItemPrice itemPrice2 = new ItemPrice(
-                item2,
-                200.0,
-                Unit.KILOGRAM,
-                Currency.TOMAN
-        );
-
-        itemPriceRepository.save(itemPrice1);
-        itemPriceRepository.save(itemPrice2);
-        log.info("Preloaded item prices");
 
         //Inventory
         Inventory inventory1 = new Inventory(
@@ -246,7 +214,7 @@ public class LoadBusinessDatabase {
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(7),
                 InventoryRequest.ReferenceType.INVOICE,
-                "INV001",
+                1,
                 InventoryRequest.Status.PENDING
         );
 
@@ -257,7 +225,7 @@ public class LoadBusinessDatabase {
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(5),
                 InventoryRequest.ReferenceType.DIRECT,
-                "DIR002",
+                2,
                 InventoryRequest.Status.DELIVERED
         );
 
@@ -331,6 +299,7 @@ public class LoadBusinessDatabase {
                 50.0,
                 10.0,
                 20.0,
+                530.0,
                 Currency.USD,
                 "Credit Card",
                 "Admin",
@@ -344,6 +313,7 @@ public class LoadBusinessDatabase {
                 70.0,
                 15.0,
                 30.0,
+                740.0,
                 Currency.EUR,
                 "PayPal",
                 "Admin",
@@ -356,6 +326,10 @@ public class LoadBusinessDatabase {
 
 
         // OrderItem Entities
+        ItemPrice itemPrice1 = itemPriceService.getItemPriceByItem(item1);
+        ItemPrice itemPrice2 = itemPriceService.getItemPriceByItem(item2);
+
+
         OrderItem orderItem1 = new OrderItem(
                 business1,
                 order1,

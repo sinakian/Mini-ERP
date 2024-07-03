@@ -19,9 +19,8 @@ public class InventoryTransactionEventListener {
 
         System.out.println("Handling InInventoryTransactionCreateEvent: " + event);
         InventoryTransaction transaction=event.getInventoryTransaction();
-        long inventoryItemId = transaction.getInventoryItem().getId();
         double newBalance=transaction.getNewBalance();
-        inventoryItemService.changeBalance(inventoryItemId,transaction);
+        inventoryItemService.changeBalance(transaction);
 
     }
 

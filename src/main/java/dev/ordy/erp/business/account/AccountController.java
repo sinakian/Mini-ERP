@@ -17,16 +17,7 @@ public class AccountController {
 
     @PostMapping
     public Account createAccount(@RequestBody Account newAccount) {
-        return accountService.createAccount(
-                newAccount.getFirstName(),
-                newAccount.getLastName(),
-                newAccount.getFullName(),
-                newAccount.getRole(),
-                newAccount.getBusiness(),
-                newAccount.getAccountType(),
-                newAccount.getAccountCategory(),
-                newAccount.getGender()
-        );
+        return accountService.createAccount(newAccount);
     }
 
     @GetMapping

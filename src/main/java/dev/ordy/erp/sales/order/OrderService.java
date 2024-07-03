@@ -1,5 +1,6 @@
 package dev.ordy.erp.sales.order;
 
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +22,9 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Order> getOrderById(Long id) {
-        return orderRepository.findById(id);
+    public Order getOrderById(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException(id));
     }
 
     @Transactional
@@ -33,5 +35,12 @@ public class OrderService {
     @Transactional
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void changeStatusToInvoice(Long orderId){
+        Order order = getOrderById(orderId);
+        order.setOrderStatus(Order.OrderStatus.INVOICE);
+        orderRepository.save(order);
     }
 }

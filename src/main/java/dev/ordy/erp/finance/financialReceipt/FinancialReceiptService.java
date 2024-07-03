@@ -20,7 +20,7 @@ public class FinancialReceiptService {
         this.financialReceiptRepository = financialReceiptRepository;
     }
 
-    public FinancialReceipt createFinancialReceipt(Account account, Double amount, FinancialReceiptReferenceType referenceType, FinancialReceiptType receiptType, String referenceId, Currency currency) {
+    public FinancialReceipt createFinancialReceipt(Account account, Double amount, FinancialReceiptReferenceType referenceType, FinancialReceiptType receiptType, long referenceId, Currency currency) {
         FinancialReceipt financialReceipt = new FinancialReceipt(account, amount, referenceType, receiptType, referenceId, currency);
         return financialReceiptRepository.save(financialReceipt);
     }

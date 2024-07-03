@@ -47,6 +47,7 @@ public class Invoice {
     private double totalLogisticPrice;
     private double discountInPercent;
     private double discountInCurrency;
+    private double total;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
@@ -67,7 +68,7 @@ public class Invoice {
 
     public Invoice() {}
 
-    public Invoice(Business business, Account customer,Order order, double totalItemPrice, double totalLogisticPrice, double discountInPercent, double discountInCurrency, Currency currency, String paymentType, String createdBy, InvoiceStatus invoiceStatus) {
+    public Invoice(Business business, Account customer,Order order, double totalItemPrice, double totalLogisticPrice, double discountInPercent, double discountInCurrency,double total, Currency currency, String paymentType, String createdBy, InvoiceStatus invoiceStatus) {
         this.business = business;
         this.customer = customer;
         this.order = order;
@@ -75,6 +76,7 @@ public class Invoice {
         this.totalLogisticPrice = totalLogisticPrice;
         this.discountInPercent = discountInPercent;
         this.discountInCurrency = discountInCurrency;
+        this.total=total;
         this.currency = currency;
         this.paymentType = paymentType;
         this.createdBy = createdBy;
@@ -115,6 +117,10 @@ public class Invoice {
 
     public double getDiscountInCurrency() {
         return discountInCurrency;
+    }
+
+    public double getTotal() {
+        return total;
     }
 
     public Currency getCurrency() {
@@ -171,6 +177,10 @@ public class Invoice {
 
     public void setDiscountInCurrency(double discountInCurrency) {
         this.discountInCurrency = discountInCurrency;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 
     public void setCurrency(Currency currency) {

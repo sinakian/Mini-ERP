@@ -42,6 +42,7 @@ public class Order {
     private double totalLogisticPrice;
     private double discountInPercent;
     private double discountInCurrency;
+    private double total;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
@@ -62,13 +63,17 @@ public class Order {
 
     public Order() {}
 
-    public Order(Business business, Account customer, double totalItemPrice, double totalLogisticPrice, double discountInPercent, double discountInCurrency, Currency currency, String paymentType, String createdBy, OrderStatus orderStatus) {
+    public Order(Business business, Account customer,
+                 double totalItemPrice, double totalLogisticPrice,
+                 double discountInPercent, double discountInCurrency,double total,
+                 Currency currency, String paymentType, String createdBy, OrderStatus orderStatus) {
         this.business = business;
         this.customer = customer;
         this.totalItemPrice = totalItemPrice;
         this.totalLogisticPrice = totalLogisticPrice;
         this.discountInPercent = discountInPercent;
         this.discountInCurrency = discountInCurrency;
+        this.total=total;
         this.currency = currency;
         this.paymentType = paymentType;
         this.createdBy = createdBy;
@@ -105,6 +110,10 @@ public class Order {
 
     public double getDiscountInCurrency() {
         return discountInCurrency;
+    }
+
+    public double getTotal() {
+        return total;
     }
 
     public Currency getCurrency() {
@@ -158,6 +167,8 @@ public class Order {
     public void setDiscountInCurrency(double discountInCurrency) {
         this.discountInCurrency = discountInCurrency;
     }
+
+    public void setTotal(double total){this.total = total;}
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
@@ -220,6 +231,7 @@ public class Order {
                 ", totalLogisticPrice=" + totalLogisticPrice +
                 ", discountInPercent=" + discountInPercent +
                 ", discountInCurrency=" + discountInCurrency +
+                ", discountInCurrency=" + total +
                 ", currency=" + currency +
                 ", paymentType='" + paymentType + '\'' +
                 ", createdBy='" + createdBy + '\'' +

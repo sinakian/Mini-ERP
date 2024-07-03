@@ -26,8 +26,8 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public Order one(@PathVariable Long id) {
-        return orderService.getOrderById(id)
-                .orElseThrow(() -> new OrderNotFoundException(id));
+        return orderService.getOrderById(id);
+//                .orElseThrow(() -> new OrderNotFoundException(id));
     }
 
     @DeleteMapping("/{id}")

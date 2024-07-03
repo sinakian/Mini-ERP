@@ -45,7 +45,7 @@ public class InventoryRequest {
     @Enumerated(EnumType.STRING)
     private ReferenceType referenceType;
 
-    private String referenceId;
+    private long referenceId;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -64,7 +64,7 @@ public class InventoryRequest {
 
     InventoryRequest() {}
 
-    public InventoryRequest(Business business, Inventory inventory, double quantity, LocalDateTime dueDate, LocalDateTime deliveredDate, ReferenceType referenceType, String referenceId, Status status) {
+    public InventoryRequest(Business business, Inventory inventory, double quantity, LocalDateTime dueDate, LocalDateTime deliveredDate, ReferenceType referenceType, long referenceId, Status status) {
         this.business = business;
         this.inventory = inventory;
         this.quantity = quantity;
@@ -103,7 +103,7 @@ public class InventoryRequest {
         return this.referenceType;
     }
 
-    public String getReferenceId() {
+    public long getReferenceId() {
         return this.referenceId;
     }
 
@@ -155,7 +155,7 @@ public class InventoryRequest {
         this.referenceType = referenceType;
     }
 
-    public void setReferenceId(String referenceId) {
+    public void setReferenceId(long referenceId) {
         this.referenceId = referenceId;
     }
 

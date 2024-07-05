@@ -21,7 +21,7 @@ public class SupplyRequestItem {
 
 
     public enum Status {
-        PENDING, DELIVERED, CANCELED
+        PENDING,DONE, DELIVERED, CANCELED
     }
 
     @Id

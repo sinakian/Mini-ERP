@@ -26,8 +26,7 @@ public class SupplyRequestItemController {
 
     @GetMapping("/{id}")
     public SupplyRequestItem one(@PathVariable Long id) {
-        return supplyRequestItemService.getSupplyRequestItemById(id)
-                .orElseThrow(() -> new SupplyRequestItemNotFoundException(id));
+        return supplyRequestItemService.getSupplyRequestItemById(id);
     }
 
     @DeleteMapping("/{id}")

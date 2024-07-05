@@ -35,23 +35,67 @@ public class FinancialTransactionService {
 
     @Transactional
     public FinancialTransaction createTransaction(FinancialTransactionType transactionType, TransactionReferenceType referenceType,
-                                                  Currency currency, Account account, FinancialReceipt financialReceipt, Double amount, long referenceId) {
+                                                  Currency currency, Account account, FinancialReceipt financialReceipt, double amount, long referenceId) {
         AccountBalance accountBalance = accountBalanceRepository.findByAccount(Optional.ofNullable(account))
                 .orElseThrow(() -> new RuntimeException("Account balance not found for account id: " + account.getId()));
 
-        Double lastBalance = accountBalance.getBalance();
+        double lastBalance = accountBalance.getBalance();
         BalanceStatus lastBalanceStatus = accountBalance.getBalanceStatus();
-        Double newBalance = lastBalance + amount;
-        BalanceStatus newBalanceStatus = newBalance > 0 ? BalanceStatus.CREDIT : BalanceStatus.DEBT;
+
+        double newBalance;
+        BalanceStatus newBalanceStatus;
+
+        if (transactionType == FinancialTransactionType.CREDIT
+                && (lastBalanceStatus==BalanceStatus.CREDIT || lastBalanceStatus==BalanceStatus.NEUTRAL)) {
+            newBalance = lastBalance + amount;
+            newBalanceStatus=BalanceStatus.CREDIT;
+        } else if (transactionType == FinancialTransactionType.DEBIT
+                && (lastBalanceStatus==BalanceStatus.DEBIT || lastBalanceStatus==BalanceStatus.NEUTRAL)) {
+            newBalance = lastBalance + amount;
+            newBalanceStatus=BalanceStatus.DEBIT;
+        } else if ( lastBalance==amount
+                && ((transactionType == FinancialTransactionType.DEBIT && lastBalanceStatus==BalanceStatus.CREDIT)
+                || (transactionType == FinancialTransactionType.CREDIT && lastBalanceStatus==BalanceStatus.DEBIT))) {
+            newBalance = lastBalance - amount;
+            newBalanceStatus=BalanceStatus.NEUTRAL;
+        }else if ((transactionType == FinancialTransactionType.CREDIT
+                && lastBalanceStatus==BalanceStatus.DEBIT
+                && amount<lastBalance)
+                || (transactionType == FinancialTransactionType.DEBIT
+                && lastBalanceStatus==BalanceStatus.CREDIT
+                && amount>lastBalance)) {
+
+            newBalance = Math.abs(amount-lastBalance);
+            newBalanceStatus=BalanceStatus.DEBIT;
+
+        }else if ((transactionType == FinancialTransactionType.DEBIT
+                && lastBalanceStatus==BalanceStatus.CREDIT
+                && amount<lastBalance)
+                || (transactionType == FinancialTransactionType.CREDIT
+                && lastBalanceStatus==BalanceStatus.DEBIT
+                && amount>lastBalance)) {
+            newBalance = Math.abs(amount-lastBalance);
+            newBalanceStatus=BalanceStatus.CREDIT;
+        } else {
+            throw new IllegalArgumentException("Unsupported transaction type: " + transactionType);
+        }
+
+
+
 
         // Create the financial transaction
         FinancialTransaction transaction = new FinancialTransaction(
-                transactionType, referenceType, currency, account,financialReceipt, amount, lastBalance, lastBalanceStatus,
+                transactionType, referenceType, currency, account, financialReceipt, amount, lastBalance, lastBalanceStatus,
                 newBalance, newBalanceStatus, referenceId
         );
 
         // Save the transaction
         financialTransactionRepository.save(transaction);
+
+        // Update the account balance
+        accountBalance.setBalance(newBalance);
+        accountBalance.setBalanceStatus(newBalanceStatus);
+        accountBalanceRepository.save(accountBalance);
 
         // Publish the event
         eventPublisher.publishEvent(new FinancialTransactionCreateEvent(this, transaction));
@@ -61,6 +105,7 @@ public class FinancialTransactionService {
 
         return transaction;
     }
+
 
     @Transactional(readOnly = true)
     public List<FinancialTransaction> getAllTransactions() {

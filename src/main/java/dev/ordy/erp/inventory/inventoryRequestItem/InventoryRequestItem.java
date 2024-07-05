@@ -59,7 +59,7 @@ public class InventoryRequestItem {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    InventoryRequestItem() {}
+    public InventoryRequestItem() {}
 
     public InventoryRequestItem(InventoryRequest inventoryRequest, InventoryItem inventoryItem, double requestQuantity, double deliveredQuantity, double pendingQuantity, LocalDateTime dueDate, LocalDateTime deliveredDate, Unit unit, Status status) {
         this.inventoryRequest = inventoryRequest;

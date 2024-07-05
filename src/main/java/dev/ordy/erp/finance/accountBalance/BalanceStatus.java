@@ -1,7 +1,7 @@
 package dev.ordy.erp.finance.accountBalance;
 
 public enum BalanceStatus {
-    DEBT,
+    DEBIT,
     CREDIT,
     NEUTRAL
 }

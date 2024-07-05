@@ -88,5 +88,77 @@ public class OrderItem {
         this.createdBy = createdBy;
     }
 
-    // Getters and setters omitted for brevity
+    // Add Getter Methods
+
+    public Long getId() {
+        return id;
+    }
+
+    public Business getBusiness() {
+        return business;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public InventoryItem getItem() {
+        return item;
+    }
+
+    public double getQuantity() {
+        return quantity;
+    }
+
+    public ItemPrice getItemPrice() {
+        return itemPrice;
+    }
+
+    public double getPricePerUnit() {
+        return pricePerUnit;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public double getTotalGrossPrice() {
+        return totalGrossPrice;
+    }
+
+    public double getDiscountCurrency() {
+        return discountCurrency;
+    }
+
+    public double getDiscountPercent() {
+        return discountPercent;
+    }
+
+    public double getTax() {
+        return tax;
+    }
+
+    public double getTotalNetPrice() {
+        return totalNetPrice;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
 }

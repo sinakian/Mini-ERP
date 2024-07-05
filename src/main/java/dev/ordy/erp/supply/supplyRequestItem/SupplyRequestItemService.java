@@ -21,12 +21,20 @@ public class SupplyRequestItemService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<SupplyRequestItem> getSupplyRequestItemById(Long id) {
-        return supplyRequestItemRepository.findById(id);
+    public SupplyRequestItem getSupplyRequestItemById(Long id) {
+        return supplyRequestItemRepository.findById(id)
+                .orElseThrow(() -> new SupplyRequestItemNotFoundException(id));
     }
 
     @Transactional
     public SupplyRequestItem createSupplyRequestItem(SupplyRequestItem supplyRequestItem) {
+        return supplyRequestItemRepository.save(supplyRequestItem);
+    }
+
+    @Transactional
+    public SupplyRequestItem updateStatusToDone(Long id) {
+        SupplyRequestItem supplyRequestItem=getSupplyRequestItemById(id);
+        supplyRequestItem.setStatus(SupplyRequestItem.Status.DONE);
         return supplyRequestItemRepository.save(supplyRequestItem);
     }
 

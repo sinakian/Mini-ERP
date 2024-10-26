@@ -2,11 +2,9 @@ package dev.ordy.erp.finance.financialTransaction;
 
 import dev.ordy.erp.business.account.Account;
 import dev.ordy.erp.common.Currency;
-import dev.ordy.erp.finance.accountBalance.BalanceStatus;
+import dev.ordy.erp.common.FinancialStatus;
 
 import dev.ordy.erp.finance.financialReceipt.FinancialReceipt;
-import dev.ordy.erp.finance.financialTransaction.enums.FinancialTransactionType;
-import dev.ordy.erp.finance.financialTransaction.enums.TransactionReferenceType;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -29,10 +27,7 @@ public class FinancialTransaction {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private FinancialTransactionType financialTransactionType;
-
-    @Enumerated(EnumType.STRING)
-    private TransactionReferenceType transactionReferenceType;
+    private FinancialStatus financialTransactionType;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
@@ -50,14 +45,13 @@ public class FinancialTransaction {
     private Double lastBalance;
 
     @Enumerated(EnumType.STRING)
-    private BalanceStatus lastBalanceStatus;
+    private FinancialStatus lastBalanceStatus;
 
     private Double newBalance;
 
     @Enumerated(EnumType.STRING)
-    private BalanceStatus newBalanceStatus;
+    private FinancialStatus newBalanceStatus;
 
-    private long referenceId;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -73,11 +67,11 @@ public class FinancialTransaction {
 
     FinancialTransaction() {}
 
-    public FinancialTransaction(FinancialTransactionType financialTransactionType, TransactionReferenceType transactionReferenceType,
-                                Currency currency, Account account,FinancialReceipt financialReceipt,Double amount, Double lastBalance, BalanceStatus lastBalanceStatus,
-                                Double newBalance, BalanceStatus newBalanceStatus, long referenceId) {
+    public FinancialTransaction(FinancialStatus financialTransactionType,
+                                Currency currency, Account account,FinancialReceipt financialReceipt,Double amount, Double lastBalance,
+                                FinancialStatus lastBalanceStatus,
+                                Double newBalance, FinancialStatus newBalanceStatus) {
         this.financialTransactionType = financialTransactionType;
-        this.transactionReferenceType = transactionReferenceType;
         this.currency = currency;
         this.account = account;
         this.amount = amount;
@@ -86,19 +80,14 @@ public class FinancialTransaction {
         this.lastBalanceStatus = lastBalanceStatus;
         this.newBalance = newBalance;
         this.newBalanceStatus = newBalanceStatus;
-        this.referenceId = referenceId;
     }
 
     public Long getId() {
         return this.id;
     }
 
-    public FinancialTransactionType getFinancialTransactionType() {
+    public FinancialStatus getFinancialTransactionType() {
         return this.financialTransactionType;
-    }
-
-    public TransactionReferenceType getTransactionReferenceType() {
-        return this.transactionReferenceType;
     }
 
     public Currency getCurrency() {
@@ -121,7 +110,7 @@ public class FinancialTransaction {
         return this.lastBalance;
     }
 
-    public BalanceStatus getLastBalanceStatus() {
+    public FinancialStatus getLastBalanceStatus() {
         return this.lastBalanceStatus;
     }
 
@@ -129,12 +118,8 @@ public class FinancialTransaction {
         return this.newBalance;
     }
 
-    public BalanceStatus getNewBalanceStatus() {
+    public FinancialStatus getNewBalanceStatus() {
         return this.newBalanceStatus;
-    }
-
-    public long getReferenceId() {
-        return this.referenceId;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -157,12 +142,8 @@ public class FinancialTransaction {
         this.id = id;
     }
 
-    public void setFinancialTransactionType(FinancialTransactionType financialTransactionType) {
+    public void setFinancialTransactionType(FinancialStatus financialTransactionType) {
         this.financialTransactionType = financialTransactionType;
-    }
-
-    public void setTransactionReferenceType(TransactionReferenceType transactionReferenceType) {
-        this.transactionReferenceType = transactionReferenceType;
     }
 
     public void setCurrency(Currency currency) {
@@ -185,7 +166,7 @@ public class FinancialTransaction {
         this.lastBalance = lastBalance;
     }
 
-    public void setLastBalanceStatus(BalanceStatus lastBalanceStatus) {
+    public void setLastBalanceStatus(FinancialStatus lastBalanceStatus) {
         this.lastBalanceStatus = lastBalanceStatus;
     }
 
@@ -193,13 +174,10 @@ public class FinancialTransaction {
         this.newBalance = newBalance;
     }
 
-    public void setNewBalanceStatus(BalanceStatus newBalanceStatus) {
+    public void setNewBalanceStatus(FinancialStatus newBalanceStatus) {
         this.newBalanceStatus = newBalanceStatus;
     }
 
-    public void setReferenceId(long referenceId) {
-        this.referenceId = referenceId;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -208,7 +186,6 @@ public class FinancialTransaction {
         FinancialTransaction that = (FinancialTransaction) o;
         return Objects.equals(id, that.id) &&
                 financialTransactionType == that.financialTransactionType &&
-                transactionReferenceType == that.transactionReferenceType &&
                 currency == that.currency &&
                 Objects.equals(account, that.account) &&
                 Objects.equals(amount, that.amount) &&
@@ -216,7 +193,6 @@ public class FinancialTransaction {
                 lastBalanceStatus == that.lastBalanceStatus &&
                 Objects.equals(newBalance, that.newBalance) &&
                 newBalanceStatus == that.newBalanceStatus &&
-                Objects.equals(referenceId, that.referenceId) &&
                 Objects.equals(createdDate, that.createdDate) &&
                 Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
                 Objects.equals(createdBy, that.createdBy) &&
@@ -225,7 +201,7 @@ public class FinancialTransaction {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, financialTransactionType, transactionReferenceType, currency, account, amount, lastBalance, lastBalanceStatus, newBalance, newBalanceStatus, referenceId, createdDate, lastModifiedDate, createdBy, lastModifiedBy);
+        return Objects.hash(id, financialTransactionType,  currency, account, amount, lastBalance, lastBalanceStatus, newBalance, newBalanceStatus,  createdDate, lastModifiedDate, createdBy, lastModifiedBy);
     }
 
     @Override
@@ -233,7 +209,6 @@ public class FinancialTransaction {
         return "FinancialTransaction{" +
                 "id=" + id +
                 ", financialTransactionType=" + financialTransactionType +
-                ", transactionReferenceType=" + transactionReferenceType +
                 ", currency=" + currency +
                 ", account=" + (account != null ? account.getId() : null) +
                 ", account=" + (financialReceipt != null ? financialReceipt.getId() : null) +
@@ -242,7 +217,6 @@ public class FinancialTransaction {
                 ", lastBalanceStatus=" + lastBalanceStatus +
                 ", newBalance=" + newBalance +
                 ", newBalanceStatus=" + newBalanceStatus +
-                ", referenceId='" + referenceId + '\'' +
                 ", createdDate=" + createdDate +
                 ", lastModifiedDate=" + lastModifiedDate +
                 ", createdBy='" + createdBy + '\'' +

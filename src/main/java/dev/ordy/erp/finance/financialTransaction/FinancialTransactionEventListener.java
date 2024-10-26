@@ -1,8 +1,10 @@
 package dev.ordy.erp.finance.financialTransaction;
 
+import dev.ordy.erp.common.FinancialStatus;
 import dev.ordy.erp.finance.accountBalance.AccountBalance;
 import dev.ordy.erp.finance.accountBalance.AccountBalanceRepository;
 import dev.ordy.erp.business.account.Account;
+import dev.ordy.erp.finance.accountBalance.AccountBalanceService;
 import dev.ordy.erp.finance.accountBalance.BalanceStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +19,11 @@ import java.util.Optional;
 public class FinancialTransactionEventListener {
     private static final Logger logger = LoggerFactory.getLogger(FinancialTransactionEventListener.class);
 
-    private final AccountBalanceRepository accountBalanceRepository;
+    private final AccountBalanceService accountBalanceService;
 
 
-    public FinancialTransactionEventListener(AccountBalanceRepository accountBalanceRepository) {
-        this.accountBalanceRepository = accountBalanceRepository;
+    public FinancialTransactionEventListener(AccountBalanceService accountBalanceService) {
+        this.accountBalanceService = accountBalanceService;
     }
 
     @EventListener
@@ -30,16 +32,15 @@ public class FinancialTransactionEventListener {
         FinancialTransaction transaction = event.getTransaction();
         Account account = transaction.getAccount();
 
-        AccountBalance accountBalance = accountBalanceRepository.findByAccount(Optional.ofNullable(account))
-                .orElseThrow(() -> new RuntimeException("Account balance not found for account id: " + account.getId()));
+        AccountBalance accountBalance = accountBalanceService.getAccountBalanceByAccount(account);
 
         Double newBalance = transaction.getNewBalance();
-        BalanceStatus newBalanceStatus = transaction.getNewBalanceStatus();
+        FinancialStatus newBalanceStatus = transaction.getNewBalanceStatus();
 
         // Update the account balance
         accountBalance.setBalance(newBalance);
         accountBalance.setBalanceStatus(newBalanceStatus);
-        accountBalanceRepository.save(accountBalance);
+        accountBalanceService.updateAccountBalance(accountBalance);
 
         // Log balance update
         logger.info("Updated account balance: {}", accountBalance);

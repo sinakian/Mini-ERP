@@ -7,16 +7,9 @@ import dev.ordy.erp.business.item.*;
 import dev.ordy.erp.business.item.enums.InventoryPolicy;
 import dev.ordy.erp.business.item.enums.ItemType;
 import dev.ordy.erp.common.*;
-import dev.ordy.erp.finance.accountBalance.AccountBalance;
-import dev.ordy.erp.finance.accountBalance.AccountBalanceRepository;
 import dev.ordy.erp.common.Currency;
-import dev.ordy.erp.finance.accountBalance.BalanceStatus;
-import dev.ordy.erp.finance.financialTransaction.FinancialTransaction;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransactionRepository;
-import dev.ordy.erp.finance.financialTransaction.enums.FinancialTransactionType;
-import dev.ordy.erp.finance.financialTransaction.enums.TransactionReferenceType;
 import dev.ordy.erp.finance.itemPrice.ItemPrice;
-import dev.ordy.erp.finance.itemPrice.ItemPriceRepository;
 import dev.ordy.erp.finance.itemPrice.ItemPriceService;
 import dev.ordy.erp.inventory.inventory.Inventory;
 import dev.ordy.erp.inventory.inventory.InventoryRepository;
@@ -36,6 +29,9 @@ import dev.ordy.erp.supply.supplyRequest.SupplyRequest;
 import dev.ordy.erp.supply.supplyRequest.SupplyRequestRepository;
 import dev.ordy.erp.supply.supplyRequestItem.SupplyRequestItem;
 import dev.ordy.erp.supply.supplyRequestItem.SupplyRequestItemRepository;
+import dev.ordy.erp.user_management.user.UserRepository;
+import dev.ordy.erp.user_management.user.UserService;
+import dev.ordy.erp.user_management.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -65,6 +61,7 @@ public class LoadBusinessDatabase {
             OrderRepository orderRepository,
             OrderItemRepository orderItemRepository,
             SupplyRequestRepository supplyRequestRepository,
+            UserService userService,
             SupplyRequestItemRepository supplyRequestItemRepository) {
 
         return args -> loadData(
@@ -81,6 +78,7 @@ public class LoadBusinessDatabase {
                 orderItemRepository,
                 supplyRequestRepository,
                 supplyRequestItemRepository,
+                userService,
                 businessService);
     }
 
@@ -98,10 +96,16 @@ public class LoadBusinessDatabase {
             OrderRepository orderRepository,
             OrderItemRepository orderItemRepository,
             SupplyRequestRepository supplyRequestRepository,
-            SupplyRequestItemRepository supplyRequestItemRepository, BusinessService businessService) {
+            SupplyRequestItemRepository supplyRequestItemRepository,UserService userService, BusinessService businessService) {
+
+        //user
+        userService.createUser("sina","123",null);
+        log.info("Preloaded user");
+        log.info("Now getting user");
+        log.info("user is .."+userService.findByUsername("sina").getUsername());
 
         // Business Entities
-        Business business1 = new Business("Acme Corporation", "Manufacturer",Currency.TOMAN,null,null);
+        Business business1 = new Business("Gorilla Corporation", "Manufacturer",Currency.TOMAN,null,null);
         Business business2 = new Business("Wayne Enterprises", "Conglomerate",Currency.TOMAN,null,null);
         businessService.createBusiness(business1);
         businessService.createBusiness(business2);

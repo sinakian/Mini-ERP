@@ -4,6 +4,7 @@ package dev.ordy.erp.finance.accountBalance;
 import dev.ordy.erp.business.account.Account;
 import dev.ordy.erp.common.Currency;
 
+import dev.ordy.erp.common.FinancialStatus;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -32,7 +33,7 @@ public class AccountBalance {
     private Double balance;
 
     @Enumerated(EnumType.STRING)
-    private BalanceStatus balanceStatus;
+    private FinancialStatus balanceStatus;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
@@ -51,7 +52,7 @@ public class AccountBalance {
 
     AccountBalance() {}
 
-    public AccountBalance(Account account, Double balance, BalanceStatus balanceStatus, Currency currency) {
+    public AccountBalance(Account account, Double balance, FinancialStatus balanceStatus, Currency currency) {
         this.account = account;
         this.balance = balance;
         this.balanceStatus = balanceStatus;
@@ -70,7 +71,7 @@ public class AccountBalance {
         return this.balance;
     }
 
-    public BalanceStatus getBalanceStatus() {
+    public FinancialStatus getBalanceStatus() {
         return this.balanceStatus;
     }
 
@@ -110,7 +111,7 @@ public class AccountBalance {
         this.balance = balance;
     }
 
-    public void setBalanceStatus(BalanceStatus balanceStatus) {
+    public void setBalanceStatus(FinancialStatus balanceStatus) {
         this.balanceStatus = balanceStatus;
     }
 

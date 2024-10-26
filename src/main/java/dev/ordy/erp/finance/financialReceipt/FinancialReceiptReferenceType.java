@@ -1,4 +1,4 @@
-package dev.ordy.erp.finance.financialReceipt.enums;
+package dev.ordy.erp.finance.financialReceipt;
 
 public enum FinancialReceiptReferenceType {
     INVOICE,DEPOSIT,WITHDRAW

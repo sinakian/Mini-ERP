@@ -1,12 +1,10 @@
 package dev.ordy.erp.sales.invoice;
 
+import dev.ordy.erp.common.FinancialStatus;
 import dev.ordy.erp.finance.financialReceipt.FinancialReceipt;
 import dev.ordy.erp.finance.financialReceipt.FinancialReceiptService;
-import dev.ordy.erp.finance.financialReceipt.enums.FinancialReceiptReferenceType;
-import dev.ordy.erp.finance.financialReceipt.enums.FinancialReceiptType;
+import dev.ordy.erp.finance.financialReceipt.FinancialReceiptReferenceType;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransactionService;
-import dev.ordy.erp.finance.financialTransaction.enums.FinancialTransactionType;
-import dev.ordy.erp.finance.financialTransaction.enums.TransactionReferenceType;
 import dev.ordy.erp.inventory.inventoryRequest.InventoryRequest;
 import dev.ordy.erp.inventory.inventoryRequest.InventoryRequestService;
 import dev.ordy.erp.inventory.inventoryRequestItem.InventoryRequestItem;
@@ -92,21 +90,13 @@ public class InvoiceEventListener implements ApplicationListener<InvoiceCreateEv
                     invoice.getCustomer(),
                     invoice.getTotal(),
                     FinancialReceiptReferenceType.INVOICE,
-                    FinancialReceiptType.DEBIT,
+                    FinancialStatus.DEBIT,
                     invoice.getId(),
                     invoice.getCurrency()
             );
 
             // create Debit Transaction for Customer
-            financialTransactionService.createTransaction(
-                    FinancialTransactionType.DEBIT,
-                    TransactionReferenceType.DEBT_RECEIPT,
-                    financialReceipt.getCurrency(),
-                    financialReceipt.getAccount(),
-                    financialReceipt,
-                    financialReceipt.getAmount(),
-                    financialReceipt.getId()
-            );
+            financialTransactionService.createTransaction(financialReceipt.getId());
 
             // Log a message
             System.out.println("Invoice Create Event Done");

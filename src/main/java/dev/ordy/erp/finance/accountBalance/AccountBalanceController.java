@@ -27,9 +27,8 @@ class AccountBalanceController {
     @GetMapping("/{accountId}")
     AccountBalance getAccountBalance(@PathVariable Long accountId) {
         // Assume you have a method to get an Account object by its ID
-        Optional<Account> account = accountService.getAccountById(accountId);
-        return accountBalanceService.getAccountBalanceByAccount(account)
-                .orElseThrow(() -> new RuntimeException("Account balance not found for account id: " + accountId));
+        Account account = accountService.getAccountById(accountId);
+        return accountBalanceService.getAccountBalanceByAccount(account);
     }
 
     @PostMapping

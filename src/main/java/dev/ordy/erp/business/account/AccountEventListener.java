@@ -1,9 +1,8 @@
 package dev.ordy.erp.business.account;
 
 import dev.ordy.erp.common.Currency;
-import dev.ordy.erp.finance.accountBalance.AccountBalance;
+import dev.ordy.erp.common.FinancialStatus;
 import dev.ordy.erp.finance.accountBalance.AccountBalanceService;
-import dev.ordy.erp.finance.accountBalance.BalanceStatus;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +22,7 @@ public class AccountEventListener implements ApplicationListener<AccountCreateEv
         Account account = event.getAccount();
 
         // Save the AccountBalance object
-        accountBalanceService.createAccountBalance(account, 0.0, BalanceStatus.NEUTRAL, Currency.TOMAN);
+        accountBalanceService.createAccountBalance(account, 0.0, FinancialStatus.NEUTRAL, Currency.TOMAN);
 
         // Log a message
         System.out.println("Account Creation Event is completely done");

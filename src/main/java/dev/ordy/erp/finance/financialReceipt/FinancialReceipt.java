@@ -3,9 +3,6 @@ package dev.ordy.erp.finance.financialReceipt;
 
 import dev.ordy.erp.business.account.Account;
 import dev.ordy.erp.common.*;
-import dev.ordy.erp.finance.accountBalance.BalanceStatus;
-import dev.ordy.erp.finance.financialReceipt.enums.FinancialReceiptReferenceType;
-import dev.ordy.erp.finance.financialReceipt.enums.FinancialReceiptType;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -41,7 +38,7 @@ public class FinancialReceipt {
     private FinancialReceiptReferenceType referenceType;
 
     @Enumerated(EnumType.STRING)
-    private FinancialReceiptType receiptType;
+    private FinancialStatus receiptType;
 
     private long referenceId;
 
@@ -60,7 +57,7 @@ public class FinancialReceipt {
     FinancialReceipt() {}
 
     public FinancialReceipt(Account account, Double amount, FinancialReceiptReferenceType referenceType,
-                            FinancialReceiptType receiptType, long referenceId, Currency currency) {
+                            FinancialStatus receiptType, long referenceId, Currency currency) {
         this.account=account;
         this.amount=amount;
         this.referenceType=referenceType;
@@ -86,7 +83,7 @@ public class FinancialReceipt {
         return this.referenceType;
     }
 
-    public FinancialReceiptType getReceiptType() {
+    public FinancialStatus getReceiptType() {
         return this.receiptType;
     }
 
@@ -132,7 +129,7 @@ public class FinancialReceipt {
 
     public void setReferenceId(long referenceId){this.referenceId=referenceId;}
 
-    public void setReceiptType(FinancialReceiptType receiptType){this.receiptType=receiptType;}
+    public void setReceiptType(FinancialStatus receiptType){this.receiptType=receiptType;}
 
     public void setCurrency(Currency currency) {
         this.currency = currency;

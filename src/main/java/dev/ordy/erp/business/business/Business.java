@@ -30,8 +30,6 @@ public class Business {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-
-
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_inventory_id", nullable = true)
     @JsonManagedReference
@@ -41,9 +39,6 @@ public class Business {
     @JoinColumn(name = "material_inventory_id", nullable = true)
     @JsonManagedReference
     private Inventory defaultMaterialInventory;
-
-
-
 
     @CreatedDate
     private LocalDateTime createdDate;

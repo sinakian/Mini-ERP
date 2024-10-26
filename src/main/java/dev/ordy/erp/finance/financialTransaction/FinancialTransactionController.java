@@ -20,16 +20,8 @@ public class FinancialTransactionController {
     }
 
     @PostMapping
-    public FinancialTransaction newFinancialTransaction(@RequestBody FinancialTransaction newFinancialTransaction) {
-        return transactionService.createTransaction(
-                newFinancialTransaction.getFinancialTransactionType(),
-                newFinancialTransaction.getTransactionReferenceType(),
-                newFinancialTransaction.getCurrency(),
-                newFinancialTransaction.getAccount(),
-                newFinancialTransaction.getFinancialReceipt(),
-                newFinancialTransaction.getAmount(),
-                newFinancialTransaction.getReferenceId()
-        );
+    public FinancialTransaction newFinancialTransaction(@RequestBody long financialReceipt_id) {
+        return transactionService.createTransaction(financialReceipt_id);
     }
 
     @GetMapping("/{id}")
@@ -38,26 +30,5 @@ public class FinancialTransactionController {
                 .orElseThrow(() -> new FinancialTransactionNotFoundException(id));
     }
 
-    @PutMapping("/{id}")
-    public FinancialTransaction replaceFinancialTransaction(@RequestBody FinancialTransaction newFinancialTransaction, @PathVariable Long id) {
-        return transactionService.getTransactionById(id)
-                .map(financialTransaction -> {
-                    financialTransaction.setFinancialTransactionType(newFinancialTransaction.getFinancialTransactionType());
-                    financialTransaction.setTransactionReferenceType(newFinancialTransaction.getTransactionReferenceType());
-                    financialTransaction.setCurrency(newFinancialTransaction.getCurrency());
-                    financialTransaction.setAccount(newFinancialTransaction.getAccount());
-                    financialTransaction.setAmount(newFinancialTransaction.getAmount());
-                    financialTransaction.setReferenceId(newFinancialTransaction.getReferenceId());
-                    return transactionService.updateTransaction(financialTransaction);
-                })
-                .orElseGet(() -> {
-                    newFinancialTransaction.setId(id);
-                    return transactionService.updateTransaction(newFinancialTransaction);
-                });
-    }
 
-    @DeleteMapping("/{id}")
-    public void deleteFinancialTransaction(@PathVariable Long id) {
-        transactionService.deleteTransaction(id);
-    }
 }

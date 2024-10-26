@@ -2,12 +2,11 @@ package dev.ordy.erp.finance.financialTransaction;
 
 import dev.ordy.erp.business.account.Account;
 import dev.ordy.erp.common.Currency;
-import dev.ordy.erp.finance.accountBalance.BalanceStatus;
+import dev.ordy.erp.common.FinancialStatus;
+import dev.ordy.erp.finance.accountBalance.AccountBalanceService;
 import dev.ordy.erp.finance.financialReceipt.FinancialReceipt;
-import dev.ordy.erp.finance.financialTransaction.enums.FinancialTransactionType;
-import dev.ordy.erp.finance.financialTransaction.enums.TransactionReferenceType;
+import dev.ordy.erp.finance.financialReceipt.FinancialReceiptService;
 import dev.ordy.erp.finance.accountBalance.AccountBalance;
-import dev.ordy.erp.finance.accountBalance.AccountBalanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,80 +21,88 @@ public class FinancialTransactionService {
     private static final Logger logger = LoggerFactory.getLogger(FinancialTransactionService.class);
 
     private final FinancialTransactionRepository financialTransactionRepository;
-    private final AccountBalanceRepository accountBalanceRepository;
+    private final AccountBalanceService accountBalanceService;
     private final ApplicationEventPublisher eventPublisher;
+    private final FinancialReceiptService financialReceiptService;
 
     public FinancialTransactionService(FinancialTransactionRepository financialTransactionRepository,
-                                       AccountBalanceRepository accountBalanceRepository,
-                                       ApplicationEventPublisher eventPublisher) {
+                                       AccountBalanceService accountBalanceService,
+                                       ApplicationEventPublisher eventPublisher, FinancialReceiptService financialReceiptService) {
         this.financialTransactionRepository = financialTransactionRepository;
-        this.accountBalanceRepository = accountBalanceRepository;
         this.eventPublisher = eventPublisher;
+        this.accountBalanceService = accountBalanceService;
+        this.financialReceiptService = financialReceiptService;
+
     }
 
     @Transactional
-    public FinancialTransaction createTransaction(FinancialTransactionType transactionType, TransactionReferenceType referenceType,
-                                                  Currency currency, Account account, FinancialReceipt financialReceipt, double amount, long referenceId) {
-        AccountBalance accountBalance = accountBalanceRepository.findByAccount(Optional.ofNullable(account))
-                .orElseThrow(() -> new RuntimeException("Account balance not found for account id: " + account.getId()));
+    public FinancialTransaction createTransaction(Long financialReceiptId) {
+        FinancialReceipt receipt=financialReceiptService.getFinancialReceiptById(financialReceiptId);
 
+        AccountBalance accountBalance = accountBalanceService.getAccountBalanceByAccount(receipt.getAccount());
+        FinancialStatus transactionType=receipt.getReceiptType();
         double lastBalance = accountBalance.getBalance();
-        BalanceStatus lastBalanceStatus = accountBalance.getBalanceStatus();
+        double amount = receipt.getAmount();
+        FinancialStatus lastBalanceStatus = accountBalance.getBalanceStatus();
 
         double newBalance;
-        BalanceStatus newBalanceStatus;
+        FinancialStatus newBalanceStatus;
 
-        if (transactionType == FinancialTransactionType.CREDIT
-                && (lastBalanceStatus==BalanceStatus.CREDIT || lastBalanceStatus==BalanceStatus.NEUTRAL)) {
+        if (transactionType == FinancialStatus.CREDIT
+                && (lastBalanceStatus==FinancialStatus.CREDIT || lastBalanceStatus==FinancialStatus.NEUTRAL)) {
             newBalance = lastBalance + amount;
-            newBalanceStatus=BalanceStatus.CREDIT;
-        } else if (transactionType == FinancialTransactionType.DEBIT
-                && (lastBalanceStatus==BalanceStatus.DEBIT || lastBalanceStatus==BalanceStatus.NEUTRAL)) {
+            newBalanceStatus=FinancialStatus.CREDIT;
+        } else if (transactionType == FinancialStatus.DEBIT
+                && (lastBalanceStatus==FinancialStatus.DEBIT || lastBalanceStatus==FinancialStatus.NEUTRAL)) {
             newBalance = lastBalance + amount;
-            newBalanceStatus=BalanceStatus.DEBIT;
+            newBalanceStatus=FinancialStatus.DEBIT;
         } else if ( lastBalance==amount
-                && ((transactionType == FinancialTransactionType.DEBIT && lastBalanceStatus==BalanceStatus.CREDIT)
-                || (transactionType == FinancialTransactionType.CREDIT && lastBalanceStatus==BalanceStatus.DEBIT))) {
+                && ((transactionType == FinancialStatus.DEBIT && lastBalanceStatus==FinancialStatus.CREDIT)
+                || (transactionType == FinancialStatus.CREDIT && lastBalanceStatus==FinancialStatus.DEBIT))) {
             newBalance = lastBalance - amount;
-            newBalanceStatus=BalanceStatus.NEUTRAL;
-        }else if ((transactionType == FinancialTransactionType.CREDIT
-                && lastBalanceStatus==BalanceStatus.DEBIT
+            newBalanceStatus=FinancialStatus.NEUTRAL;
+        }else if ((transactionType == FinancialStatus.CREDIT
+                && lastBalanceStatus==FinancialStatus.DEBIT
                 && amount<lastBalance)
-                || (transactionType == FinancialTransactionType.DEBIT
-                && lastBalanceStatus==BalanceStatus.CREDIT
+                || (transactionType == FinancialStatus.DEBIT
+                && lastBalanceStatus==FinancialStatus.CREDIT
                 && amount>lastBalance)) {
 
             newBalance = Math.abs(amount-lastBalance);
-            newBalanceStatus=BalanceStatus.DEBIT;
+            newBalanceStatus=FinancialStatus.DEBIT;
 
-        }else if ((transactionType == FinancialTransactionType.DEBIT
-                && lastBalanceStatus==BalanceStatus.CREDIT
+        }else if ((transactionType == FinancialStatus.DEBIT
+                && lastBalanceStatus==FinancialStatus.CREDIT
                 && amount<lastBalance)
-                || (transactionType == FinancialTransactionType.CREDIT
-                && lastBalanceStatus==BalanceStatus.DEBIT
+                || (transactionType == FinancialStatus.CREDIT
+                && lastBalanceStatus==FinancialStatus.DEBIT
                 && amount>lastBalance)) {
             newBalance = Math.abs(amount-lastBalance);
-            newBalanceStatus=BalanceStatus.CREDIT;
+            newBalanceStatus=FinancialStatus.CREDIT;
         } else {
             throw new IllegalArgumentException("Unsupported transaction type: " + transactionType);
         }
 
 
 
-
-        // Create the financial transaction
+        // Create and Save the financial transaction
         FinancialTransaction transaction = new FinancialTransaction(
-                transactionType, referenceType, currency, account, financialReceipt, amount, lastBalance, lastBalanceStatus,
-                newBalance, newBalanceStatus, referenceId
+                receipt.getReceiptType(),
+                receipt.getCurrency(),
+                receipt.getAccount(),
+                receipt,
+                receipt.getAmount(),
+                lastBalance,
+                lastBalanceStatus,
+                newBalance,
+                newBalanceStatus
         );
-
-        // Save the transaction
         financialTransactionRepository.save(transaction);
 
         // Update the account balance
         accountBalance.setBalance(newBalance);
         accountBalance.setBalanceStatus(newBalanceStatus);
-        accountBalanceRepository.save(accountBalance);
+        accountBalanceService.updateAccountBalance(accountBalance);
 
         // Publish the event
         eventPublisher.publishEvent(new FinancialTransactionCreateEvent(this, transaction));

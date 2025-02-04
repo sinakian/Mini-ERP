@@ -5,6 +5,7 @@ import dev.ordy.erp.user_management.auth.JwtUtils;
 import dev.ordy.erp.user_management.user.MyUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -52,6 +53,23 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
+
+    @Configuration
+    @Order(1) // Ensures this filter chain takes precedence
+    public class TemporarySecurityConfig {
+
+        @Bean
+        public SecurityFilterChain temporarySecurityFilterChain(HttpSecurity http) throws Exception {
+            http
+                    .csrf(csrf -> csrf.disable())
+                    .authorizeHttpRequests(authz -> authz.anyRequest().permitAll()); // Allow all requests
+
+            return http.build();
+        }
+    }
+
 
 
 

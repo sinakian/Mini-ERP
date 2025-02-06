@@ -1,8 +1,5 @@
-package dev.ordy.erp.business.item;
+package dev.ordy.erp.business.step;
 
-import dev.ordy.erp.business.item.enums.InventoryPolicy;
-import dev.ordy.erp.business.item.enums.ItemType;
-import dev.ordy.erp.common.Unit;
 import dev.ordy.erp.business.business.Business;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -16,9 +13,9 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "ITEM")
+@Table(name = "STEP")
 @EntityListeners(AuditingEntityListener.class)
-public class Item {
+public class Step {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,16 +26,6 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "business_id", nullable = false)
     private Business business;
-
-
-    @Enumerated(EnumType.STRING)
-    private ItemType itemType;
-
-    @Enumerated(EnumType.STRING)
-    private Unit unit;
-
-    @Enumerated(EnumType.STRING)
-    private InventoryPolicy inventoryPolicy;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -52,15 +39,12 @@ public class Item {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    Item() {}
+    Step() {}
 
-    public Item(String name, String role, Business business, InventoryPolicy inventoryPolicy, ItemType itemType, Unit unit) {
+    public Step(String name, String role, Business business) {
         this.name = name;
         this.role = role;
         this.business = business;
-        this.inventoryPolicy=inventoryPolicy;
-        this.itemType=itemType;
-        this.unit=unit;
     }
 
     public Long getId() {
@@ -99,16 +83,6 @@ public class Item {
         this.business = business;
     }
 
-    public InventoryPolicy getInventoryPolicy(){
-        return this.inventoryPolicy;
-    }
-
-    public ItemType getItemType(){
-        return this.itemType;
-    }
-
-    public Unit getUnit(){return this.unit;}
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -121,29 +95,8 @@ public class Item {
         this.role = role;
     }
 
-    public void setInventoryPolicy(InventoryPolicy inventoryPolicy){
-        this.inventoryPolicy= inventoryPolicy;
-    }
 
-    public void setItemType(ItemType itemType){
-        this.itemType=itemType;
-    }
 
-    public void setUnit(Unit unit){
-        this.unit=unit;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-
-        if (this == o)
-            return true;
-        if (!(o instanceof Item))
-            return false;
-        Item item = (Item) o;
-        return Objects.equals(this.id, item.id) && Objects.equals(this.name, item.name)
-                && Objects.equals(this.role, item.role);
-    }
 
     @Override
     public int hashCode() {
@@ -153,9 +106,6 @@ public class Item {
     @Override
     public String toString() {
         return "Item{" + "id=" + id +
-                ", inventoryPolicy=" + inventoryPolicy +
-                ", itemType=" + itemType +
-                ", unit='" + unit +
                 ", name='" + name + '\'' +
                 ", role='" + role + '\'' +
                 ", businessId=" + (business != null ? business.getId() : null) +

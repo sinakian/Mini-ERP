@@ -6,6 +6,7 @@ import dev.ordy.erp.business.account.enums.AccountType;
 import dev.ordy.erp.business.item.*;
 import dev.ordy.erp.business.item.enums.InventoryPolicy;
 import dev.ordy.erp.business.item.enums.ItemType;
+import dev.ordy.erp.business.step.Step;
 import dev.ordy.erp.common.*;
 import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransactionRepository;
@@ -32,6 +33,7 @@ import dev.ordy.erp.supply.supplyRequestItem.SupplyRequestItemRepository;
 import dev.ordy.erp.user_management.user.UserRepository;
 import dev.ordy.erp.user_management.user.UserService;
 import dev.ordy.erp.user_management.user.Users;
+import dev.ordy.erp.business.step.StepService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -62,6 +64,7 @@ public class LoadBusinessDatabase {
             OrderItemRepository orderItemRepository,
             SupplyRequestRepository supplyRequestRepository,
             UserService userService,
+            StepService stepService,
             SupplyRequestItemRepository supplyRequestItemRepository) {
 
         return args -> loadData(
@@ -79,7 +82,8 @@ public class LoadBusinessDatabase {
                 supplyRequestRepository,
                 supplyRequestItemRepository,
                 userService,
-                businessService);
+                businessService,
+                stepService );
     }
 
     @Transactional
@@ -96,7 +100,7 @@ public class LoadBusinessDatabase {
             OrderRepository orderRepository,
             OrderItemRepository orderItemRepository,
             SupplyRequestRepository supplyRequestRepository,
-            SupplyRequestItemRepository supplyRequestItemRepository,UserService userService, BusinessService businessService) {
+            SupplyRequestItemRepository supplyRequestItemRepository,UserService userService, BusinessService businessService,StepService stepService) {
 
         //user
         userService.createUser("sina","123",null);
@@ -121,8 +125,13 @@ public class LoadBusinessDatabase {
 
         // Item Entities
         Item item1 = itemService.createItem("Item A", "Role A", business1, InventoryPolicy.FLEXIBLE, ItemType.PRODUCT, Unit.KILOGRAM);
-        Item item2 = itemService.createItem("Item B", "Role B", business2, InventoryPolicy.LIMITED, ItemType.SERVICE, Unit.KILOGRAM);
+        Item item2 = itemService.createItem("Item B", "Role B", business2,  InventoryPolicy.FLEXIBLE,ItemType.SERVICE, Unit.KILOGRAM);
         log.info("Preloaded items");
+
+        // Step Entities
+        Step step1 = stepService.createStep("Step A", "Role A", business1);
+        Step step2 = stepService.createStep("Step B", "Role B", business2);
+        log.info("Preloaded steps");
 
 
 

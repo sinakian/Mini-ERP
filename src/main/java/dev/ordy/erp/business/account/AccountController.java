@@ -20,10 +20,12 @@ public class AccountController {
         return accountService.createAccount(newAccount);
     }
 
+
     @GetMapping
-    public List<Account> getAllAccounts() {
-        return accountService.getAllAccounts();
+    public List<Account> getAccountsByBusiness(@RequestParam(name = "businessId", required = true) Long businessId) {
+        return accountService.getAccountsByBusiness(businessId);
     }
+
 
     @GetMapping("/{id}")
     public Account getAccountById(@PathVariable Long id) {

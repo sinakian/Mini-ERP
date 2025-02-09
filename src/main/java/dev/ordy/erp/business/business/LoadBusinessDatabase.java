@@ -7,6 +7,8 @@ import dev.ordy.erp.business.item.*;
 import dev.ordy.erp.business.item.enums.InventoryPolicy;
 import dev.ordy.erp.business.item.enums.ItemType;
 import dev.ordy.erp.business.step.Step;
+import dev.ordy.erp.business.step_set.StepSet;
+import dev.ordy.erp.business.step_set.StepSetService;
 import dev.ordy.erp.common.*;
 import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransactionRepository;
@@ -65,6 +67,7 @@ public class LoadBusinessDatabase {
             SupplyRequestRepository supplyRequestRepository,
             UserService userService,
             StepService stepService,
+            StepSetService stepSetService,
             SupplyRequestItemRepository supplyRequestItemRepository) {
 
         return args -> loadData(
@@ -83,7 +86,8 @@ public class LoadBusinessDatabase {
                 supplyRequestItemRepository,
                 userService,
                 businessService,
-                stepService );
+                stepService ,
+                stepSetService);
     }
 
     @Transactional
@@ -100,7 +104,11 @@ public class LoadBusinessDatabase {
             OrderRepository orderRepository,
             OrderItemRepository orderItemRepository,
             SupplyRequestRepository supplyRequestRepository,
-            SupplyRequestItemRepository supplyRequestItemRepository,UserService userService, BusinessService businessService,StepService stepService) {
+            SupplyRequestItemRepository supplyRequestItemRepository,
+            UserService userService,
+            BusinessService businessService,
+            StepService stepService,
+            StepSetService stepSetService) {
 
         //user
         userService.createUser("sina","123",null);
@@ -132,6 +140,11 @@ public class LoadBusinessDatabase {
         Step step1 = stepService.createStep("Step A", "Role A", business1);
         Step step2 = stepService.createStep("Step B", "Role B", business2);
         log.info("Preloaded steps");
+
+        // Step_set Entities
+        StepSet stepset1 = stepSetService.createStepSet("Stepset A", "Role A", business1);
+        StepSet stepset2 = stepSetService.createStepSet("Stepset B", "Role B", business2);
+        log.info("Preloaded step_sets");
 
 
 

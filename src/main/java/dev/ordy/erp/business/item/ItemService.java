@@ -58,6 +58,11 @@ public class ItemService {
                 .orElseThrow(() -> new RuntimeException("Item not found with id: " + itemId));
     }
 
+    public List<Item> getItemsByBusiness(Long businessId) {
+        return itemRepository.findByBusinessId(businessId);
+    }
+
+
     @Transactional(readOnly = true)
     public List<Item> getAllItems() {
         return itemRepository.findAll();

@@ -33,6 +33,11 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
+    public List<Account> getAccountsByBusiness(Long businessId) {
+        return accountRepository.findByBusinessId(businessId);
+    }
+
+
     public Account getAccountById(Long id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(id));

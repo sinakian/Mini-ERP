@@ -1,12 +1,10 @@
-package dev.ordy.erp.business.step;
+package dev.ordy.erp.business.step_set;
 
 
 import dev.ordy.erp.business.business.Business;
 import dev.ordy.erp.business.business.BusinessService;
 import dev.ordy.erp.finance.itemPrice.ItemPriceService;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItemService;
-import io.micrometer.common.lang.NonNull;
-
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,20 +12,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Component
-public class StepEventListener implements ApplicationListener<StepCreateEvent> {
+public class StepSetEventListener implements ApplicationListener<StepSetCreateEvent> {
 
     private final BusinessService businessService;
 
 
 
-    public StepEventListener(ItemPriceService itemPriceService, InventoryItemService inventoryItemService, BusinessService businessService) {
+    public StepSetEventListener(ItemPriceService itemPriceService, InventoryItemService inventoryItemService, BusinessService businessService) {
         this.businessService = businessService;
     }
 
     @Transactional
-    public void onApplicationEvent(StepCreateEvent event) {
-        Step step = event.getStep();
-        Long businessId = step.getBusiness().getId();
+    public void onApplicationEvent(StepSetCreateEvent event) {
+        StepSet stepSet = event.getStepSet();
+        Long businessId = stepSet.getBusiness().getId();
         Optional<Business> optionalBusiness=businessService.getBusinessById(businessId);
 
         if (optionalBusiness.isPresent()) {

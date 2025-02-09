@@ -14,13 +14,12 @@ class ItemController {
         this.itemService = itemService;
     }
 
-    // Aggregate root
-    // tag::get-aggregate-root[]
+
     @GetMapping
-    List<Item> all() {
-        return itemService.getAllItems();
+    public List<Item> getItemsByBusiness(@RequestParam Long businessId) {
+        return itemService.getItemsByBusiness(businessId);
     }
-    // end::get-aggregate-root[]
+
 
     @PostMapping
     Item newItem(@RequestBody Item newItem) {

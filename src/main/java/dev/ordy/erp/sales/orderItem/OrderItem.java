@@ -40,7 +40,7 @@ public class OrderItem {
     private double quantity;
 
     @ManyToOne
-    @JoinColumn(name = "item_price_id", nullable = false)
+    @JoinColumn(name = "item_price_id") //Change in Production to nullable = false
     private ItemPrice itemPrice;
 
     private double pricePerUnit;

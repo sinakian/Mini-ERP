@@ -1,5 +1,7 @@
 package dev.ordy.erp.inventory.inventoryItem;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import dev.ordy.erp.business.business.Business;
 import dev.ordy.erp.business.item.Item;
 import dev.ordy.erp.inventory.inventory.Inventory;
 import dev.ordy.erp.common.Unit;
@@ -26,8 +28,12 @@ public class InventoryItem {
 
     @ManyToOne
     @JoinColumn(name = "inventory_id", nullable = false)
-
     private Inventory inventory;
+
+    @ManyToOne
+    @JoinColumn(name = "business_id", nullable = false)
+    @JsonBackReference
+    private Business business;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
@@ -56,8 +62,9 @@ public class InventoryItem {
 
     public InventoryItem() {}
 
-    public InventoryItem(Inventory inventory, Item item, double realBalance, double availableBalance, Unit unit, String name, String role) {
+    public InventoryItem(Inventory inventory,Business business, Item item, double realBalance, double availableBalance, Unit unit, String name, String role) {
         this.inventory = inventory;
+        this.business = business;
         this.item = item;
         this.realBalance = realBalance;
         this.availableBalance = availableBalance;
@@ -72,6 +79,10 @@ public class InventoryItem {
 
     public Inventory getInventory() {
         return this.inventory;
+    }
+
+    public Business getBusiness() {
+        return this.business;
     }
 
     public Item getItem() {
@@ -120,6 +131,10 @@ public class InventoryItem {
 
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
+    }
+
+    public void setBusiness(Business business) {
+        this.business = business;
     }
 
     public void setItem(Item item) {

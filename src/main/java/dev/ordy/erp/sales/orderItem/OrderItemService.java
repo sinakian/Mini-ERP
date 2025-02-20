@@ -40,4 +40,8 @@ public class OrderItemService {
     public void deleteOrderItem(Long id) {
         orderItemRepository.deleteById(id);
     }
+
+    public List<OrderItem> createOrderItems(List<OrderItem> orderItems) {
+        return orderItemRepository.saveAll(orderItems);
+    }
 }

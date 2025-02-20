@@ -133,7 +133,11 @@ public class LoadBusinessDatabase {
 
         // Item Entities
         Item item1 = itemService.createItem("Item A", "Role A", business1, InventoryPolicy.FLEXIBLE, ItemType.PRODUCT, Unit.KILOGRAM);
-        Item item2 = itemService.createItem("Item B", "Role B", business2,  InventoryPolicy.FLEXIBLE,ItemType.SERVICE, Unit.KILOGRAM);
+        Item item2 = itemService.createItem("Tomato", "Role B", business2,  InventoryPolicy.FLEXIBLE,ItemType.SERVICE, Unit.KILOGRAM);
+        Item item3 = itemService.createItem("Banana", "Role A", business1, InventoryPolicy.FLEXIBLE, ItemType.PRODUCT, Unit.KILOGRAM);
+        Item item4 = itemService.createItem("Apple", "Role B", business2,  InventoryPolicy.FLEXIBLE,ItemType.SERVICE, Unit.KILOGRAM);
+        Item item5 = itemService.createItem("Grape", "Role A", business1, InventoryPolicy.FLEXIBLE, ItemType.PRODUCT, Unit.KILOGRAM);
+        Item item6 = itemService.createItem("Orange", "Role B", business2,  InventoryPolicy.FLEXIBLE,ItemType.SERVICE, Unit.KILOGRAM);
         log.info("Preloaded items");
 
         // Step Entities
@@ -210,6 +214,7 @@ public class LoadBusinessDatabase {
         // InventoryItem Entities
         InventoryItem inventoryItem1 = new InventoryItem(
                 inventory1,
+                business1,
                 item1,
                 100.0,
                 80.0,
@@ -220,6 +225,7 @@ public class LoadBusinessDatabase {
 
         InventoryItem inventoryItem2 = new InventoryItem(
                 inventory2,
+                business2,
                 item2,
                 200.0,
                 150.0,

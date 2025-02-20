@@ -42,7 +42,7 @@ public class ItemEventListener implements ApplicationListener<ItemCreateEvent> {
             // Create Item Price
             ItemPrice itemPrice = itemPriceService.createItemPrice(item, 0.0, item.getUnit(),business.getCurrency());
             // Create inventory item
-            InventoryItem inventoryItem= new InventoryItem(defaultProductInventory,item,0,0,item.getUnit(),item.getName(), item.getRole());
+            InventoryItem inventoryItem= new InventoryItem(defaultProductInventory,item.getBusiness(),item,0,0,item.getUnit(),item.getName(), item.getRole());
             inventoryItemService.createInventoryItem(inventoryItem);
         } else {
             // Handle the case where the business is not found

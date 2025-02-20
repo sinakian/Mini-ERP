@@ -24,6 +24,12 @@ public class OrderItemController {
         return orderItemService.createOrderItem(newOrderItem);
     }
 
+    @PostMapping("/bulk")
+    public List<OrderItem> createOrderItems(@RequestBody List<OrderItem> orderItems) {
+        return orderItemService.createOrderItems(orderItems);
+    }
+
+
     @GetMapping("/{id}")
     public OrderItem one(@PathVariable Long id) {
         return orderItemService.getOrderItemById(id)

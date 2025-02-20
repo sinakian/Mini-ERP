@@ -86,8 +86,7 @@ public class InventoryItemService {
     }
 
 
-
-
-
-
+    public List<InventoryItem> getItemsByBusiness(Long businessId) {
+        return inventoryItemRepository.findByBusinessId(businessId);
+    }
 }

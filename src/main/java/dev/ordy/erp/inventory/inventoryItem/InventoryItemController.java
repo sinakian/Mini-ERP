@@ -15,8 +15,8 @@ public class InventoryItemController {
     }
 
     @GetMapping
-    public List<InventoryItem> all() {
-        return inventoryItemService.getAllInventoryItems();
+    public List<InventoryItem> getInventoryItemsByBusiness(@RequestParam Long businessId) {
+        return inventoryItemService.getItemsByBusiness(businessId);
     }
 
     @PostMapping

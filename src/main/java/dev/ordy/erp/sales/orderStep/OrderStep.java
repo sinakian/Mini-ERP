@@ -1,8 +1,9 @@
-package dev.ordy.erp.business.step_set;
+package dev.ordy.erp.sales.orderStep;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.ordy.erp.business.business.Business;
+import dev.ordy.erp.sales.order.Order;
+import dev.ordy.erp.business.step.Step;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -11,24 +12,29 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
-
 
 @Entity
-@Table(name = "STEP_SET")
+@Table(name = "ORDER_STEP")
 @EntityListeners(AuditingEntityListener.class)
-public class StepSet {
+public class OrderStep {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String role;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "business_id", nullable = false)
     private Business business;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "step_id", nullable = false)
+    private Step step;
+
+    private boolean isCompleted;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -42,24 +48,42 @@ public class StepSet {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    StepSet() {}
+    public OrderStep() {}
 
-    public StepSet(String name, String role, Business business) {
-        this.name = name;
-        this.role = role;
+    public OrderStep(Business business,
+                     Order order,
+                     Step step,
+                     boolean isCompleted,
+                     String createdBy
+    ) {
         this.business = business;
+        this.order = order;
+        this.step = step;
+        this.isCompleted = isCompleted;
+        this.createdBy = createdBy;
+
     }
+
+
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
-    public String getName() {
-        return this.name;
+    public Business getBusiness() {
+        return business;
     }
 
-    public String getRole() {
-        return this.role;
+    public Order getOrder() {
+        return order;
+    }
+
+    public Step getStep() {
+        return step;
+    }
+
+    public Boolean getIscompleted(){
+        return isCompleted;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -78,41 +102,19 @@ public class StepSet {
         return lastModifiedBy;
     }
 
-    public Business getBusiness() {
-        return business;
+
+    public void setBusiness(Business business) { this.business = business;
     }
 
-    public void setBusiness(Business business) {
-        this.business = business;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setStep(Step step) {
+        this.step=step;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.name, this.role);
-    }
-
-    @Override
-    public String toString() {
-        return "Item{" + "id=" + id +
-                ", name='" + name + '\'' +
-                ", role='" + role + '\'' +
-                ", businessId=" + (business != null ? business.getId() : null) +
-                ", businessName=" + (business != null ? business.getName() : null) +
-                '}';
+    public void setIsCompleted(boolean isCompleted){
+        this.isCompleted=isCompleted;
     }
 }

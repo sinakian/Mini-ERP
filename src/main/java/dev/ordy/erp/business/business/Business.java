@@ -2,6 +2,7 @@ package dev.ordy.erp.business.business;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import dev.ordy.erp.business.step_set.StepSet;
 import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.inventory.inventory.Inventory;
 import jakarta.persistence.*;
@@ -40,6 +41,11 @@ public class Business {
     @JsonManagedReference
     private Inventory defaultMaterialInventory;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "step_set_id", nullable = true)
+    @JsonManagedReference
+    private StepSet defaultStepSet;
+
     @CreatedDate
     private LocalDateTime createdDate;
 
@@ -56,13 +62,14 @@ public class Business {
 
     Business() {}
 
-    public Business(String name, String role,Currency currency,Inventory defaultMaterialInventory,Inventory defaultProductInventory) {
+    public Business(String name, String role,Currency currency,Inventory defaultMaterialInventory,Inventory defaultProductInventory,StepSet defaultStepSet) {
 
         this.name = name;
         this.role = role;
         this.currency=currency;
         this.defaultMaterialInventory=defaultMaterialInventory;
         this.defaultProductInventory=defaultProductInventory;
+        this.defaultStepSet=defaultStepSet;
     }
 
     public Long getId() {
@@ -87,6 +94,7 @@ public class Business {
     public Inventory getDefaultMaterialInventory() {
         return defaultMaterialInventory;
     }
+    public StepSet getDefaultStepSet() {return defaultStepSet;}
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
@@ -125,6 +133,9 @@ public class Business {
     }
     public void setDefaultMaterialInventory(Inventory defaultMaterialInventory) {
         this.defaultMaterialInventory = defaultMaterialInventory;
+    }
+    public void setDefaultStepSet(StepSet defaultStepSet){
+        this.defaultStepSet = defaultStepSet;
     }
 
 

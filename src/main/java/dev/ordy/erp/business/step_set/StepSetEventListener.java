@@ -18,7 +18,7 @@ public class StepSetEventListener implements ApplicationListener<StepSetCreateEv
 
 
 
-    public StepSetEventListener(ItemPriceService itemPriceService, InventoryItemService inventoryItemService, BusinessService businessService) {
+    public StepSetEventListener(BusinessService businessService) {
         this.businessService = businessService;
     }
 

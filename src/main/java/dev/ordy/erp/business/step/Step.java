@@ -1,6 +1,8 @@
 package dev.ordy.erp.business.step;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.ordy.erp.business.business.Business;
+import dev.ordy.erp.business.step_set.StepSet;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,6 +29,10 @@ public class Step {
     @JoinColumn(name = "business_id", nullable = false)
     private Business business;
 
+    @ManyToOne
+    @JoinColumn(name = "stepSet_id", nullable = false)
+    private StepSet stepSet;
+
     @CreatedDate
     private LocalDateTime createdDate;
 
@@ -41,10 +47,11 @@ public class Step {
 
     Step() {}
 
-    public Step(String name, String role, Business business) {
+    public Step(String name, String role, Business business,StepSet stepSet) {
         this.name = name;
         this.role = role;
         this.business = business;
+        this.stepSet=stepSet;
     }
 
     public Long getId() {
@@ -79,9 +86,13 @@ public class Step {
         return business;
     }
 
+    public StepSet getStepSet() { return  stepSet;}
+
     public void setBusiness(Business business) {
         this.business = business;
     }
+
+    public void setStepSet(StepSet stepSet) {this.stepSet = stepSet; }
 
     public void setId(Long id) {
         this.id = id;

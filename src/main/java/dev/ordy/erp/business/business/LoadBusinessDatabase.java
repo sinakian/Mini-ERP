@@ -6,8 +6,6 @@ import dev.ordy.erp.business.account.enums.AccountType;
 import dev.ordy.erp.business.item.*;
 import dev.ordy.erp.business.item.enums.InventoryPolicy;
 import dev.ordy.erp.business.item.enums.ItemType;
-import dev.ordy.erp.business.step.Step;
-import dev.ordy.erp.business.step_set.StepSet;
 import dev.ordy.erp.business.step_set.StepSetService;
 import dev.ordy.erp.common.*;
 import dev.ordy.erp.common.Currency;
@@ -26,15 +24,14 @@ import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransaction;
 import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransactionRepository;
 import dev.ordy.erp.sales.order.Order;
 import dev.ordy.erp.sales.order.OrderRepository;
+import dev.ordy.erp.sales.order.OrderService;
 import dev.ordy.erp.sales.orderItem.OrderItem;
 import dev.ordy.erp.sales.orderItem.OrderItemRepository;
 import dev.ordy.erp.supply.supplyRequest.SupplyRequest;
 import dev.ordy.erp.supply.supplyRequest.SupplyRequestRepository;
 import dev.ordy.erp.supply.supplyRequestItem.SupplyRequestItem;
 import dev.ordy.erp.supply.supplyRequestItem.SupplyRequestItemRepository;
-import dev.ordy.erp.user_management.user.UserRepository;
 import dev.ordy.erp.user_management.user.UserService;
-import dev.ordy.erp.user_management.user.Users;
 import dev.ordy.erp.business.step.StepService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +59,7 @@ public class LoadBusinessDatabase {
             InventoryRequestRepository inventoryRequestRepository,
             InventoryRequestItemRepository inventoryRequestItemRepository,
             InventoryTransactionRepository inventoryTransactionRepository,
-            OrderRepository orderRepository,
+            OrderService orderService,
             OrderItemRepository orderItemRepository,
             SupplyRequestRepository supplyRequestRepository,
             UserService userService,
@@ -80,7 +77,7 @@ public class LoadBusinessDatabase {
                 inventoryRequestRepository,
                 inventoryRequestItemRepository,
                 inventoryTransactionRepository,
-                orderRepository,
+                orderService,
                 orderItemRepository,
                 supplyRequestRepository,
                 supplyRequestItemRepository,
@@ -101,7 +98,7 @@ public class LoadBusinessDatabase {
             InventoryRequestRepository inventoryRequestRepository,
             InventoryRequestItemRepository inventoryRequestItemRepository,
             InventoryTransactionRepository inventoryTransactionRepository,
-            OrderRepository orderRepository,
+            OrderService orderService,
             OrderItemRepository orderItemRepository,
             SupplyRequestRepository supplyRequestRepository,
             SupplyRequestItemRepository supplyRequestItemRepository,
@@ -117,10 +114,11 @@ public class LoadBusinessDatabase {
         log.info("user is .."+userService.findByUsername("sina").getUsername());
 
         // Business Entities
-        Business business1 = new Business("Gorilla Corporation", "Manufacturer",Currency.TOMAN,null,null);
-        Business business2 = new Business("Wayne Enterprises", "Conglomerate",Currency.TOMAN,null,null);
+        Business business1 = new Business("Gorilla Corporation", "Manufacturer",Currency.TOMAN,null,null,null);
+        Business business2 = new Business("Wayne Enterprises", "Conglomerate",Currency.TOMAN,null,null,null);
         businessService.createBusiness(business1);
         businessService.createBusiness(business2);
+
         log.info("Preloaded businesses");
 
         // Account Entities
@@ -140,15 +138,10 @@ public class LoadBusinessDatabase {
         Item item6 = itemService.createItem("Orange", "Role B", business2,  InventoryPolicy.FLEXIBLE,ItemType.SERVICE, Unit.KILOGRAM);
         log.info("Preloaded items");
 
-        // Step Entities
-        Step step1 = stepService.createStep("Step A", "Role A", business1);
-        Step step2 = stepService.createStep("Step B", "Role B", business2);
-        log.info("Preloaded steps");
 
-        // Step_set Entities
-        StepSet stepset1 = stepSetService.createStepSet("Stepset A", "Role A", business1);
-        StepSet stepset2 = stepSetService.createStepSet("Stepset B", "Role B", business2);
-        log.info("Preloaded step_sets");
+
+
+
 
 
 
@@ -352,8 +345,8 @@ public class LoadBusinessDatabase {
                 Order.OrderStatus.INVOICE
         );
 
-        orderRepository.save(order1);
-        orderRepository.save(order2);
+        orderService.createOrder(order1);
+        orderService.createOrder(order2);
         log.info("Preloaded orders");
 
 

@@ -4,6 +4,7 @@ package dev.ordy.erp.business.business;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import dev.ordy.erp.business.step_set.StepSet;
 
 import java.util.Optional;
 
@@ -23,6 +24,12 @@ public class BusinessService {
         Business savedBusiness = businessRepository.save(business);
         eventPublisher.publishEvent(new BusinessCreateEvent(this, savedBusiness));
         return savedBusiness;
+    }
+
+    @Transactional
+    public Business setDefaultStepset(Business business, StepSet stepSet) {
+        business.setDefaultStepSet(stepSet); // Assuming this setter exists
+        return businessRepository.save(business);
     }
 
     public Optional<Business> getBusinessById(Long id) {

@@ -3,17 +3,21 @@ package dev.ordy.erp.sales.order;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository,
+                        ApplicationEventPublisher eventPublisher
+                        ) {
         this.orderRepository = orderRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional(readOnly = true)
@@ -29,7 +33,9 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(Order order) {
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        eventPublisher.publishEvent(new OrderCreateEvent(this, savedOrder));
+        return savedOrder;
     }
 
     @Transactional

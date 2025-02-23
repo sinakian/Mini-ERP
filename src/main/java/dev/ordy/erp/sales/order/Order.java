@@ -35,6 +35,7 @@ public class Order {
     @JoinColumn(name = "customer_id", nullable = false)
     private Account customer;
 
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -63,10 +64,18 @@ public class Order {
 
     public Order() {}
 
-    public Order(Business business, Account customer,
-                 double totalItemPrice, double totalLogisticPrice,
-                 double discountInPercent, double discountInCurrency,double total,
-                 Currency currency, String paymentType, String createdBy, OrderStatus orderStatus) {
+    public Order(Business business,
+                 Account customer,
+                 double totalItemPrice,
+                 double totalLogisticPrice,
+                 double discountInPercent,
+                 double discountInCurrency,
+                 double total,
+                 Currency currency,
+                 String paymentType,
+                 String createdBy,
+                 OrderStatus orderStatus
+    ) {
         this.business = business;
         this.customer = customer;
         this.totalItemPrice = totalItemPrice;

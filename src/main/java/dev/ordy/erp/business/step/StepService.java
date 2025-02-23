@@ -1,6 +1,8 @@
 package dev.ordy.erp.business.step;
 
 import dev.ordy.erp.business.business.Business;
+import dev.ordy.erp.business.step_set.StepSet;
+import dev.ordy.erp.sales.orderItem.OrderItem;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +22,14 @@ public class StepService {
     }
 
     @Transactional
-    public Step createStep(String name, String role, Business business) {
-        Step step = new Step(name, role, business);
+    public Step createStep(String name, String role, Business business, StepSet stepSet) {
+        Step step = new Step(name, role, business,stepSet);
         stepRepository.save(step);
         eventPublisher.publishEvent(new StepCreateEvent(this,step));
         return step;
     }
+
+
 
     @Transactional
     public void deleteStep(Long stepId) {
@@ -58,5 +62,11 @@ public class StepService {
     }
 
 
+    public List<Step> getStepsByBusinessId(Long businessId) {
+        return stepRepository.findByBusinessId(businessId);
+    }
 
+    public List<Step> getStepsByStepSetId(Long stepSetId) {
+        return stepRepository.findByStepSetId(stepSetId);
+    }
 }

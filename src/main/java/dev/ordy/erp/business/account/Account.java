@@ -3,6 +3,7 @@ package dev.ordy.erp.business.account;
 import java.util.Objects;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.ordy.erp.business.account.enums.AccountCategory;
 import dev.ordy.erp.business.account.enums.AccountType;
 import dev.ordy.erp.common.Gender;

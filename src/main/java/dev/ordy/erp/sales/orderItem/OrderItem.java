@@ -1,5 +1,6 @@
 package dev.ordy.erp.sales.orderItem;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.ordy.erp.sales.order.Order;
 import dev.ordy.erp.business.business.Business;
 import dev.ordy.erp.common.Unit;
@@ -88,7 +89,7 @@ public class OrderItem {
         this.createdBy = createdBy;
     }
 
-    // Add Getter Methods
+
 
     public Long getId() {
         return id;

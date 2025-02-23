@@ -20,6 +20,14 @@ public class StepSetService {
     }
 
     @Transactional
+    public StepSet createDefaultStepSet(Business business) {
+        StepSet stepSet= new StepSet("Default","Admin",business);
+        stepSetRepository.save(stepSet);
+        return stepSet;
+
+    }
+
+    @Transactional
     public StepSet createStepSet(String name, String role, Business business) {
         StepSet stepSet = new StepSet(name, role, business);
         stepSetRepository.save(stepSet);
@@ -31,7 +39,6 @@ public class StepSetService {
     public void deleteStepSet(Long stepId) {
         stepSetRepository.deleteById(stepId);
     }
-
 
     @Transactional(readOnly = true)
     public StepSet getStepSetById(Long stepId) {

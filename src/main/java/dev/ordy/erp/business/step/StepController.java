@@ -14,17 +14,14 @@ class StepController {
         this.stepService = stepService;
     }
 
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping
-    List<Step> all() {
-        return stepService.getAllSteps();
+    public List<Step> getStepsByBusinessId(@RequestParam Long businessId) {
+        return stepService.getStepsByBusinessId(businessId);
     }
-    // end::get-aggregate-root[]
 
     @PostMapping
     Step newStep(@RequestBody Step newStep) {
-        return stepService.createStep(newStep.getName(), newStep.getRole(), newStep.getBusiness());
+        return stepService.createStep(newStep.getName(), newStep.getRole(), newStep.getBusiness(),newStep.getStepSet());
     }
 
 

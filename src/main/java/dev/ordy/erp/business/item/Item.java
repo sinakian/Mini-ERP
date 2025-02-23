@@ -1,5 +1,6 @@
 package dev.ordy.erp.business.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.ordy.erp.business.item.enums.InventoryPolicy;
 import dev.ordy.erp.business.item.enums.ItemType;
 import dev.ordy.erp.common.Unit;

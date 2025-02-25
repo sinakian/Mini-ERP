@@ -34,7 +34,7 @@ public class StepEventListener implements ApplicationListener<StepCreateEvent> {
             Business business = optionalBusiness.get();
         } else {
             // Handle the case where the business is not found
-            System.err.println("Business not found for ID: " + businessId);
+            System.err.println("BusinessSettings not found for ID: " + businessId);
         }
 
         // Log a message

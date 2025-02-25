@@ -29,9 +29,6 @@ public class AccountService {
         return account;
     }
 
-    public List<Account> getAllAccounts() {
-        return accountRepository.findAll();
-    }
 
     public List<Account> getAccountsByBusiness(Long businessId) {
         return accountRepository.findByBusinessId(businessId);

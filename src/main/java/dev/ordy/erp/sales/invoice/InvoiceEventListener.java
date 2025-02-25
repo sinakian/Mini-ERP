@@ -1,5 +1,6 @@
 package dev.ordy.erp.sales.invoice;
 
+import dev.ordy.erp.business.business_settings.BusinessSettingsService;
 import dev.ordy.erp.common.FinancialStatus;
 import dev.ordy.erp.finance.financialReceipt.FinancialReceipt;
 import dev.ordy.erp.finance.financialReceipt.FinancialReceiptService;
@@ -28,16 +29,23 @@ public class InvoiceEventListener implements ApplicationListener<InvoiceCreateEv
     private final FinancialReceiptService financialReceiptService;
     private final FinancialTransactionService financialTransactionService;
     private final InvoiceItemService invoiceItemService;
+    private final BusinessSettingsService businessSettingsService;
 
-    public InvoiceEventListener(OrderService orderService, InventoryRequestService inventoryRequestService,
-                                InventoryRequestItemService inventoryRequestItemService, FinancialReceiptService financialReceiptService,
-                                FinancialTransactionService financialTransactionService, InvoiceItemService invoiceItemService) {
+    public InvoiceEventListener(OrderService orderService,
+                                InventoryRequestService inventoryRequestService,
+                                InventoryRequestItemService inventoryRequestItemService,
+                                FinancialReceiptService financialReceiptService,
+                                FinancialTransactionService financialTransactionService,
+                                InvoiceItemService invoiceItemService,
+                                BusinessSettingsService businessSettingsService
+    ) {
         this.orderService = orderService;
         this.inventoryRequestService = inventoryRequestService;
         this.inventoryRequestItemService = inventoryRequestItemService;
         this.financialReceiptService = financialReceiptService;
         this.financialTransactionService = financialTransactionService;
         this.invoiceItemService = invoiceItemService;
+        this.businessSettingsService = businessSettingsService;
     }
 
     @Override
@@ -45,6 +53,8 @@ public class InvoiceEventListener implements ApplicationListener<InvoiceCreateEv
     public void onApplicationEvent(InvoiceCreateEvent event) {
 
         Invoice invoice = event.getInvoice();
+        Long businessId = invoice.getBusiness().getId();
+
         try {
             // update order status to invoice
             Long orderId = invoice.getOrder().getId();
@@ -56,7 +66,7 @@ public class InvoiceEventListener implements ApplicationListener<InvoiceCreateEv
             // create an inventory Request
             InventoryRequest inventoryRequest = new InventoryRequest(
                     invoice.getBusiness(),
-                    invoice.getBusiness().getDefaultProductInventory(),
+                    businessSettingsService.getDefaultSettings(businessId).getDefaultProductInventory(),
                     0.0,
                     null,
                     null,

@@ -28,24 +28,6 @@ public class Business {
     private String name;
     private String role;
 
-    @Enumerated(EnumType.STRING)
-    private Currency currency;
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_inventory_id", nullable = true)
-    @JsonManagedReference
-    private Inventory defaultProductInventory;
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "material_inventory_id", nullable = true)
-    @JsonManagedReference
-    private Inventory defaultMaterialInventory;
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "step_set_id", nullable = true)
-    @JsonManagedReference
-    private StepSet defaultStepSet;
-
     @CreatedDate
     private LocalDateTime createdDate;
 
@@ -58,18 +40,12 @@ public class Business {
     @LastModifiedBy
     private String lastModifiedBy;
 
-
-
     Business() {}
 
-    public Business(String name, String role,Currency currency,Inventory defaultMaterialInventory,Inventory defaultProductInventory,StepSet defaultStepSet) {
+    public Business(String name, String role) {
 
         this.name = name;
         this.role = role;
-        this.currency=currency;
-        this.defaultMaterialInventory=defaultMaterialInventory;
-        this.defaultProductInventory=defaultProductInventory;
-        this.defaultStepSet=defaultStepSet;
     }
 
     public Long getId() {
@@ -83,18 +59,6 @@ public class Business {
     public String getRole() {
         return this.role;
     }
-
-    public Currency getCurrency() {
-        return this.currency;
-    }
-
-    public Inventory getDefaultProductInventory() {
-        return defaultProductInventory;
-    }
-    public Inventory getDefaultMaterialInventory() {
-        return defaultMaterialInventory;
-    }
-    public StepSet getDefaultStepSet() {return defaultStepSet;}
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
@@ -112,7 +76,6 @@ public class Business {
         return lastModifiedBy;
     }
 
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -125,18 +88,6 @@ public class Business {
         this.role = role;
     }
 
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
-    public void setDefaultProductInventory(Inventory defaultProductInventory) {
-        this.defaultProductInventory = defaultProductInventory;
-    }
-    public void setDefaultMaterialInventory(Inventory defaultMaterialInventory) {
-        this.defaultMaterialInventory = defaultMaterialInventory;
-    }
-    public void setDefaultStepSet(StepSet defaultStepSet){
-        this.defaultStepSet = defaultStepSet;
-    }
 
 
     @Override
@@ -158,11 +109,9 @@ public class Business {
 
     @Override
     public String toString() {
-        return "Business{" + "id=" + this.id +
+        return "BusinessSettings{" + "id=" + this.id +
                 ", name='" + this.name + '\'' +
                 ", role='" + this.role + '\'' +
-                ", default product inventory='" + this.defaultProductInventory +
-                ", default material inventory='" + this.defaultMaterialInventory +
                 '}';
     }
 }

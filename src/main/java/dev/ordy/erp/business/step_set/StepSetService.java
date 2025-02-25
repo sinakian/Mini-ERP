@@ -21,10 +21,14 @@ public class StepSetService {
 
     @Transactional
     public StepSet createDefaultStepSet(Business business) {
-        StepSet stepSet= new StepSet("Default","Admin",business);
-        stepSetRepository.save(stepSet);
-        return stepSet;
-
+        StepSet stepSet = new StepSet("Default", "Admin", business);
+        StepSet savedStepSet = stepSetRepository.save(stepSet);
+        if (savedStepSet.getId() != null) {
+            System.out.println("StepSet created successfully with ID: " + savedStepSet.getId());
+        } else {
+            System.out.println("Failed to create StepSet.");
+        }
+        return savedStepSet;
     }
 
     @Transactional

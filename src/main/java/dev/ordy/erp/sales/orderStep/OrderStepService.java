@@ -81,7 +81,7 @@ public class OrderStepService {
     public List<OrderStep> createOrderSteps(Long businessId, Long orderId, Long stepSetId) {
         // Fetch business and order to ensure they exist
         Business business = businessService.getBusinessById(businessId)
-                .orElseThrow(() -> new EntityNotFoundException("Business not found"));
+                .orElseThrow(() -> new EntityNotFoundException("BusinessSettings not found"));
 
         Order order = orderService.getOrderById(orderId);
 

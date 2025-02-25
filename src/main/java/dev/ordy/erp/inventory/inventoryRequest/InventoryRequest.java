@@ -1,6 +1,6 @@
 package dev.ordy.erp.inventory.inventoryRequest;
 
-import dev.ordy.erp.business.business.Business; // Assuming you have a Business class in the business package
+import dev.ordy.erp.business.business.Business; // Assuming you have a BusinessSettings class in the business package
 import dev.ordy.erp.inventory.inventory.Inventory;
 
 import jakarta.persistence.*;

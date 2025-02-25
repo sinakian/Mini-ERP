@@ -26,11 +26,7 @@ public class BusinessService {
         return savedBusiness;
     }
 
-    @Transactional
-    public Business setDefaultStepset(Business business, StepSet stepSet) {
-        business.setDefaultStepSet(stepSet); // Assuming this setter exists
-        return businessRepository.save(business);
-    }
+
 
     public Optional<Business> getBusinessById(Long id) {
         return businessRepository.findById(id);
@@ -39,12 +35,9 @@ public class BusinessService {
     public void updateBusiness(Long id, Business updatedBusiness) {
         businessRepository.findById(id).map(business -> {
             business.setName(updatedBusiness.getName());
-            business.setCurrency(updatedBusiness.getCurrency());
-            business.setDefaultProductInventory(updatedBusiness.getDefaultProductInventory());
-            business.setDefaultMaterialInventory(updatedBusiness.getDefaultMaterialInventory());
             business.setRole(updatedBusiness.getRole());
 
             return businessRepository.save(business);
-        }).orElseThrow(() -> new RuntimeException("Business not found with id " + id));
+        }).orElseThrow(() -> new RuntimeException("BusinessSettings not found with id " + id));
     }
 }

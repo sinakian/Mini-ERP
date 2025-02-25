@@ -1,5 +1,6 @@
 package dev.ordy.erp.sales.order;
 
+import dev.ordy.erp.business.business_settings.BusinessSettingsService;
 import dev.ordy.erp.sales.orderStep.OrderStep;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -13,11 +14,14 @@ import java.util.List;
 public class OrderEventListener implements ApplicationListener<OrderCreateEvent> {
 
     private final OrderStepService orderStepService;
+    private final BusinessSettingsService businessSettingsService;
 
     public OrderEventListener(OrderService orderService,
-                              OrderStepService orderStepService
-                               ) {
+                              OrderStepService orderStepService,
+                              BusinessSettingsService businessSettingsService
+    ) {
         this.orderStepService = orderStepService;
+        this.businessSettingsService = businessSettingsService;
     }
 
     @Override
@@ -28,8 +32,8 @@ public class OrderEventListener implements ApplicationListener<OrderCreateEvent>
         try {
             // update order status to invoice
             Long orderId = order.getId();
-            Long stepSetId = order.getBusiness().getDefaultStepSet().getId();
             Long businessId = order.getBusiness().getId();
+            Long stepSetId = businessSettingsService.getDefaultSettings(businessId).getDefaultStepSet().getId();
 
             // Create Order Steps
             List<OrderStep> orderSteps = orderStepService.createOrderSteps(businessId,orderId,stepSetId);

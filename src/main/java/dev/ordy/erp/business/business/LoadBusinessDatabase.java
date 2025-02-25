@@ -3,6 +3,7 @@ package dev.ordy.erp.business.business;
 import dev.ordy.erp.business.account.*;
 import dev.ordy.erp.business.account.enums.AccountCategory;
 import dev.ordy.erp.business.account.enums.AccountType;
+import dev.ordy.erp.business.business_settings.BusinessSettingsService;
 import dev.ordy.erp.business.item.*;
 import dev.ordy.erp.business.item.enums.InventoryPolicy;
 import dev.ordy.erp.business.item.enums.ItemType;
@@ -23,7 +24,6 @@ import dev.ordy.erp.inventory.inventoryRequestItem.InventoryRequestItemRepositor
 import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransaction;
 import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransactionRepository;
 import dev.ordy.erp.sales.order.Order;
-import dev.ordy.erp.sales.order.OrderRepository;
 import dev.ordy.erp.sales.order.OrderService;
 import dev.ordy.erp.sales.orderItem.OrderItem;
 import dev.ordy.erp.sales.orderItem.OrderItemRepository;
@@ -65,7 +65,9 @@ public class LoadBusinessDatabase {
             UserService userService,
             StepService stepService,
             StepSetService stepSetService,
-            SupplyRequestItemRepository supplyRequestItemRepository) {
+            SupplyRequestItemRepository supplyRequestItemRepository,
+            BusinessSettingsService businessSettingsService
+            ) {
 
         return args -> loadData(
                 accountService,
@@ -84,7 +86,9 @@ public class LoadBusinessDatabase {
                 userService,
                 businessService,
                 stepService ,
-                stepSetService);
+                stepSetService,
+                businessSettingsService
+                );
     }
 
     @Transactional
@@ -105,7 +109,9 @@ public class LoadBusinessDatabase {
             UserService userService,
             BusinessService businessService,
             StepService stepService,
-            StepSetService stepSetService) {
+            StepSetService stepSetService,
+            BusinessSettingsService businessSettingsService
+    ) {
 
         //user
         userService.createUser("sina","123",null);
@@ -113,13 +119,34 @@ public class LoadBusinessDatabase {
         log.info("Now getting user");
         log.info("user is .."+userService.findByUsername("sina").getUsername());
 
-        // Business Entities
-        Business business1 = new Business("Gorilla Corporation", "Manufacturer",Currency.TOMAN,null,null,null);
-        Business business2 = new Business("Wayne Enterprises", "Conglomerate",Currency.TOMAN,null,null,null);
+        // BusinessSettings Entities
+        Business business1 = new Business("Gorilla Corporation", "Manufacturer");
+        Business business2 = new Business("Wayne Enterprises", "Conglomerate");
         businessService.createBusiness(business1);
         businessService.createBusiness(business2);
-
         log.info("Preloaded businesses");
+
+        //Inventory
+        Inventory inventory1 = new Inventory(
+                business1,
+                Inventory.InventoryType.PRODUCT,
+                "Main Warehouse",
+                "Storage"
+        );
+
+        Inventory inventory2 = new Inventory(
+                business2,
+                Inventory.InventoryType.PRODUCT,
+                "Retail Store",
+                "Sales"
+        );
+
+
+        inventoryRepository.save(inventory1);
+        inventoryRepository.save(inventory2);
+        log.info("Preloaded inventories");
+
+
 
         // Account Entities
         Account account1 = new Account("John", "Doe", "John Doe", "Customer", business1, AccountType.LEGAL, AccountCategory.CUSTOMER, Gender.MALE);
@@ -138,70 +165,6 @@ public class LoadBusinessDatabase {
         Item item6 = itemService.createItem("Orange", "Role B", business2,  InventoryPolicy.FLEXIBLE,ItemType.SERVICE, Unit.KILOGRAM);
         log.info("Preloaded items");
 
-
-
-
-
-
-
-
-        //Financial Transaction
-//        FinancialTransaction transaction1 = new FinancialTransaction(
-//                FinancialTransactionType.CREDIT,
-//                TransactionReferenceType.CREDIT_RECEIPT,
-//                Currency.TOMAN,
-//                account1,
-//                500.0,
-//                1000.0,
-//                BalanceStatus.DEBT,
-//                1500.0,
-//                BalanceStatus.CREDIT,
-//                "REF12345"
-//        );
-//
-//        FinancialTransaction transaction2 = new FinancialTransaction(
-//                FinancialTransactionType.DEBT,
-//                TransactionReferenceType.DEBT_RECEIPT,
-//                Currency.TOMAN,
-//                account2,
-//                300.0,
-//                1500.0,
-//                BalanceStatus.CREDIT,
-//                1200.0,
-//                BalanceStatus.CREDIT,
-//                "REF67890"
-//        );
-//
-//        financialTransactionRepository.save(transaction1);
-//        financialTransactionRepository.save(transaction2);
-//        log.info("Preloaded financial transactions");
-
-
-        //Inventory
-        Inventory inventory1 = new Inventory(
-                business1,
-                Inventory.InventoryType.PRODUCT,
-                "Main Warehouse",
-                "Storage"
-        );
-
-
-        Inventory inventory2 = new Inventory(
-                business2,
-                Inventory.InventoryType.PRODUCT,
-                "Retail Store",
-                "Sales"
-        );
-
-
-        inventoryRepository.save(inventory1);
-        inventoryRepository.save(inventory2);
-        business1.setDefaultProductInventory(inventory1);
-        business2.setDefaultProductInventory(inventory2);
-        businessService.updateBusiness(business1.getId(), business1);
-        businessService.updateBusiness(business2.getId(), business2);
-
-        log.info("Preloaded inventories");
 
 
         // InventoryItem Entities

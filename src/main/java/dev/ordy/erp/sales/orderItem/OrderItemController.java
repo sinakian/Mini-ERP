@@ -1,8 +1,10 @@
 package dev.ordy.erp.sales.orderItem;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/order-items")
@@ -29,7 +31,6 @@ public class OrderItemController {
         return orderItemService.createOrderItems(orderItems);
     }
 
-
     @GetMapping("/{id}")
     public OrderItem one(@PathVariable Long id) {
         return orderItemService.getOrderItemById(id)
@@ -39,5 +40,35 @@ public class OrderItemController {
     @DeleteMapping("/{id}")
     public void deleteOrderItem(@PathVariable Long id) {
         orderItemService.deleteOrderItem(id);
+    }
+
+    // New endpoints to support frontend functionality
+
+    /**
+     * Get all order items for a specific order
+     */
+    @GetMapping("/order/{orderId}")
+    public List<OrderItem> getByOrderId(@PathVariable Long orderId) {
+        return orderItemService.getOrderItemsByOrderId(orderId);
+    }
+
+    /**
+     * Update the quantity of an order item
+     */
+    @PatchMapping("/{id}/quantity")
+    public OrderItem updateQuantity(@PathVariable Long id, @RequestBody Map<String, Double> quantityUpdate) {
+        Double newQuantity = quantityUpdate.get("quantity");
+        if (newQuantity == null) {
+            throw new IllegalArgumentException("Quantity value is required");
+        }
+        return orderItemService.updateOrderItemQuantity(id, newQuantity);
+    }
+
+    /**
+     * Update an entire order item
+     */
+    @PutMapping("/{id}")
+    public OrderItem updateOrderItem(@PathVariable Long id, @RequestBody OrderItem orderItem) {
+        return orderItemService.updateOrderItem(id, orderItem);
     }
 }

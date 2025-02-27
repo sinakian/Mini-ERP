@@ -89,8 +89,68 @@ public class OrderItem {
         this.createdBy = createdBy;
     }
 
+    // Add setter methods to make the entity more update-friendly
+    public void setId(Long id) {
+        this.id = id;
+    }
 
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
 
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public void setItem(InventoryItem item) {
+        this.item = item;
+    }
+
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setItemPrice(ItemPrice itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+    public void setPricePerUnit(double pricePerUnit) {
+        this.pricePerUnit = pricePerUnit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public void setTotalGrossPrice(double totalGrossPrice) {
+        this.totalGrossPrice = totalGrossPrice;
+    }
+
+    public void setDiscountCurrency(double discountCurrency) {
+        this.discountCurrency = discountCurrency;
+    }
+
+    public void setDiscountPercent(double discountPercent) {
+        this.discountPercent = discountPercent;
+    }
+
+    public void setTax(double tax) {
+        this.tax = tax;
+    }
+
+    public void setTotalNetPrice(double totalNetPrice) {
+        this.totalNetPrice = totalNetPrice;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    // Existing getter methods
     public Long getId() {
         return id;
     }
@@ -161,5 +221,130 @@ public class OrderItem {
 
     public String getLastModifiedBy() {
         return lastModifiedBy;
+    }
+
+    // Update totals based on the current quantity and price per unit
+    public void recalculateTotals() {
+        // Calculate gross price
+        this.totalGrossPrice = this.quantity * this.pricePerUnit;
+
+        // Calculate tax amount
+        double taxRate = this.tax / this.totalGrossPrice; // Store the tax rate
+        this.tax = this.totalGrossPrice * taxRate;
+
+        // Calculate net price after discounts and tax
+        double afterDiscount = this.totalGrossPrice - this.discountCurrency -
+                (this.totalGrossPrice * (this.discountPercent / 100));
+        this.totalNetPrice = afterDiscount + this.tax;
+    }
+
+    // Builder pattern for easier updates
+    public static class Builder {
+        private OrderItem orderItem;
+
+        public Builder() {
+            this.orderItem = new OrderItem();
+        }
+
+        public Builder(OrderItem existing) {
+            this.orderItem = new OrderItem();
+            this.orderItem.id = existing.id;
+            this.orderItem.business = existing.business;
+            this.orderItem.order = existing.order;
+            this.orderItem.item = existing.item;
+            this.orderItem.quantity = existing.quantity;
+            this.orderItem.itemPrice = existing.itemPrice;
+            this.orderItem.pricePerUnit = existing.pricePerUnit;
+            this.orderItem.unit = existing.unit;
+            this.orderItem.currency = existing.currency;
+            this.orderItem.totalGrossPrice = existing.totalGrossPrice;
+            this.orderItem.discountCurrency = existing.discountCurrency;
+            this.orderItem.discountPercent = existing.discountPercent;
+            this.orderItem.tax = existing.tax;
+            this.orderItem.totalNetPrice = existing.totalNetPrice;
+            this.orderItem.createdBy = existing.createdBy;
+            this.orderItem.createdDate = existing.createdDate;
+            this.orderItem.lastModifiedBy = existing.lastModifiedBy;
+            this.orderItem.lastModifiedDate = existing.lastModifiedDate;
+        }
+
+        public Builder withId(Long id) {
+            this.orderItem.id = id;
+            return this;
+        }
+
+        public Builder withBusiness(Business business) {
+            this.orderItem.business = business;
+            return this;
+        }
+
+        public Builder withOrder(Order order) {
+            this.orderItem.order = order;
+            return this;
+        }
+
+        public Builder withItem(InventoryItem item) {
+            this.orderItem.item = item;
+            return this;
+        }
+
+        public Builder withQuantity(double quantity) {
+            this.orderItem.quantity = quantity;
+            return this;
+        }
+
+        public Builder withItemPrice(ItemPrice itemPrice) {
+            this.orderItem.itemPrice = itemPrice;
+            return this;
+        }
+
+        public Builder withPricePerUnit(double pricePerUnit) {
+            this.orderItem.pricePerUnit = pricePerUnit;
+            return this;
+        }
+
+        public Builder withUnit(Unit unit) {
+            this.orderItem.unit = unit;
+            return this;
+        }
+
+        public Builder withCurrency(Currency currency) {
+            this.orderItem.currency = currency;
+            return this;
+        }
+
+        public Builder withTotalGrossPrice(double totalGrossPrice) {
+            this.orderItem.totalGrossPrice = totalGrossPrice;
+            return this;
+        }
+
+        public Builder withDiscountCurrency(double discountCurrency) {
+            this.orderItem.discountCurrency = discountCurrency;
+            return this;
+        }
+
+        public Builder withDiscountPercent(double discountPercent) {
+            this.orderItem.discountPercent = discountPercent;
+            return this;
+        }
+
+        public Builder withTax(double tax) {
+            this.orderItem.tax = tax;
+            return this;
+        }
+
+        public Builder withTotalNetPrice(double totalNetPrice) {
+            this.orderItem.totalNetPrice = totalNetPrice;
+            return this;
+        }
+
+        public Builder withCreatedBy(String createdBy) {
+            this.orderItem.createdBy = createdBy;
+            return this;
+        }
+
+        public OrderItem build() {
+            return this.orderItem;
+        }
     }
 }

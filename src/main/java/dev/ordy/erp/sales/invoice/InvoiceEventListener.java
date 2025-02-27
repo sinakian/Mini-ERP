@@ -5,6 +5,7 @@ import dev.ordy.erp.common.FinancialStatus;
 import dev.ordy.erp.finance.financialReceipt.FinancialReceipt;
 import dev.ordy.erp.finance.financialReceipt.FinancialReceiptService;
 import dev.ordy.erp.finance.financialReceipt.FinancialReceiptReferenceType;
+import dev.ordy.erp.finance.financialReceipt.TransactionStatus;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransactionService;
 import dev.ordy.erp.inventory.inventoryRequest.InventoryRequest;
 import dev.ordy.erp.inventory.inventoryRequest.InventoryRequestService;
@@ -102,7 +103,8 @@ public class InvoiceEventListener implements ApplicationListener<InvoiceCreateEv
                     FinancialReceiptReferenceType.INVOICE,
                     FinancialStatus.DEBIT,
                     invoice.getId(),
-                    invoice.getCurrency()
+                    invoice.getCurrency(),
+                    TransactionStatus.NOT_PROCESSED
             );
 
             // create Debit Transaction for Customer

@@ -40,7 +40,11 @@ public class FinancialReceipt {
     @Enumerated(EnumType.STRING)
     private FinancialStatus receiptType;
 
+
     private long referenceId;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus transactionStatus = TransactionStatus.NOT_PROCESSED;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -56,14 +60,21 @@ public class FinancialReceipt {
 
     FinancialReceipt() {}
 
-    public FinancialReceipt(Account account, Double amount, FinancialReceiptReferenceType referenceType,
-                            FinancialStatus receiptType, long referenceId, Currency currency) {
+    public FinancialReceipt(Account account,
+                            Double amount,
+                            FinancialReceiptReferenceType referenceType,
+                            FinancialStatus receiptType,
+                            long referenceId,
+                            Currency currency,
+                            TransactionStatus transactionStatus
+    ) {
         this.account=account;
         this.amount=amount;
         this.referenceType=referenceType;
         this.receiptType=receiptType;
         this.referenceId=referenceId;
         this.currency=currency;
+        this.transactionStatus=transactionStatus;
     }
 
 
@@ -97,6 +108,10 @@ public class FinancialReceipt {
 
     public String getRole() {
         return this.role;
+    }
+
+    public TransactionStatus getTransactionStatus() {
+        return this.transactionStatus;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -138,6 +153,8 @@ public class FinancialReceipt {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public void setTransactionStatus(TransactionStatus transactionStatus){this.transactionStatus=transactionStatus;}
 
     @Override
     public boolean equals(Object o) {

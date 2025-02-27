@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -18,8 +19,22 @@ public class FinancialReceiptService {
         this.financialReceiptRepository = financialReceiptRepository;
     }
 
-    public FinancialReceipt createFinancialReceipt(Account account, Double amount, FinancialReceiptReferenceType referenceType, FinancialStatus receiptType, long referenceId, Currency currency) {
-        FinancialReceipt financialReceipt = new FinancialReceipt(account, amount, referenceType, receiptType, referenceId, currency);
+    public FinancialReceipt createFinancialReceipt(Account account,
+                                                   Double amount,
+                                                   FinancialReceiptReferenceType referenceType,
+                                                   FinancialStatus receiptType,
+                                                   long referenceId,
+                                                   Currency currency,
+                                                   TransactionStatus transactionStatus
+    ) {
+        FinancialReceipt financialReceipt = new FinancialReceipt(account,
+                amount,
+                referenceType,
+                receiptType,
+                referenceId,
+                currency,
+                transactionStatus
+        );
         return financialReceiptRepository.save(financialReceipt);
     }
 
@@ -38,5 +53,19 @@ public class FinancialReceiptService {
 
     public void deleteFinancialReceipt(Long id) {
         financialReceiptRepository.deleteById(id);
+    }
+
+    @Transactional
+    public FinancialReceipt setTransactionStatusToCompleted(Long receiptId) {
+        Optional<FinancialReceipt> receiptOptional = financialReceiptRepository.findById(receiptId);
+
+        if (receiptOptional.isEmpty()) {
+            throw new IllegalArgumentException("FinancialReceipt with ID " + receiptId + " not found.");
+        }
+
+        FinancialReceipt financialReceipt = receiptOptional.get();
+        financialReceipt.setTransactionStatus(TransactionStatus.COMPLETED);
+
+        return financialReceiptRepository.save(financialReceipt);
     }
 }

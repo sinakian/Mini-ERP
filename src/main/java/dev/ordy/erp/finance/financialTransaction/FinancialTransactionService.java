@@ -27,7 +27,9 @@ public class FinancialTransactionService {
 
     public FinancialTransactionService(FinancialTransactionRepository financialTransactionRepository,
                                        AccountBalanceService accountBalanceService,
-                                       ApplicationEventPublisher eventPublisher, FinancialReceiptService financialReceiptService) {
+                                       ApplicationEventPublisher eventPublisher,
+                                       FinancialReceiptService financialReceiptService
+    ) {
         this.financialTransactionRepository = financialTransactionRepository;
         this.eventPublisher = eventPublisher;
         this.accountBalanceService = accountBalanceService;
@@ -38,7 +40,6 @@ public class FinancialTransactionService {
     @Transactional
     public FinancialTransaction createTransaction(Long financialReceiptId) {
         FinancialReceipt receipt=financialReceiptService.getFinancialReceiptById(financialReceiptId);
-
         AccountBalance accountBalance = accountBalanceService.getAccountBalanceByAccount(receipt.getAccount());
         FinancialStatus transactionType=receipt.getReceiptType();
         double lastBalance = accountBalance.getBalance();
@@ -98,6 +99,7 @@ public class FinancialTransactionService {
                 newBalanceStatus
         );
         financialTransactionRepository.save(transaction);
+
 
         // Update the account balance
         accountBalance.setBalance(newBalance);

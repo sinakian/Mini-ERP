@@ -20,7 +20,11 @@ public class Order {
 
 
     public enum OrderStatus {
-        DRAFT, PENDING, CANCELED, INVOICE, SALES_RETURN
+        DRAFT,
+        PENDING,
+        CANCELED,
+        INVOICE,
+        SALES_RETURN
     }
 
     @Id
@@ -48,13 +52,20 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
+    @Enumerated(EnumType.STRING)
+    private ConfirmationState confirmationState;
+
     private String paymentType;
+
+
 
     @CreatedBy
     private String createdBy;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    @Column(nullable = false)
+    private OrderStatus orderStatus = OrderStatus.PENDING;
+
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
@@ -72,6 +83,7 @@ public class Order {
                  double discountInCurrency,
                  double total,
                  Currency currency,
+                 ConfirmationState confirmationState,
                  String paymentType,
                  String createdBy,
                  OrderStatus orderStatus
@@ -84,6 +96,7 @@ public class Order {
         this.discountInCurrency = discountInCurrency;
         this.total=total;
         this.currency = currency;
+        this.confirmationState=confirmationState;
         this.paymentType = paymentType;
         this.createdBy = createdBy;
         this.orderStatus = orderStatus;
@@ -128,6 +141,8 @@ public class Order {
     public Currency getCurrency() {
         return currency;
     }
+
+    public  ConfirmationState getConfirmationState() {return  confirmationState;}
 
     public String getPaymentType() {
         return paymentType;
@@ -183,6 +198,8 @@ public class Order {
         this.currency = currency;
     }
 
+    public void setConfirmationState(ConfirmationState confirmationState){this.confirmationState = confirmationState;}
+
     public void setPaymentType(String paymentType) {
         this.paymentType = paymentType;
     }
@@ -226,7 +243,10 @@ public class Order {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, business, customer, createdAt, totalItemPrice, totalLogisticPrice, discountInPercent, discountInCurrency, currency, paymentType, createdBy, orderStatus, lastModifiedDate, lastModifiedBy);
+        return Objects.hash(id, business, customer, createdAt,
+                totalItemPrice, totalLogisticPrice, discountInPercent,
+                discountInCurrency, currency, paymentType, createdBy,
+                orderStatus, lastModifiedDate, lastModifiedBy);
     }
 
     @Override

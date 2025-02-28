@@ -59,7 +59,7 @@ public class InvoiceEventListener implements ApplicationListener<InvoiceCreateEv
         try {
             // update order status to invoice
             Long orderId = invoice.getOrder().getId();
-            orderService.changeStatusToInvoice(orderId);
+
 
             // Create Invoice Item
             List<InvoiceItem> invoiceItems = invoiceItemService.createInvoiceItemsByOrder(invoice.getOrder(), invoice);
@@ -71,7 +71,7 @@ public class InvoiceEventListener implements ApplicationListener<InvoiceCreateEv
                     0.0,
                     null,
                     null,
-                    InventoryRequest.ReferenceType.INVOICE,
+                    InventoryRequest.ReferenceType.ORDER,
                     invoice.getId(),
                     InventoryRequest.Status.PENDING
             );
@@ -100,7 +100,7 @@ public class InvoiceEventListener implements ApplicationListener<InvoiceCreateEv
             FinancialReceipt financialReceipt = financialReceiptService.createFinancialReceipt(
                     invoice.getCustomer(),
                     invoice.getTotal(),
-                    FinancialReceiptReferenceType.INVOICE,
+                    FinancialReceiptReferenceType.ORDER,
                     FinancialStatus.DEBIT,
                     invoice.getId(),
                     invoice.getCurrency(),

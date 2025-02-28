@@ -40,11 +40,13 @@ public class FinancialReceipt {
     @Enumerated(EnumType.STRING)
     private FinancialStatus receiptType;
 
-
     private long referenceId;
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus transactionStatus = TransactionStatus.NOT_PROCESSED;
+
+    @Enumerated(EnumType.STRING)
+    private ConfirmationState confirmationState = ConfirmationState.PENDING;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -66,7 +68,8 @@ public class FinancialReceipt {
                             FinancialStatus receiptType,
                             long referenceId,
                             Currency currency,
-                            TransactionStatus transactionStatus
+                            TransactionStatus transactionStatus,
+                            ConfirmationState confirmationState
     ) {
         this.account=account;
         this.amount=amount;
@@ -75,6 +78,7 @@ public class FinancialReceipt {
         this.referenceId=referenceId;
         this.currency=currency;
         this.transactionStatus=transactionStatus;
+        this.confirmationState = confirmationState;
     }
 
 
@@ -112,6 +116,10 @@ public class FinancialReceipt {
 
     public TransactionStatus getTransactionStatus() {
         return this.transactionStatus;
+    }
+
+    public ConfirmationState getConfirmationState() {
+        return this.confirmationState;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -155,6 +163,8 @@ public class FinancialReceipt {
     }
 
     public void setTransactionStatus(TransactionStatus transactionStatus){this.transactionStatus=transactionStatus;}
+
+    public void setConfirmationState(ConfirmationState confirmationState){this.confirmationState=confirmationState;}
 
     @Override
     public boolean equals(Object o) {

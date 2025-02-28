@@ -43,10 +43,20 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    @Transactional
-    public void changeStatusToInvoice(Long orderId){
-        Order order = getOrderById(orderId);
-        order.setOrderStatus(Order.OrderStatus.INVOICE);
+
+    public void confirmOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
+        order.setConfirmationState(ConfirmationState.CONFIRMED);
+        orderRepository.save(order);
+        eventPublisher.publishEvent(new OrderConfirmEvent(this, order));
+    }
+
+    public void cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
+        order.setConfirmationState(ConfirmationState.CANCELLED);
         orderRepository.save(order);
     }
+
 }

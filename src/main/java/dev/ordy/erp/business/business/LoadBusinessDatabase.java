@@ -10,6 +10,10 @@ import dev.ordy.erp.business.item.enums.ItemType;
 import dev.ordy.erp.business.step_set.StepSetService;
 import dev.ordy.erp.common.*;
 import dev.ordy.erp.common.Currency;
+import dev.ordy.erp.finance.financialReceipt.FinancialReceiptReferenceType;
+import dev.ordy.erp.finance.financialReceipt.FinancialReceiptService;
+import dev.ordy.erp.finance.accountBalance.AccountBalanceService;
+import dev.ordy.erp.finance.financialReceipt.TransactionStatus;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransactionRepository;
 import dev.ordy.erp.finance.itemPrice.ItemPrice;
 import dev.ordy.erp.finance.itemPrice.ItemPriceService;
@@ -23,6 +27,7 @@ import dev.ordy.erp.inventory.inventoryRequestItem.InventoryRequestItem;
 import dev.ordy.erp.inventory.inventoryRequestItem.InventoryRequestItemRepository;
 import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransaction;
 import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransactionRepository;
+import dev.ordy.erp.sales.order.ConfirmationState;
 import dev.ordy.erp.sales.order.Order;
 import dev.ordy.erp.sales.order.OrderService;
 import dev.ordy.erp.sales.orderItem.OrderItem;
@@ -54,6 +59,8 @@ public class LoadBusinessDatabase {
             ItemService itemService,
             ItemPriceService itemPriceService,
             FinancialTransactionRepository financialTransactionRepository,
+            FinancialReceiptService financialReceiptService,
+            AccountBalanceService accountBalanceService,
             InventoryRepository inventoryRepository,
             InventoryItemRepository inventoryItemRepository,
             InventoryRequestRepository inventoryRequestRepository,
@@ -74,6 +81,8 @@ public class LoadBusinessDatabase {
                 itemService,
                 itemPriceService,
                 financialTransactionRepository,
+                financialReceiptService,
+                accountBalanceService,
                 inventoryRepository,
                 inventoryItemRepository,
                 inventoryRequestRepository,
@@ -97,6 +106,8 @@ public class LoadBusinessDatabase {
             ItemService itemService,
             ItemPriceService itemPriceService,
             FinancialTransactionRepository financialTransactionRepository,
+            FinancialReceiptService financialReceiptService,
+            AccountBalanceService accountBalanceService,
             InventoryRepository inventoryRepository,
             InventoryItemRepository inventoryItemRepository,
             InventoryRequestRepository inventoryRequestRepository,
@@ -201,7 +212,7 @@ public class LoadBusinessDatabase {
                 100.0,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(7),
-                InventoryRequest.ReferenceType.INVOICE,
+                InventoryRequest.ReferenceType.ORDER,
                 1,
                 InventoryRequest.Status.PENDING
         );
@@ -289,6 +300,7 @@ public class LoadBusinessDatabase {
                 20.0,
                 530.0,
                 Currency.USD,
+                ConfirmationState.PENDING,
                 "Credit Card",
                 "Admin",
                 Order.OrderStatus.PENDING
@@ -303,6 +315,7 @@ public class LoadBusinessDatabase {
                 30.0,
                 740.0,
                 Currency.EUR,
+                ConfirmationState.PENDING,
                 "PayPal",
                 "Admin",
                 Order.OrderStatus.INVOICE
@@ -421,6 +434,25 @@ public class LoadBusinessDatabase {
         supplyRequestItemRepository.save(supplyRequestItem1);
         supplyRequestItemRepository.save(supplyRequestItem2);
         log.info("Preloaded supply request items");
+
+        Long orderId1=order1.getId();
+
+        financialReceiptService.createFinancialReceipt(
+                account1,
+                100.00,
+                FinancialReceiptReferenceType.ORDER,
+                FinancialStatus.CREDIT,
+                orderId1,
+                Currency.USD,
+                TransactionStatus.COMPLETED
+        );
+        log.info("Preloaded financialReceipt");
+
+
+
+
+
+
 
 
     }

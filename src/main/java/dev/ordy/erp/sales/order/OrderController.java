@@ -1,5 +1,6 @@
 package dev.ordy.erp.sales.order;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +28,20 @@ public class OrderController {
     @GetMapping("/{id}")
     public Order one(@PathVariable Long id) {
         return orderService.getOrderById(id);
-//                .orElseThrow(() -> new OrderNotFoundException(id));
     }
+
+    @PutMapping("/{orderId}/confirm")
+    public ResponseEntity<Void> confirmOrder(@PathVariable Long orderId) {
+        orderService.confirmOrder(orderId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{orderId}/cancel")
+    public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) {
+        orderService.cancelOrder(orderId);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @DeleteMapping("/{id}")
     public void deleteOrder(@PathVariable Long id) {

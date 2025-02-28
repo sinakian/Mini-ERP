@@ -5,6 +5,7 @@ import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.common.FinancialStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +15,13 @@ import java.util.Optional;
 public class FinancialReceiptService {
 
     private final FinancialReceiptRepository financialReceiptRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public FinancialReceiptService(FinancialReceiptRepository financialReceiptRepository) {
+    public FinancialReceiptService(FinancialReceiptRepository financialReceiptRepository,
+                                   ApplicationEventPublisher eventPublisher
+    ) {
         this.financialReceiptRepository = financialReceiptRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public FinancialReceipt createFinancialReceipt(Account account,
@@ -33,9 +38,12 @@ public class FinancialReceiptService {
                 receiptType,
                 referenceId,
                 currency,
-                transactionStatus
+                transactionStatus,
+                ConfirmationState.CONFIRMED
         );
-        return financialReceiptRepository.save(financialReceipt);
+        FinancialReceipt savedFinancialReceipt = financialReceiptRepository.save(financialReceipt);
+        eventPublisher.publishEvent(new FinancialReceiptConfirmEvent(this,savedFinancialReceipt));
+        return financialReceipt;
     }
 
     public FinancialReceipt getFinancialReceiptById(Long id) {
@@ -67,5 +75,10 @@ public class FinancialReceiptService {
         financialReceipt.setTransactionStatus(TransactionStatus.COMPLETED);
 
         return financialReceiptRepository.save(financialReceipt);
+    }
+
+
+    public List<FinancialReceipt> getReceiptsByOrderId(Long orderId) {
+        return financialReceiptRepository.findByReferenceTypeAndReferenceId(FinancialReceiptReferenceType.ORDER, orderId);
     }
 }

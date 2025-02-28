@@ -19,7 +19,7 @@ import java.util.Objects;
 public class InventoryRequest {
 
     public enum ReferenceType {
-        INVOICE, DIRECT, WASTE
+        ORDER, DIRECT, WASTE
     }
 
     public enum Status {

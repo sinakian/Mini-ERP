@@ -5,6 +5,7 @@ import dev.ordy.erp.business.item.enums.InventoryPolicy;
 import dev.ordy.erp.business.item.enums.ItemType;
 import dev.ordy.erp.common.Unit;
 import dev.ordy.erp.business.business.Business;
+import dev.ordy.erp.business.item_category.ItemCategory;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -31,6 +32,9 @@ public class Item {
     @JoinColumn(name = "business_id", nullable = false)
     private Business business;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private ItemCategory category;
 
     @Enumerated(EnumType.STRING)
     private ItemType itemType;
@@ -55,13 +59,23 @@ public class Item {
 
     Item() {}
 
+    public Item(String name, String role, Business business, InventoryPolicy inventoryPolicy, ItemType itemType, Unit unit, ItemCategory category) {
+        this.name = name;
+        this.role = role;
+        this.business = business;
+        this.inventoryPolicy = inventoryPolicy;
+        this.itemType = itemType;
+        this.unit = unit;
+        this.category = category;
+    }
+
     public Item(String name, String role, Business business, InventoryPolicy inventoryPolicy, ItemType itemType, Unit unit) {
         this.name = name;
         this.role = role;
         this.business = business;
-        this.inventoryPolicy=inventoryPolicy;
-        this.itemType=itemType;
-        this.unit=unit;
+        this.inventoryPolicy = inventoryPolicy;
+        this.itemType = itemType;
+        this.unit = unit;
     }
 
     public Long getId() {
@@ -96,8 +110,8 @@ public class Item {
         return business;
     }
 
-    public void setBusiness(Business business) {
-        this.business = business;
+    public ItemCategory getCategory() {
+        return category;
     }
 
     public InventoryPolicy getInventoryPolicy(){
@@ -122,21 +136,28 @@ public class Item {
         this.role = role;
     }
 
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
+
+    public void setCategory(ItemCategory category) {
+        this.category = category;
+    }
+
     public void setInventoryPolicy(InventoryPolicy inventoryPolicy){
-        this.inventoryPolicy= inventoryPolicy;
+        this.inventoryPolicy = inventoryPolicy;
     }
 
     public void setItemType(ItemType itemType){
-        this.itemType=itemType;
+        this.itemType = itemType;
     }
 
     public void setUnit(Unit unit){
-        this.unit=unit;
+        this.unit = unit;
     }
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o)
             return true;
         if (!(o instanceof Item))
@@ -161,6 +182,8 @@ public class Item {
                 ", role='" + role + '\'' +
                 ", businessId=" + (business != null ? business.getId() : null) +
                 ", businessName=" + (business != null ? business.getName() : null) +
+                ", categoryId=" + (category != null ? category.getId() : null) +
+                ", categoryName=" + (category != null ? category.getName() : null) +
                 '}';
     }
 }

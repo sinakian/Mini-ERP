@@ -14,18 +14,28 @@ class ItemController {
         this.itemService = itemService;
     }
 
-
     @GetMapping
     public List<Item> getItemsByBusiness(@RequestParam Long businessId) {
         return itemService.getItemsByBusiness(businessId);
     }
 
+    @GetMapping("/category/{categoryId}")
+    public List<Item> getItemsByCategory(@PathVariable Long categoryId) {
+        return itemService.getItemsByCategory(categoryId);
+    }
 
     @PostMapping
     Item newItem(@RequestBody Item newItem) {
-        return itemService.createItem(newItem.getName(), newItem.getRole(), newItem.getBusiness(), newItem.getInventoryPolicy(), newItem.getItemType(), newItem.getUnit());
+        return itemService.createItem(
+                newItem.getName(),
+                newItem.getRole(),
+                newItem.getBusiness(),
+                newItem.getInventoryPolicy(),
+                newItem.getItemType(),
+                newItem.getUnit(),
+                newItem.getCategory() != null ? newItem.getCategory().getId() : null
+        );
     }
-
 
     @GetMapping("/{id}")
     Item one(@PathVariable Long id) {
@@ -34,7 +44,15 @@ class ItemController {
 
     @PutMapping("/{id}")
     Item replaceItem(@RequestBody Item newItem, @PathVariable Long id) {
-        return itemService.updateItem(id, newItem.getName(), newItem.getRole(), newItem.getInventoryPolicy(), newItem.getItemType(), newItem.getUnit());
+        return itemService.updateItem(
+                id,
+                newItem.getName(),
+                newItem.getRole(),
+                newItem.getInventoryPolicy(),
+                newItem.getItemType(),
+                newItem.getUnit(),
+                newItem.getCategory() != null ? newItem.getCategory().getId() : null
+        );
     }
 
     @DeleteMapping("/{id}")

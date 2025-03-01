@@ -23,9 +23,10 @@ public class FinancialReceipt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String role;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 

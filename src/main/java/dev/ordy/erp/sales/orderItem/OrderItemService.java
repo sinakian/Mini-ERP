@@ -1,5 +1,8 @@
 package dev.ordy.erp.sales.orderItem;
 
+import dev.ordy.erp.sales.order.OrderItemChangeEvent;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import dev.ordy.erp.sales.order.Order;
@@ -13,10 +16,15 @@ public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
     private final OrderRepository orderRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public OrderItemService(OrderItemRepository orderItemRepository, OrderRepository orderRepository) {
+    public OrderItemService(OrderItemRepository orderItemRepository,
+                            OrderRepository orderRepository,
+                            ApplicationEventPublisher eventPublisher
+                            ) {
         this.orderItemRepository = orderItemRepository;
         this.orderRepository = orderRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional(readOnly = true)
@@ -25,8 +33,9 @@ public class OrderItemService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<OrderItem> getOrderItemById(Long id) {
-        return orderItemRepository.findById(id);
+    public OrderItem getOrderItemById(Long id) {
+        return orderItemRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("OrderItem not found with id: " + id));
     }
 
     @Transactional(readOnly = true)
@@ -46,18 +55,33 @@ public class OrderItemService {
 
     @Transactional
     public OrderItem createOrderItem(OrderItem orderItem) {
-        return orderItemRepository.save(orderItem);
+        OrderItem savedItem = orderItemRepository.save(orderItem);
+        eventPublisher.publishEvent(new OrderItemChangeEvent(savedItem.getOrder().getId()));
+        return savedItem;
     }
 
     @Transactional
     public void deleteOrderItem(Long id) {
+        OrderItem itemToDelete = orderItemRepository.findById(id)
+                .orElseThrow(() -> new OrderItemNotFoundException(id));
+        Long orderId = itemToDelete.getOrder().getId();
         orderItemRepository.deleteById(id);
+        eventPublisher.publishEvent(new OrderItemChangeEvent(orderId));
     }
 
     @Transactional
     public List<OrderItem> createOrderItems(List<OrderItem> orderItems) {
-        return orderItemRepository.saveAll(orderItems);
+        List<OrderItem> savedItems = orderItemRepository.saveAll(orderItems);
+
+        // Group by order ID and publish events for each affected order
+        savedItems.stream()
+                .map(item -> item.getOrder().getId())
+                .distinct()
+                .forEach(orderId -> eventPublisher.publishEvent(new OrderItemChangeEvent(orderId)));
+
+        return savedItems;
     }
+
 
     /**
      * Updates only the quantity of an order item and recalculates totals
@@ -75,7 +99,12 @@ public class OrderItemService {
         orderItem = updateQuantityAndRecalculateTotals(orderItem, newQuantity);
 
         // Save and return updated item
-        return orderItemRepository.save(orderItem);
+        OrderItem savedItem = orderItemRepository.save(orderItem);
+
+        // Publish event after update
+        eventPublisher.publishEvent(new OrderItemChangeEvent(savedItem.getOrder().getId()));
+
+        return savedItem;
     }
 
     /**
@@ -86,13 +115,14 @@ public class OrderItemService {
         OrderItem existingOrderItem = orderItemRepository.findById(id)
                 .orElseThrow(() -> new OrderItemNotFoundException(id));
 
-        // Update the mutable fields
-        // Note: In a real application, you might want to be more selective about what can be updated
-        // Here we're assuming all fields can be updated
-
         existingOrderItem = updateOrderItemFields(existingOrderItem, updatedOrderItem);
 
-        return orderItemRepository.save(existingOrderItem);
+        OrderItem savedItem = orderItemRepository.save(existingOrderItem);
+
+        // Publish event after update
+        eventPublisher.publishEvent(new OrderItemChangeEvent(savedItem.getOrder().getId()));
+
+        return savedItem;
     }
 
     private OrderItem updateQuantityAndRecalculateTotals(OrderItem orderItem, double newQuantity) {

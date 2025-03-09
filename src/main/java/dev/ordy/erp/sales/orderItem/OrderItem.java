@@ -72,7 +72,20 @@ public class OrderItem {
 
     public OrderItem() {}
 
-    public OrderItem(Business business, Order order, InventoryItem item, double quantity, ItemPrice itemPrice, double pricePerUnit, Unit unit, Currency currency, double totalGrossPrice, double discountCurrency, double discountPercent, double tax, double totalNetPrice, String createdBy) {
+    public OrderItem(Business business,
+                     Order order,
+                     InventoryItem item,
+                     double quantity,
+                     ItemPrice itemPrice,
+                     double pricePerUnit,
+                     Unit unit, Currency currency,
+                     double totalGrossPrice,
+                     double discountCurrency,
+                     double discountPercent,
+                     double tax,
+                     double totalNetPrice,
+                     String createdBy
+    ) {
         this.business = business;
         this.order = order;
         this.item = item;

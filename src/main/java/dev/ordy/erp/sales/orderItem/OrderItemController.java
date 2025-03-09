@@ -33,8 +33,7 @@ public class OrderItemController {
 
     @GetMapping("/{id}")
     public OrderItem one(@PathVariable Long id) {
-        return orderItemService.getOrderItemById(id)
-                .orElseThrow(() -> new OrderItemNotFoundException(id));
+        return orderItemService.getOrderItemById(id);
     }
 
     @DeleteMapping("/{id}")

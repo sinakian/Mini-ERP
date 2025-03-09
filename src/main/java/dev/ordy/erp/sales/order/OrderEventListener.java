@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class OrderEventListener {
-
+    private final OrderService orderService;
     private final OrderStepService orderStepService;
     private final BusinessSettingsService businessSettingsService;
     private final InventoryRequestService inventoryRequestService;
@@ -40,6 +40,7 @@ public class OrderEventListener {
                               InventoryRequestItemService inventoryRequestItemService,
                               FinancialReceiptService financialReceiptService
     ) {
+        this.orderService = orderService;
         this.orderStepService = orderStepService;
         this.businessSettingsService = businessSettingsService;
         this.inventoryRequestService = inventoryRequestService;
@@ -149,6 +150,12 @@ public class OrderEventListener {
 
 
 
+    }
+
+    @EventListener
+    @Transactional
+    public void handleOrderItemChangeEvent(OrderItemChangeEvent event) {
+        orderService.recalculateOrderTotals(event.getOrderId());
     }
 
 

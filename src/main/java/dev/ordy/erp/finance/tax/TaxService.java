@@ -22,7 +22,7 @@ public class TaxService {
     }
 
     @Transactional(readOnly = true)
-    public List<Tax> getTaxesByBusinessId(String businessId) {
+    public List<Tax> getTaxesByBusinessId(Long businessId) {
         return taxRepository.findByBusinessId(businessId);
     }
 
@@ -32,12 +32,12 @@ public class TaxService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Tax> getTaxByCode(String code, String businessId) {
+    public Optional<Tax> getTaxByCode(String code, Long businessId) {
         return taxRepository.findByCodeAndBusinessId(code, businessId);
     }
 
     @Transactional
-    public Tax createTax(String name, String code, Double rate, String description, Boolean active, Currency currency, String businessId) {
+    public Tax createTax(String name, String code, Double rate, String description, Boolean active, Currency currency, Long businessId) {
         Tax tax = new Tax(name, code, rate, description, active, currency, businessId);
         return taxRepository.save(tax);
     }

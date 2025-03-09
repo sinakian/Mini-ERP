@@ -40,7 +40,7 @@ public class Tax {
     private Currency currency;
 
     @Column(nullable = false)
-    private String businessId;
+    private Long businessId;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -56,7 +56,13 @@ public class Tax {
 
     Tax() {}
 
-    public Tax(String name, String code, Double rate, String description, Boolean active, Currency currency, String businessId) {
+    public Tax(String name,
+               String code,
+               Double rate,
+               String description,
+               Boolean active,
+               Currency currency,
+               Long businessId) {
         this.name = name;
         this.code = code;
         this.rate = rate;
@@ -94,7 +100,7 @@ public class Tax {
         return this.currency;
     }
 
-    public String getBusinessId() {
+    public Long getBusinessId() {
         return this.businessId;
     }
 
@@ -142,7 +148,7 @@ public class Tax {
         this.currency = currency;
     }
 
-    public void setBusinessId(String businessId) {
+    public void setBusinessId(Long businessId) {
         this.businessId = businessId;
     }
 

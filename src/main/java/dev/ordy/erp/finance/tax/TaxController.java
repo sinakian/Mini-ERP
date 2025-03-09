@@ -20,7 +20,7 @@ public class TaxController {
     }
 
     @GetMapping("/business/{businessId}")
-    public List<Tax> byBusiness(@PathVariable String businessId) {
+    public List<Tax> byBusiness(@PathVariable Long businessId) {
         return taxService.getTaxesByBusinessId(businessId);
     }
 
@@ -44,7 +44,7 @@ public class TaxController {
     }
 
     @GetMapping("/code/{code}/business/{businessId}")
-    public Tax byCode(@PathVariable String code, @PathVariable String businessId) {
+    public Tax byCode(@PathVariable String code, @PathVariable Long businessId) {
         return taxService.getTaxByCode(code, businessId)
                 .orElseThrow(() -> new TaxNotFoundException(code));
     }

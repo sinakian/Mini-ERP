@@ -1,5 +1,9 @@
 package dev.ordy.erp.sales.orderItem;
 
+import dev.ordy.erp.finance.itemPrice.ItemPrice;
+import dev.ordy.erp.finance.itemPrice.ItemPriceService;
+import dev.ordy.erp.finance.tax.Tax;
+import dev.ordy.erp.finance.tax.TaxService;
 import dev.ordy.erp.sales.order.OrderItemChangeEvent;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,14 +20,20 @@ public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
     private final OrderRepository orderRepository;
+    private final ItemPriceService itemPriceService;
+    private final TaxService taxService;
     private final ApplicationEventPublisher eventPublisher;
 
     public OrderItemService(OrderItemRepository orderItemRepository,
                             OrderRepository orderRepository,
+                            ItemPriceService itemPriceService,
+                            TaxService taxService,
                             ApplicationEventPublisher eventPublisher
-                            ) {
+    ) {
         this.orderItemRepository = orderItemRepository;
         this.orderRepository = orderRepository;
+        this.itemPriceService = itemPriceService;
+        this.taxService = taxService;
         this.eventPublisher = eventPublisher;
     }
 
@@ -55,6 +65,9 @@ public class OrderItemService {
 
     @Transactional
     public OrderItem createOrderItem(OrderItem orderItem) {
+        // Prepare the order item by resolving price and tax values
+        prepareOrderItem(orderItem);
+
         OrderItem savedItem = orderItemRepository.save(orderItem);
         eventPublisher.publishEvent(new OrderItemChangeEvent(savedItem.getOrder().getId()));
         return savedItem;
@@ -71,6 +84,9 @@ public class OrderItemService {
 
     @Transactional
     public List<OrderItem> createOrderItems(List<OrderItem> orderItems) {
+        // Prepare all order items by resolving prices and taxes
+        orderItems.forEach(this::prepareOrderItem);
+
         List<OrderItem> savedItems = orderItemRepository.saveAll(orderItems);
 
         // Group by order ID and publish events for each affected order
@@ -82,6 +98,12 @@ public class OrderItemService {
         return savedItems;
     }
 
+    /**
+     * Prepare the order item by resolving prices and taxes and recalculating totals
+     */
+    private void prepareOrderItem(OrderItem orderItem) {
+        orderItem.prepare();
+    }
 
     /**
      * Updates only the quantity of an order item and recalculates totals
@@ -96,7 +118,8 @@ public class OrderItemService {
                 .orElseThrow(() -> new OrderItemNotFoundException(id));
 
         // Update quantity
-        orderItem = updateQuantityAndRecalculateTotals(orderItem, newQuantity);
+        orderItem.setQuantity(newQuantity);
+        orderItem.recalculateTotals();
 
         // Save and return updated item
         OrderItem savedItem = orderItemRepository.save(orderItem);
@@ -117,39 +140,15 @@ public class OrderItemService {
 
         existingOrderItem = updateOrderItemFields(existingOrderItem, updatedOrderItem);
 
+        // Prepare the updated item
+        existingOrderItem.prepare();
+
         OrderItem savedItem = orderItemRepository.save(existingOrderItem);
 
         // Publish event after update
         eventPublisher.publishEvent(new OrderItemChangeEvent(savedItem.getOrder().getId()));
 
         return savedItem;
-    }
-
-    private OrderItem updateQuantityAndRecalculateTotals(OrderItem orderItem, double newQuantity) {
-        // Update the quantity
-        orderItem.setQuantity(newQuantity);
-
-        // Use the built-in method to recalculate totals
-        orderItem.recalculateTotals();
-
-        return orderItem;
-    }
-
-
-    /**
-     * Helper method to calculate tax amount
-     */
-    private double calculateTax(double grossPrice, double taxRate) {
-        return grossPrice * taxRate;
-    }
-
-    /**
-     * Helper method to calculate net price
-     */
-    private double calculateNetPrice(double grossPrice, double discountCurrency,
-                                     double discountPercent, double taxRate) {
-        double afterDiscount = grossPrice - discountCurrency - (grossPrice * (discountPercent / 100));
-        return afterDiscount + (afterDiscount * taxRate);
     }
 
     /**
@@ -160,13 +159,17 @@ public class OrderItemService {
                 .withItem(updatedItem.getItem() != null ? updatedItem.getItem() : existingItem.getItem())
                 .withQuantity(updatedItem.getQuantity())
                 .withItemPrice(updatedItem.getItemPrice() != null ? updatedItem.getItemPrice() : existingItem.getItemPrice())
+                .withCustomPricePerUnit(updatedItem.getCustomPricePerUnit())
                 .withPricePerUnit(updatedItem.getPricePerUnit())
                 .withUnit(updatedItem.getUnit() != null ? updatedItem.getUnit() : existingItem.getUnit())
                 .withCurrency(updatedItem.getCurrency() != null ? updatedItem.getCurrency() : existingItem.getCurrency())
+                .withTax(updatedItem.getTax() != null ? updatedItem.getTax() : existingItem.getTax())
+                .withCustomTaxRate(updatedItem.getCustomTaxRate())
+                .withTaxRate(updatedItem.getTaxRate())
                 .withTotalGrossPrice(updatedItem.getTotalGrossPrice())
                 .withDiscountCurrency(updatedItem.getDiscountCurrency())
                 .withDiscountPercent(updatedItem.getDiscountPercent())
-                .withTax(updatedItem.getTax())
+                .withTaxAmount(updatedItem.getTaxAmount())
                 .withTotalNetPrice(updatedItem.getTotalNetPrice())
                 .build();
     }

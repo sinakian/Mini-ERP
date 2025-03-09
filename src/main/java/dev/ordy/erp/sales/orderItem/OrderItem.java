@@ -6,6 +6,7 @@ import dev.ordy.erp.business.business.Business;
 import dev.ordy.erp.common.Unit;
 import dev.ordy.erp.common.Currency;
 import dev.ordy.erp.finance.itemPrice.ItemPrice;
+import dev.ordy.erp.finance.tax.Tax;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -41,8 +42,11 @@ public class OrderItem {
     private double quantity;
 
     @ManyToOne
-    @JoinColumn(name = "item_price_id") //Change in Production to nullable = false
+    @JoinColumn(name = "item_price_id")
     private ItemPrice itemPrice;
+
+    // Custom price per unit (if null, use itemPrice)
+    private Double customPricePerUnit;
 
     private double pricePerUnit;
 
@@ -52,10 +56,18 @@ public class OrderItem {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
+    @ManyToOne
+    @JoinColumn(name = "tax_id")
+    private Tax tax;
+
+    // Custom tax rate (if null, use tax)
+    private Double customTaxRate;
+
+    private double taxRate;
     private double totalGrossPrice;
     private double discountCurrency;
     private double discountPercent;
-    private double tax;
+    private double taxAmount;
     private double totalNetPrice;
 
     @CreatedDate
@@ -77,12 +89,17 @@ public class OrderItem {
                      InventoryItem item,
                      double quantity,
                      ItemPrice itemPrice,
+                     double customPricePerUnit,
                      double pricePerUnit,
-                     Unit unit, Currency currency,
+                     Unit unit,
+                     Currency currency,
+                     Tax tax,
+                     double customTaxRate,
+                     double taxRate,
                      double totalGrossPrice,
                      double discountCurrency,
                      double discountPercent,
-                     double tax,
+                     double taxAmount,
                      double totalNetPrice,
                      String createdBy
     ) {
@@ -91,18 +108,22 @@ public class OrderItem {
         this.item = item;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
+        this.customPricePerUnit = customPricePerUnit;
         this.pricePerUnit = pricePerUnit;
         this.unit = unit;
         this.currency = currency;
+        this.tax = tax;
+        this.customTaxRate = customTaxRate;
+        this.taxRate = taxRate;
         this.totalGrossPrice = totalGrossPrice;
         this.discountCurrency = discountCurrency;
         this.discountPercent = discountPercent;
-        this.tax = tax;
+        this.taxAmount = taxAmount;
         this.totalNetPrice = totalNetPrice;
         this.createdBy = createdBy;
     }
 
-    // Add setter methods to make the entity more update-friendly
+    // Setter methods
     public void setId(Long id) {
         this.id = id;
     }
@@ -127,6 +148,10 @@ public class OrderItem {
         this.itemPrice = itemPrice;
     }
 
+    public void setCustomPricePerUnit(Double customPricePerUnit) {
+        this.customPricePerUnit = customPricePerUnit;
+    }
+
     public void setPricePerUnit(double pricePerUnit) {
         this.pricePerUnit = pricePerUnit;
     }
@@ -137,6 +162,18 @@ public class OrderItem {
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
+    }
+
+    public void setTax(Tax tax) {
+        this.tax = tax;
+    }
+
+    public void setCustomTaxRate(Double customTaxRate) {
+        this.customTaxRate = customTaxRate;
+    }
+
+    public void setTaxRate(double taxRate) {
+        this.taxRate = taxRate;
     }
 
     public void setTotalGrossPrice(double totalGrossPrice) {
@@ -151,8 +188,8 @@ public class OrderItem {
         this.discountPercent = discountPercent;
     }
 
-    public void setTax(double tax) {
-        this.tax = tax;
+    public void setTaxAmount(double taxAmount) {
+        this.taxAmount = taxAmount;
     }
 
     public void setTotalNetPrice(double totalNetPrice) {
@@ -163,7 +200,7 @@ public class OrderItem {
         this.createdBy = createdBy;
     }
 
-    // Existing getter methods
+    // Getter methods
     public Long getId() {
         return id;
     }
@@ -188,6 +225,10 @@ public class OrderItem {
         return itemPrice;
     }
 
+    public Double getCustomPricePerUnit() {
+        return customPricePerUnit;
+    }
+
     public double getPricePerUnit() {
         return pricePerUnit;
     }
@@ -198,6 +239,18 @@ public class OrderItem {
 
     public Currency getCurrency() {
         return currency;
+    }
+
+    public Tax getTax() {
+        return tax;
+    }
+
+    public Double getCustomTaxRate() {
+        return customTaxRate;
+    }
+
+    public double getTaxRate() {
+        return taxRate;
     }
 
     public double getTotalGrossPrice() {
@@ -212,8 +265,8 @@ public class OrderItem {
         return discountPercent;
     }
 
-    public double getTax() {
-        return tax;
+    public double getTaxAmount() {
+        return taxAmount;
     }
 
     public double getTotalNetPrice() {
@@ -236,22 +289,61 @@ public class OrderItem {
         return lastModifiedBy;
     }
 
-    // Update totals based on the current quantity and price per unit
+    /**
+     * Prepare the item by resolving price and tax before calculations
+     */
+    public void prepare() {
+        resolvePrice();
+        resolveTax();
+        recalculateTotals();
+    }
+
+    /**
+     * Resolve the price - use custom price if available, otherwise use from itemPrice
+     */
+    public void resolvePrice() {
+        if (this.customPricePerUnit != null) {
+            this.pricePerUnit = this.customPricePerUnit;
+        } else if (this.itemPrice != null) {
+            this.pricePerUnit = this.itemPrice.getPrice();
+            this.unit = this.itemPrice.getUnit();
+            this.currency = this.itemPrice.getCurrency();
+        }
+    }
+
+    /**
+     * Resolve the tax rate - use custom tax if available, otherwise use from tax
+     */
+    public void resolveTax() {
+        if (this.customTaxRate != null) {
+            this.taxRate = this.customTaxRate;
+        } else if (this.tax != null) {
+            this.taxRate = this.tax.getRate() / 100.0; // Convert percentage to decimal
+        }
+    }
+
+    /**
+     * Recalculate totals based on the current quantity, price, and tax
+     */
     public void recalculateTotals() {
         // Calculate gross price
         this.totalGrossPrice = this.quantity * this.pricePerUnit;
 
+        // Calculate discount amount
+        double discountAmount = this.discountCurrency +
+                (this.totalGrossPrice * (this.discountPercent / 100));
+
+        // Calculate price after discount
+        double afterDiscount = this.totalGrossPrice - discountAmount;
+
         // Calculate tax amount
-        double taxRate = this.tax / this.totalGrossPrice; // Store the tax rate
-        this.tax = this.totalGrossPrice * taxRate;
+        this.taxAmount = afterDiscount * this.taxRate;
 
         // Calculate net price after discounts and tax
-        double afterDiscount = this.totalGrossPrice - this.discountCurrency -
-                (this.totalGrossPrice * (this.discountPercent / 100));
-        this.totalNetPrice = afterDiscount + this.tax;
+        this.totalNetPrice = afterDiscount + this.taxAmount;
     }
 
-    // Builder pattern for easier updates
+    // Builder pattern
     public static class Builder {
         private OrderItem orderItem;
 
@@ -267,13 +359,17 @@ public class OrderItem {
             this.orderItem.item = existing.item;
             this.orderItem.quantity = existing.quantity;
             this.orderItem.itemPrice = existing.itemPrice;
+            this.orderItem.customPricePerUnit = existing.customPricePerUnit;
             this.orderItem.pricePerUnit = existing.pricePerUnit;
             this.orderItem.unit = existing.unit;
             this.orderItem.currency = existing.currency;
+            this.orderItem.tax = existing.tax;
+            this.orderItem.customTaxRate = existing.customTaxRate;
+            this.orderItem.taxRate = existing.taxRate;
             this.orderItem.totalGrossPrice = existing.totalGrossPrice;
             this.orderItem.discountCurrency = existing.discountCurrency;
             this.orderItem.discountPercent = existing.discountPercent;
-            this.orderItem.tax = existing.tax;
+            this.orderItem.taxAmount = existing.taxAmount;
             this.orderItem.totalNetPrice = existing.totalNetPrice;
             this.orderItem.createdBy = existing.createdBy;
             this.orderItem.createdDate = existing.createdDate;
@@ -311,6 +407,11 @@ public class OrderItem {
             return this;
         }
 
+        public Builder withCustomPricePerUnit(Double customPricePerUnit) {
+            this.orderItem.customPricePerUnit = customPricePerUnit;
+            return this;
+        }
+
         public Builder withPricePerUnit(double pricePerUnit) {
             this.orderItem.pricePerUnit = pricePerUnit;
             return this;
@@ -323,6 +424,21 @@ public class OrderItem {
 
         public Builder withCurrency(Currency currency) {
             this.orderItem.currency = currency;
+            return this;
+        }
+
+        public Builder withTax(Tax tax) {
+            this.orderItem.tax = tax;
+            return this;
+        }
+
+        public Builder withCustomTaxRate(Double customTaxRate) {
+            this.orderItem.customTaxRate = customTaxRate;
+            return this;
+        }
+
+        public Builder withTaxRate(double taxRate) {
+            this.orderItem.taxRate = taxRate;
             return this;
         }
 
@@ -341,8 +457,8 @@ public class OrderItem {
             return this;
         }
 
-        public Builder withTax(double tax) {
-            this.orderItem.tax = tax;
+        public Builder withTaxAmount(double taxAmount) {
+            this.orderItem.taxAmount = taxAmount;
             return this;
         }
 

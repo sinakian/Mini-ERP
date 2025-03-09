@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.ordy.erp.business.business.Business;
 import dev.ordy.erp.business.step_set.StepSet;
 import dev.ordy.erp.common.Currency;
+import dev.ordy.erp.finance.tax.Tax;
 import dev.ordy.erp.inventory.inventory.Inventory;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -48,6 +49,11 @@ public class BusinessSettings {
     @JsonManagedReference
     private StepSet defaultStepSet;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tax_id", nullable = true)
+    @JsonManagedReference
+    private Tax defaultTax;
+
     @CreatedDate
     private LocalDateTime createdDate;
 
@@ -69,7 +75,8 @@ public class BusinessSettings {
                             Currency currency,
                             Inventory defaultMaterialInventory,
                             Inventory defaultProductInventory,
-                            StepSet defaultStepSet
+                            StepSet defaultStepSet,
+                            Tax defaultTax
     ) {
 
         this.role = role;
@@ -77,6 +84,7 @@ public class BusinessSettings {
         this.defaultMaterialInventory=defaultMaterialInventory;
         this.defaultProductInventory=defaultProductInventory;
         this.defaultStepSet=defaultStepSet;
+        this.defaultTax=defaultTax;
     }
 
     public Long getId() {
@@ -95,6 +103,7 @@ public class BusinessSettings {
         return defaultMaterialInventory;
     }
     public StepSet getDefaultStepSet() {return defaultStepSet;}
+    public Tax getDefaultTax() {return  defaultTax;};
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
@@ -129,6 +138,10 @@ public class BusinessSettings {
     }
     public void setDefaultStepSet(StepSet defaultStepSet){
         this.defaultStepSet = defaultStepSet;
+    }
+
+    public void setDefaultTax(Tax defaultTax){
+        this.defaultTax = defaultTax;
     }
 
 

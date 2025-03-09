@@ -6,6 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaxRepository extends JpaRepository<Tax, Long> {
-    List<Tax> findByBusinessId(String businessId);
-    Optional<Tax> findByCodeAndBusinessId(String code, String businessId);
+    List<Tax> findByBusinessId(Long businessId);
+    Optional<Tax> findByCodeAndBusinessId(String code, Long businessId);
 }

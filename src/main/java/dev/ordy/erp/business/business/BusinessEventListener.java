@@ -8,6 +8,8 @@ import dev.ordy.erp.business.business_settings.BusinessSettings;
 import dev.ordy.erp.business.step.StepService;
 import dev.ordy.erp.business.step_set.StepSetService;
 import dev.ordy.erp.business.step_set.StepSet;
+import dev.ordy.erp.finance.tax.Tax;
+import dev.ordy.erp.finance.tax.TaxService;
 import dev.ordy.erp.inventory.inventory.Inventory;
 import dev.ordy.erp.inventory.inventory.InventoryRepository;
 import dev.ordy.erp.business.business_settings.BusinessSettingsService;
@@ -26,6 +28,7 @@ public class BusinessEventListener implements ApplicationListener<BusinessCreate
     private final StepService stepService;
     private final BusinessService businessService;
     private final BusinessSettingsService businessSettingsService;
+    private final TaxService taxService;
 
 
     public BusinessEventListener(
@@ -34,7 +37,8 @@ public class BusinessEventListener implements ApplicationListener<BusinessCreate
                                  StepSetService stepSetService,
                                  StepService stepService,
                                  BusinessService businessService,
-                                 BusinessSettingsService businessSettingsService
+                                 BusinessSettingsService businessSettingsService,
+                                 TaxService taxService
     ) {
         this.accountService = accountService;
         this.inventoryRepository = inventoryRepository;
@@ -42,6 +46,7 @@ public class BusinessEventListener implements ApplicationListener<BusinessCreate
         this.stepService =stepService;
         this.businessService = businessService;
         this.businessSettingsService = businessSettingsService;
+        this.taxService = taxService;
     }
 
     @Override
@@ -50,8 +55,6 @@ public class BusinessEventListener implements ApplicationListener<BusinessCreate
 
         Business business = event.getBusiness();
         Long businessId= business.getId();
-
-
 
         // Create Account
         Account account = new Account("Default",
@@ -86,13 +89,23 @@ public class BusinessEventListener implements ApplicationListener<BusinessCreate
         stepService.createStep("Processing","Admin",business,defaultStepSet);
         stepService.createStep("Delivered","Admin",business,defaultStepSet);
 
+        Tax tax= taxService.createTax("default-tax",
+                "default-tax",
+                0d,
+                "default tax",
+                true,
+                Currency.EUR,
+                businessId
+                );
+
         BusinessSettings businessSettings = new BusinessSettings(null,
                 "Admin",
                 Currency.EUR,
                 materialInventory,
                 productInventory,
-                defaultStepSet
-                );
+                defaultStepSet,
+                tax
+        );
 
         businessSettingsService.createBusinessSettings(businessId,businessSettings);
 

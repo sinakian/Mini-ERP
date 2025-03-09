@@ -17,6 +17,7 @@ import dev.ordy.erp.finance.financialReceipt.TransactionStatus;
 import dev.ordy.erp.finance.financialTransaction.FinancialTransactionRepository;
 import dev.ordy.erp.finance.itemPrice.ItemPrice;
 import dev.ordy.erp.finance.itemPrice.ItemPriceService;
+import dev.ordy.erp.finance.tax.Tax;
 import dev.ordy.erp.inventory.inventory.Inventory;
 import dev.ordy.erp.inventory.inventory.InventoryRepository;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
@@ -35,6 +36,7 @@ import dev.ordy.erp.supply.supplyRequestItem.SupplyRequestItem;
 import dev.ordy.erp.supply.supplyRequestItem.SupplyRequestItemRepository;
 import dev.ordy.erp.user_management.user.UserService;
 import dev.ordy.erp.business.step.StepService;
+import dev.ordy.erp.finance.tax.TaxService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -68,6 +70,7 @@ public class LoadBusinessDatabase {
             SupplyRequestRepository supplyRequestRepository,
             UserService userService,
             StepService stepService,
+            TaxService taxService,
             StepSetService stepSetService,
             SupplyRequestItemRepository supplyRequestItemRepository,
             BusinessSettingsService businessSettingsService
@@ -92,6 +95,7 @@ public class LoadBusinessDatabase {
                 userService,
                 businessService,
                 stepService ,
+                taxService,
                 stepSetService,
                 businessSettingsService
                 );
@@ -117,6 +121,7 @@ public class LoadBusinessDatabase {
             UserService userService,
             BusinessService businessService,
             StepService stepService,
+            TaxService taxService,
             StepSetService stepSetService,
             BusinessSettingsService businessSettingsService
     ) {
@@ -219,21 +224,25 @@ public class LoadBusinessDatabase {
         ItemPrice itemPrice1 = itemPriceService.getItemPriceByInventoryItem(inventoryItem1);
         ItemPrice itemPrice2 = itemPriceService.getItemPriceByInventoryItem(inventoryItem2);
 
-
+        Tax defaultTax = businessSettingsService.getDefaultSettings(business1.getId()).getDefaultTax();
         OrderItem orderItem1 = new OrderItem(
                 business1,
                 order1,
                 inventoryItem1,
-                5.0,
+                1d,
                 itemPrice1,
-                10.0,
-                Unit.UNIT,
-                Currency.USD,
-                100.0,
-                20.0,
-                5.0,
-                8.0,
-                90.0,
+                0d,
+                0,
+                Unit.KILOGRAM,
+                Currency.EUR,
+                defaultTax,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
                 "Admin"
         );
 
@@ -241,16 +250,20 @@ public class LoadBusinessDatabase {
                 business2,
                 order2,
                 inventoryItem2,
-                3.0,
+                1d,
                 itemPrice2,
-                15.0,
+                0d,
+                0,
                 Unit.KILOGRAM,
                 Currency.EUR,
-                150.0,
-                25.0,
-                7.0,
-                10.0,
-                135.0,
+                defaultTax,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
                 "Admin"
         );
 

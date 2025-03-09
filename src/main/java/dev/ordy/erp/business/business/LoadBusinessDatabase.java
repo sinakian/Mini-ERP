@@ -20,12 +20,9 @@ import dev.ordy.erp.finance.itemPrice.ItemPriceService;
 import dev.ordy.erp.inventory.inventory.Inventory;
 import dev.ordy.erp.inventory.inventory.InventoryRepository;
 import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
-import dev.ordy.erp.inventory.inventoryItem.InventoryItemRepository;
-import dev.ordy.erp.inventory.inventoryRequest.InventoryRequest;
+import dev.ordy.erp.inventory.inventoryItem.InventoryItemService;
 import dev.ordy.erp.inventory.inventoryRequest.InventoryRequestRepository;
-import dev.ordy.erp.inventory.inventoryRequestItem.InventoryRequestItem;
 import dev.ordy.erp.inventory.inventoryRequestItem.InventoryRequestItemRepository;
-import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransaction;
 import dev.ordy.erp.inventory.inventoryTransaction.InventoryTransactionRepository;
 import dev.ordy.erp.sales.order.ConfirmationState;
 import dev.ordy.erp.sales.order.Order;
@@ -62,7 +59,7 @@ public class LoadBusinessDatabase {
             FinancialReceiptService financialReceiptService,
             AccountBalanceService accountBalanceService,
             InventoryRepository inventoryRepository,
-            InventoryItemRepository inventoryItemRepository,
+            InventoryItemService inventoryItemService,
             InventoryRequestRepository inventoryRequestRepository,
             InventoryRequestItemRepository inventoryRequestItemRepository,
             InventoryTransactionRepository inventoryTransactionRepository,
@@ -84,7 +81,7 @@ public class LoadBusinessDatabase {
                 financialReceiptService,
                 accountBalanceService,
                 inventoryRepository,
-                inventoryItemRepository,
+                inventoryItemService,
                 inventoryRequestRepository,
                 inventoryRequestItemRepository,
                 inventoryTransactionRepository,
@@ -109,7 +106,7 @@ public class LoadBusinessDatabase {
             FinancialReceiptService financialReceiptService,
             AccountBalanceService accountBalanceService,
             InventoryRepository inventoryRepository,
-            InventoryItemRepository inventoryItemRepository,
+            InventoryItemService inventoryItemService,
             InventoryRequestRepository inventoryRequestRepository,
             InventoryRequestItemRepository inventoryRequestItemRepository,
             InventoryTransactionRepository inventoryTransactionRepository,
@@ -177,119 +174,6 @@ public class LoadBusinessDatabase {
         log.info("Preloaded items");
 
 
-
-        // InventoryItem Entities
-        InventoryItem inventoryItem1 = new InventoryItem(
-                inventory1,
-                business1,
-                item1,
-                100.0,
-                80.0,
-                Unit.KILOGRAM,
-                "Inventory Item 1",
-                "Inventory Staff"
-        );
-
-        InventoryItem inventoryItem2 = new InventoryItem(
-                inventory2,
-                business2,
-                item2,
-                200.0,
-                150.0,
-                Unit.KILOGRAM,
-                "Inventory Item 2",
-                "Inventory Staff"
-        );
-
-        inventoryItemRepository.save(inventoryItem1);
-        inventoryItemRepository.save(inventoryItem2);
-        log.info("Preloaded inventory items");
-
-        //Inventory Receipt
-        InventoryRequest inventoryRequest1 = new InventoryRequest(
-                business1,
-                inventory1,
-                100.0,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7),
-                InventoryRequest.ReferenceType.ORDER,
-                1,
-                InventoryRequest.Status.PENDING
-        );
-
-        InventoryRequest inventoryRequest2 = new InventoryRequest(
-                business2,
-                inventory2,
-                200.0,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(5),
-                InventoryRequest.ReferenceType.DIRECT,
-                2,
-                InventoryRequest.Status.DELIVERED
-        );
-
-        inventoryRequestRepository.save(inventoryRequest1);
-        inventoryRequestRepository.save(inventoryRequest2);
-        log.info("Preloaded inventory receipts");
-
-        //Inventory Receipt Item
-        InventoryRequestItem inventoryRequestItem1 = new InventoryRequestItem(
-                inventoryRequest1,
-                inventoryItem1,
-                50.0,
-                40.0,
-                10.0,
-                LocalDateTime.now().plusDays(7),
-                LocalDateTime.now(),
-                Unit.PIECE,
-                InventoryRequestItem.Status.DELIVERED
-        );
-
-        InventoryRequestItem inventoryRequestItem2 = new InventoryRequestItem(
-                inventoryRequest2,
-                inventoryItem2,
-                100.0,
-                80.0,
-                20.0,
-                LocalDateTime.now().plusDays(5),
-                null, // No delivered date yet
-                Unit.KILOGRAM,
-                InventoryRequestItem.Status.PENDING
-        );
-
-        inventoryRequestItemRepository.save(inventoryRequestItem1);
-        inventoryRequestItemRepository.save(inventoryRequestItem2);
-        log.info("Preloaded inventory receipt items");
-
-        //inventory Transaction
-        InventoryTransaction inventoryTransaction1 = new InventoryTransaction(
-                business1,
-                inventory1,
-                inventoryItem1,
-                20.0,
-                InventoryTransaction.TransactionType.IN,
-                inventoryRequest1,
-                inventoryRequestItem1,
-                100.0,
-                120.0
-        );
-
-        InventoryTransaction inventoryTransaction2 = new InventoryTransaction(
-                business2,
-                inventory2,
-                inventoryItem2,
-                30.0,
-                InventoryTransaction.TransactionType.OUT,
-                inventoryRequest2,
-                inventoryRequestItem2,
-                200.0,
-                170.0
-        );
-
-        inventoryTransactionRepository.save(inventoryTransaction1);
-        inventoryTransactionRepository.save(inventoryTransaction2);
-        log.info("Preloaded inventory transactions");
-
         // Order Entities
         Order order1 = new Order(
                 business1,
@@ -325,10 +209,15 @@ public class LoadBusinessDatabase {
         orderService.createOrder(order2);
         log.info("Preloaded orders");
 
+        Long InventoryItemId1= 1L;
+        Long InventoryItemId2=2L;
 
-        // OrderItem Entities
-        ItemPrice itemPrice1 = itemPriceService.getItemPriceByItem(item1);
-        ItemPrice itemPrice2 = itemPriceService.getItemPriceByItem(item2);
+
+        InventoryItem inventoryItem1 = inventoryItemService.getInventoryItemById(InventoryItemId1);
+        InventoryItem inventoryItem2 = inventoryItemService.getInventoryItemById(InventoryItemId2);
+
+        ItemPrice itemPrice1 = itemPriceService.getItemPriceByInventoryItem(inventoryItem1);
+        ItemPrice itemPrice2 = itemPriceService.getItemPriceByInventoryItem(inventoryItem2);
 
 
         OrderItem orderItem1 = new OrderItem(
@@ -447,12 +336,6 @@ public class LoadBusinessDatabase {
                 TransactionStatus.COMPLETED
         );
         log.info("Preloaded financialReceipt");
-
-
-
-
-
-
 
 
     }

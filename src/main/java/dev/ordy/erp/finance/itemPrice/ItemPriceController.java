@@ -22,7 +22,7 @@ public class ItemPriceController {
     @PostMapping
     public ItemPrice newItemPrice(@RequestBody ItemPrice newItemPrice) {
         return itemPriceService.createItemPrice(
-                newItemPrice.getItem(),
+                newItemPrice.getInventoryItem(),
                 newItemPrice.getPrice(),
                 newItemPrice.getUnit(),
                 newItemPrice.getCurrency()

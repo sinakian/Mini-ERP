@@ -1,6 +1,6 @@
 package dev.ordy.erp.finance.itemPrice;
 
-import dev.ordy.erp.business.item.Item;
+import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
 import dev.ordy.erp.common.Unit;
 import dev.ordy.erp.common.Currency;
 import org.springframework.stereotype.Service;
@@ -29,14 +29,14 @@ public class ItemPriceService {
     }
 
     @Transactional(readOnly = true)
-    public ItemPrice getItemPriceByItem(Item item) {
-        return itemPriceRepository.findByItem(item)
-                .orElseThrow(() -> new ItemPriceNotFoundException(item.getId()));
+    public ItemPrice getItemPriceByInventoryItem(InventoryItem inventoryItem) {
+        return itemPriceRepository.findByInventoryItem(inventoryItem)
+                .orElseThrow(() -> new ItemPriceNotFoundException(inventoryItem.getId()));
     }
 
     @Transactional
-    public ItemPrice createItemPrice(Item item, Double price, Unit unit, Currency currency) {
-        ItemPrice itemPrice = new ItemPrice(item, price, unit, currency);
+    public ItemPrice createItemPrice(InventoryItem inventoryItem, Double price, Unit unit, Currency currency) {
+        ItemPrice itemPrice = new ItemPrice(inventoryItem, price, unit, currency);
         return itemPriceRepository.save(itemPrice);
     }
 
@@ -44,7 +44,7 @@ public class ItemPriceService {
     public ItemPrice updateItemPrice(Long id, ItemPrice newItemPrice) {
         return itemPriceRepository.findById(id)
                 .map(itemPrice -> {
-                    itemPrice.setItem(newItemPrice.getItem());
+                    itemPrice.setInventoryItem(newItemPrice.getInventoryItem());
                     itemPrice.setPrice(newItemPrice.getPrice());
                     itemPrice.setUnit(newItemPrice.getUnit());
                     itemPrice.setCurrency(newItemPrice.getCurrency());

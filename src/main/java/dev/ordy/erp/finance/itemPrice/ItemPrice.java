@@ -1,6 +1,6 @@
 package dev.ordy.erp.finance.itemPrice;
 
-import dev.ordy.erp.business.item.Item;
+import dev.ordy.erp.inventory.inventoryItem.InventoryItem;
 import dev.ordy.erp.common.Unit;
 import dev.ordy.erp.common.Currency;
 
@@ -24,8 +24,8 @@ public class ItemPrice {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
-    private Item item;
+    @JoinColumn(name = "inventory_item_id", nullable = false)
+    private InventoryItem inventoryItem;
 
     private Double price;
 
@@ -49,8 +49,8 @@ public class ItemPrice {
 
     ItemPrice() {}
 
-    public ItemPrice(Item item, Double price, Unit unit, Currency currency) {
-        this.item = item;
+    public ItemPrice(InventoryItem inventoryItem, Double price, Unit unit, Currency currency) {
+        this.inventoryItem = inventoryItem;
         this.price = price;
         this.unit = unit;
         this.currency = currency;
@@ -60,8 +60,8 @@ public class ItemPrice {
         return this.id;
     }
 
-    public Item getItem() {
-        return this.item;
+    public InventoryItem getInventoryItem() {
+        return this.inventoryItem;
     }
 
     public Double getPrice() {
@@ -96,8 +96,8 @@ public class ItemPrice {
         this.id = id;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setInventoryItem(InventoryItem inventoryItem) {
+        this.inventoryItem = inventoryItem;
     }
 
     public void setPrice(Double price) {
@@ -118,7 +118,7 @@ public class ItemPrice {
         if (!(o instanceof ItemPrice)) return false;
         ItemPrice itemPrice = (ItemPrice) o;
         return Objects.equals(id, itemPrice.id) &&
-                Objects.equals(item, itemPrice.item) &&
+                Objects.equals(inventoryItem, itemPrice.inventoryItem) &&
                 Objects.equals(price, itemPrice.price) &&
                 unit == itemPrice.unit &&
                 currency == itemPrice.currency &&
@@ -130,14 +130,14 @@ public class ItemPrice {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, item, price, unit, currency, createdDate, lastModifiedDate, createdBy, lastModifiedBy);
+        return Objects.hash(id, inventoryItem, price, unit, currency, createdDate, lastModifiedDate, createdBy, lastModifiedBy);
     }
 
     @Override
     public String toString() {
         return "ItemPrice{" +
                 "id=" + id +
-                ", item=" + (item != null ? item.getId() : null) +
+                ", inventoryItem=" + (inventoryItem != null ? inventoryItem.getId() : null) +
                 ", price=" + price +
                 ", unit=" + unit +
                 ", currency=" + currency +

@@ -48,15 +48,29 @@ public class ItemEventListener implements ApplicationListener<ItemCreateEvent> {
             BusinessSettings businessSettings = businessSettingsService.getDefaultSettings(businessId);
             Inventory defaultProductInventory = businessSettings.getDefaultProductInventory();
 
+
+
+            InventoryItem inventoryItem= new InventoryItem(
+                    defaultProductInventory,
+                    item.getBusiness(),
+                    item,0,
+                    0,
+                    item.getUnit(),
+                    item.getName(),
+                    item.getRole()
+            );
+            inventoryItemService.createInventoryItem(inventoryItem);
+
             // Create Item Price
-            ItemPrice itemPrice = itemPriceService.createItemPrice(item,
+            ItemPrice itemPrice = itemPriceService.createItemPrice(
+                    inventoryItem,
                     0.0,
                     item.getUnit(),
-                    businessSettings.getCurrency());
+                    businessSettings.getCurrency()
+            );
 
-            // Create inventory item
-            InventoryItem inventoryItem= new InventoryItem(defaultProductInventory,item.getBusiness(),item,0,0,item.getUnit(),item.getName(), item.getRole());
-            inventoryItemService.createInventoryItem(inventoryItem);
+
+
         } else {
             // Handle the case where the business is not found
             System.err.println("BusinessSettings not found for ID: " + businessId);

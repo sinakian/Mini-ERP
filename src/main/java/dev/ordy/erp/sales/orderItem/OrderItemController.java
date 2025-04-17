@@ -64,25 +64,42 @@ public class OrderItemController {
     }
 
     /**
-     * Update the tax of an order item
+     * Update with a custom tax or remove the current tax
+     * Note: If no tax is specified, the system will apply the business default tax
      */
     @PatchMapping("/{id}/tax")
-    public OrderItem updateTax(@PathVariable Long id, @RequestBody Map<String, Object> taxUpdate) {
+    public OrderItem updateCustomTax(@PathVariable Long id, @RequestBody Map<String, Object> taxUpdate) {
         OrderItem existingItem = orderItemService.getOrderItemById(id);
 
         // Create a new item with only tax-related fields updated
-        OrderItem updateItem = new OrderItem.Builder(existingItem)
-                .withTax(taxUpdate.containsKey("taxId") ?
-                        new Tax(null, null, null, null, null, null, null) {{
-                            setId(((Number)taxUpdate.get("taxId")).longValue());
-                        }} :
-                        null)
-                .withCustomTaxRate(taxUpdate.containsKey("customTaxRate") ?
-                        ((Number)taxUpdate.get("customTaxRate")).doubleValue() :
-                        null)
-                .build();
+        OrderItem.Builder builder = new OrderItem.Builder(existingItem);
 
-        return orderItemService.updateOrderItem(id, updateItem);
+        // Handle specific tax ID if provided
+        if (taxUpdate.containsKey("taxId")) {
+            Long taxId = ((Number)taxUpdate.get("taxId")).longValue();
+            if (taxId > 0) {
+                // Set specific tax
+                builder.withTax(new Tax(null, null, null, null, null, null, null) {{
+                    setId(taxId);
+                }});
+            } else {
+                // Null means use default tax
+                builder.withTax(null);
+            }
+        }
+
+        // Handle custom tax rate if provided
+        if (taxUpdate.containsKey("customTaxRate")) {
+            builder.withCustomTaxRate(((Number)taxUpdate.get("customTaxRate")).doubleValue());
+        }
+
+        // Handle explicit removal of custom tax rate
+        if (taxUpdate.containsKey("removeCustomTaxRate") &&
+                Boolean.TRUE.equals(taxUpdate.get("removeCustomTaxRate"))) {
+            builder.withCustomTaxRate(null);
+        }
+
+        return orderItemService.updateOrderItem(id, builder.build());
     }
 
     /**
@@ -113,5 +130,29 @@ public class OrderItemController {
     @PutMapping("/{id}")
     public OrderItem updateOrderItem(@PathVariable Long id, @RequestBody OrderItem orderItem) {
         return orderItemService.updateOrderItem(id, orderItem);
+    }
+
+    @PatchMapping("/{id}/discount")
+    public ResponseEntity<OrderItem> updateOrderItemDiscount(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> discountData) {
+
+        OrderItem orderItem = orderItemService.getOrderItemById(id);
+
+        if (discountData.containsKey("discountPercent")) {
+            Double discountPercent = Double.valueOf(discountData.get("discountPercent").toString());
+            orderItem.setDiscountPercent(discountPercent);
+        }
+
+        if (discountData.containsKey("discountCurrency")) {
+            Double discountCurrency = Double.valueOf(discountData.get("discountCurrency").toString());
+            orderItem.setDiscountCurrency(discountCurrency);
+        }
+
+        // Recalculate totals
+        orderItem.recalculateTotals();
+
+        OrderItem updatedItem = orderItemService.updateOrderItem(id, orderItem);
+        return ResponseEntity.ok(updatedItem);
     }
 }

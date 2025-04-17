@@ -5,6 +5,8 @@ import dev.ordy.erp.finance.itemPrice.ItemPriceService;
 import dev.ordy.erp.finance.tax.Tax;
 import dev.ordy.erp.finance.tax.TaxService;
 import dev.ordy.erp.sales.order.OrderItemChangeEvent;
+import dev.ordy.erp.business.business_settings.BusinessSettings;
+import dev.ordy.erp.business.business_settings.BusinessSettingsService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -22,18 +24,21 @@ public class OrderItemService {
     private final OrderRepository orderRepository;
     private final ItemPriceService itemPriceService;
     private final TaxService taxService;
+    private final BusinessSettingsService businessSettingsService;
     private final ApplicationEventPublisher eventPublisher;
 
     public OrderItemService(OrderItemRepository orderItemRepository,
                             OrderRepository orderRepository,
                             ItemPriceService itemPriceService,
                             TaxService taxService,
+                            BusinessSettingsService businessSettingsService,
                             ApplicationEventPublisher eventPublisher
     ) {
         this.orderItemRepository = orderItemRepository;
         this.orderRepository = orderRepository;
         this.itemPriceService = itemPriceService;
         this.taxService = taxService;
+        this.businessSettingsService = businessSettingsService;
         this.eventPublisher = eventPublisher;
     }
 
@@ -102,7 +107,33 @@ public class OrderItemService {
      * Prepare the order item by resolving prices and taxes and recalculating totals
      */
     private void prepareOrderItem(OrderItem orderItem) {
+        // Apply default tax if no tax is specified and no custom tax rate is defined
+        applyDefaultTaxIfNeeded(orderItem);
+
+        // Continue with regular preparation
         orderItem.prepare();
+    }
+
+    /**
+     * Apply the default tax from business settings if no tax is specified
+     * and no custom tax rate is defined
+     */
+    private void applyDefaultTaxIfNeeded(OrderItem orderItem) {
+        // Only apply default tax if both tax and customTaxRate are not specified
+        if (orderItem.getTax() == null && orderItem.getCustomTaxRate() == null) {
+            Long businessId = orderItem.getBusiness().getId();
+            try {
+                BusinessSettings businessSettings = businessSettingsService.getDefaultSettings(businessId);
+                Tax defaultTax = businessSettings.getDefaultTax();
+
+                if (defaultTax != null) {
+                    orderItem.setTax(defaultTax);
+                }
+            } catch (Exception e) {
+                // Log error but continue, as this is not critical
+                // Logger.error("Failed to get default tax for business: " + businessId, e);
+            }
+        }
     }
 
     /**
@@ -139,6 +170,11 @@ public class OrderItemService {
                 .orElseThrow(() -> new OrderItemNotFoundException(id));
 
         existingOrderItem = updateOrderItemFields(existingOrderItem, updatedOrderItem);
+
+        // Apply default tax if needed
+        if (existingOrderItem.getTax() == null && existingOrderItem.getCustomTaxRate() == null) {
+            applyDefaultTaxIfNeeded(existingOrderItem);
+        }
 
         // Prepare the updated item
         existingOrderItem.prepare();

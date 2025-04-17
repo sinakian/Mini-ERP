@@ -84,44 +84,6 @@ public class OrderItem {
 
     public OrderItem() {}
 
-    public OrderItem(Business business,
-                     Order order,
-                     InventoryItem item,
-                     double quantity,
-                     ItemPrice itemPrice,
-                     double customPricePerUnit,
-                     double pricePerUnit,
-                     Unit unit,
-                     Currency currency,
-                     Tax tax,
-                     double customTaxRate,
-                     double taxRate,
-                     double totalGrossPrice,
-                     double discountCurrency,
-                     double discountPercent,
-                     double taxAmount,
-                     double totalNetPrice,
-                     String createdBy
-    ) {
-        this.business = business;
-        this.order = order;
-        this.item = item;
-        this.quantity = quantity;
-        this.itemPrice = itemPrice;
-        this.customPricePerUnit = customPricePerUnit;
-        this.pricePerUnit = pricePerUnit;
-        this.unit = unit;
-        this.currency = currency;
-        this.tax = tax;
-        this.customTaxRate = customTaxRate;
-        this.taxRate = taxRate;
-        this.totalGrossPrice = totalGrossPrice;
-        this.discountCurrency = discountCurrency;
-        this.discountPercent = discountPercent;
-        this.taxAmount = taxAmount;
-        this.totalNetPrice = totalNetPrice;
-        this.createdBy = createdBy;
-    }
 
     // Setter methods
     public void setId(Long id) {

@@ -30,6 +30,7 @@ import dev.ordy.erp.sales.order.Order;
 import dev.ordy.erp.sales.order.OrderService;
 import dev.ordy.erp.sales.orderItem.OrderItem;
 import dev.ordy.erp.sales.orderItem.OrderItemRepository;
+import dev.ordy.erp.sales.orderItem.OrderItemService;
 import dev.ordy.erp.supply.supplyRequest.SupplyRequest;
 import dev.ordy.erp.supply.supplyRequest.SupplyRequestRepository;
 import dev.ordy.erp.supply.supplyRequestItem.SupplyRequestItem;
@@ -66,7 +67,7 @@ public class LoadBusinessDatabase {
             InventoryRequestItemRepository inventoryRequestItemRepository,
             InventoryTransactionRepository inventoryTransactionRepository,
             OrderService orderService,
-            OrderItemRepository orderItemRepository,
+            OrderItemService orderItemService,
             SupplyRequestRepository supplyRequestRepository,
             UserService userService,
             StepService stepService,
@@ -89,7 +90,7 @@ public class LoadBusinessDatabase {
                 inventoryRequestItemRepository,
                 inventoryTransactionRepository,
                 orderService,
-                orderItemRepository,
+                orderItemService,
                 supplyRequestRepository,
                 supplyRequestItemRepository,
                 userService,
@@ -115,7 +116,7 @@ public class LoadBusinessDatabase {
             InventoryRequestItemRepository inventoryRequestItemRepository,
             InventoryTransactionRepository inventoryTransactionRepository,
             OrderService orderService,
-            OrderItemRepository orderItemRepository,
+            OrderItemService orderItemService,
             SupplyRequestRepository supplyRequestRepository,
             SupplyRequestItemRepository supplyRequestItemRepository,
             UserService userService,
@@ -162,15 +163,30 @@ public class LoadBusinessDatabase {
 
 
         // Account Entities
-        Account account1 = new Account("John", "Doe", "John Doe", "Customer", business1, AccountType.LEGAL, AccountCategory.CUSTOMER, Gender.MALE);
-        Account account2 = new Account("Jane", "Smith", "Jane Smith", "Customer", business2, AccountType.NATURAL, AccountCategory.CUSTOMER, Gender.FEMALE);
+        Account account1 = new Account("John",
+                "Doe",
+                "John Doe",
+                "Customer",
+                business1,
+                AccountType.LEGAL,
+                AccountCategory.CUSTOMER,
+                Gender.MALE
+        );
+        Account account2 = new Account("Jane",
+                "Smith",
+                "Jane Smith",
+                "Customer", business2,
+                AccountType.NATURAL,
+                AccountCategory.CUSTOMER,
+                Gender.FEMALE
+        );
         accountService.createAccount(account1);
         accountService.createAccount(account2);
         log.info("Preloaded accounts");
 
 
         // Item Entities
-        Item item1 = itemService.createItem("Item A", "Role A", business1, InventoryPolicy.FLEXIBLE, ItemType.PRODUCT, Unit.KILOGRAM);
+        Item item1 = itemService.createItem("Melon", "Role A", business1, InventoryPolicy.FLEXIBLE, ItemType.PRODUCT, Unit.KILOGRAM);
         Item item2 = itemService.createItem("Tomato", "Role B", business2,  InventoryPolicy.FLEXIBLE,ItemType.SERVICE, Unit.KILOGRAM);
         Item item3 = itemService.createItem("Banana", "Role A", business1, InventoryPolicy.FLEXIBLE, ItemType.PRODUCT, Unit.KILOGRAM);
         Item item4 = itemService.createItem("Apple", "Role B", business2,  InventoryPolicy.FLEXIBLE,ItemType.SERVICE, Unit.KILOGRAM);
@@ -183,11 +199,11 @@ public class LoadBusinessDatabase {
         Order order1 = new Order(
                 business1,
                 account1,
-                500.0,
-                50.0,
-                10.0,
-                20.0,
-                530.0,
+                0,
+                0,
+                0,
+                0,
+                0,
                 Currency.USD,
                 ConfirmationState.PENDING,
                 "Credit Card",
@@ -198,11 +214,11 @@ public class LoadBusinessDatabase {
         Order order2 = new Order(
                 business2,
                 account2,
-                700.0,
-                70.0,
-                15.0,
-                30.0,
-                740.0,
+                0,
+                0,
+                0,
+                0,
+                0,
                 Currency.EUR,
                 ConfirmationState.PENDING,
                 "PayPal",
@@ -225,117 +241,41 @@ public class LoadBusinessDatabase {
         ItemPrice itemPrice2 = itemPriceService.getItemPriceByInventoryItem(inventoryItem2);
 
         Tax defaultTax = businessSettingsService.getDefaultSettings(business1.getId()).getDefaultTax();
-        OrderItem orderItem1 = new OrderItem(
-                business1,
-                order1,
-                inventoryItem1,
-                1d,
-                itemPrice1,
-                0d,
-                0,
-                Unit.KILOGRAM,
-                Currency.EUR,
-                defaultTax,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                "Admin"
-        );
 
-        OrderItem orderItem2 = new OrderItem(
-                business2,
-                order2,
-                inventoryItem2,
-                1d,
-                itemPrice2,
-                0d,
-                0,
-                Unit.KILOGRAM,
-                Currency.EUR,
-                defaultTax,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                "Admin"
-        );
+        OrderItem orderItem1 = new OrderItem.Builder()
+                .withBusiness(business1)
+                .withOrder(order1)
+                .withItem(inventoryItem1)
+                .withQuantity(1.0)
+                .withCustomPricePerUnit(35d)
+                .withItemPrice(itemPrice1)
+                .withUnit(Unit.KILOGRAM)
+                .withCurrency(Currency.EUR)
+                .withTax(defaultTax)
+                .withDiscountCurrency(0.0)
+                .withDiscountPercent(0.0)
+                .withCreatedBy("Admin")
+                .build();
 
-        orderItemRepository.save(orderItem1);
-        orderItemRepository.save(orderItem2);
-        log.info("Preloaded order items");
+        OrderItem orderItem2 = new OrderItem.Builder()
+                .withBusiness(business2)
+                .withOrder(order2)  // Make sure it's order2 not order1
+                .withItem(inventoryItem2)
+                .withQuantity(1.0)
+                .withItemPrice(itemPrice2)
+                .withCustomPricePerUnit(35d)
+                .withUnit(Unit.KILOGRAM)
+                .withCurrency(Currency.EUR)
+                .withTax(defaultTax)
+                .withDiscountCurrency(0.0)
+                .withDiscountPercent(0.0)
+                .withCreatedBy("Admin")
+                .build();
 
-
-        // SupplyRequest Entities
-        SupplyRequest supplyRequest1 = new SupplyRequest(
-                business1,
-                100.0,
-                50.0,
-                50.0,
-                0.0,
-                LocalDateTime.now(),
-                SupplyRequest.ReferenceType.INVOICE,
-                "INV123",
-                SupplyRequest.Status.PENDING,
-                "Admin"
-        );
-
-        SupplyRequest supplyRequest2 = new SupplyRequest(
-                business2,
-                200.0,
-                150.0,
-                50.0,
-                0.0,
-                LocalDateTime.now(),
-                SupplyRequest.ReferenceType.DIRECT,
-                "DIR456",
-                SupplyRequest.Status.SUPPLIED,
-                "Admin"
-        );
-
-        supplyRequestRepository.save(supplyRequest1);
-        supplyRequestRepository.save(supplyRequest2);
-        log.info("Preloaded supply requests");
-
-
-        // SupplyRequestItem Entities
-        SupplyRequestItem supplyRequestItem1 = new SupplyRequestItem(
-                supplyRequest1,
-                business1,
-                item1,
-                50.0,
-                25.0,
-                25.0,
-                0.0,
-                Unit.PIECE,
-                LocalDateTime.now(),
-                SupplyRequestItem.Status.PENDING,
-                "Admin"
-        );
-
-        SupplyRequestItem supplyRequestItem2 = new SupplyRequestItem(
-                supplyRequest2,
-                business2,
-                item2,
-                100.0,
-                75.0,
-                25.0,
-                0.0,
-                Unit.KILOGRAM,
-                LocalDateTime.now(),
-                SupplyRequestItem.Status.DELIVERED,
-                "Admin"
-        );
-
-        supplyRequestItemRepository.save(supplyRequestItem1);
-        supplyRequestItemRepository.save(supplyRequestItem2);
-        log.info("Preloaded supply request items");
+        // Use the service instead of repository
+        orderItemService.createOrderItem(orderItem1);
+        orderItemService.createOrderItem(orderItem2);
+        log.info("Preloaded order items using OrderItemService");
 
         Long orderId1=order1.getId();
 

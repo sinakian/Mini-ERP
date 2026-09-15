@@ -21,20 +21,6 @@ public class AuthController {
         this.authenticationManager=authenticationManager;
         this.jwtUtils = jwtUtils;
     }
-//
-//    @PostMapping("/login")
-//    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-//
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        loginRequest.getUsername(), loginRequest.getPassword()
-//                )
-//        );
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        String jwt = jwtUtils.generateJwtToken(authentication);
-//        return ResponseEntity.ok(new JwtResponse(jwt));
-//    }
 
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);

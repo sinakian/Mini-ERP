@@ -13,6 +13,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -21,6 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
     private final MyUserDetailsService userDetailsService;
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
 
     public JwtAuthenticationFilter(JwtUtils jwtUtils,MyUserDetailsService userDetailsService){
@@ -34,7 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             //extract Jwt from Authorization header
             String jwt = getJwtFromRequest(request);
-            System.out.println("Jwt is "+ jwt);
             if( jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUsernameFromJwtToken(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -49,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             }
         } catch (Exception e) {
-            System.out.println("Cannot set user authentication "+ e); //todo "remove print"
+            log.warn("Cannot set user authentication: {}", e.getMessage());
         }
 
         filterChain.doFilter(request,response);

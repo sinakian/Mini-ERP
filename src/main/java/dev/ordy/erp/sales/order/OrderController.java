@@ -21,8 +21,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public Order newOrder(@RequestBody Order newOrder) {
-        return orderService.createOrder(newOrder);
+    public Order newOrder(@RequestBody OrderRequest request) {
+        return orderService.createOrder(request);
     }
 
     @GetMapping("/{id}")

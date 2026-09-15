@@ -6,6 +6,10 @@ import dev.ordy.erp.sales.orderItem.OrderItemService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
+import dev.ordy.erp.business.business.Business;
+import dev.ordy.erp.business.business.BusinessService;
+import dev.ordy.erp.business.account.Account;
+import dev.ordy.erp.business.account.AccountService;
 
 import java.util.List;
 
@@ -14,15 +18,21 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final OrderItemService  orderItemService;
+    private final OrderItemService orderItemService;
+    private final BusinessService businessService;
+    private final AccountService accountService;
 
     public OrderService(OrderRepository orderRepository,
                         ApplicationEventPublisher eventPublisher,
-                        OrderItemService orderItemService
-                        ) {
+                        OrderItemService orderItemService,
+                        BusinessService businessService,
+                        AccountService accountService
+    ) {
         this.orderRepository = orderRepository;
         this.eventPublisher = eventPublisher;
         this.orderItemService = orderItemService;
+        this.businessService = businessService;
+        this.accountService = accountService;
     }
 
     @Transactional(readOnly = true)
@@ -34,6 +44,32 @@ public class OrderService {
     public Order getOrderById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException(id));
+    }
+
+    @Transactional
+    public Order createOrder(OrderRequest request) {
+        Business business = businessService.getBusinessById(request.getBusinessId())
+                .orElseThrow(() -> new RuntimeException("Business not found with id: " + request.getBusinessId()));
+        Account customer = accountService.getAccountById(request.getCustomerId());
+
+        Order order = new Order(
+                business,
+                customer,
+                0.0,
+                request.getTotalLogisticPrice(),
+                request.getDiscountInPercent(),
+                request.getDiscountInCurrency(),
+                0.0,
+                request.getCurrency(),
+                ConfirmationState.PENDING,
+                request.getPaymentType(),
+                null,
+                Order.OrderStatus.PENDING
+        );
+
+        Order savedOrder = orderRepository.save(order);
+        eventPublisher.publishEvent(new OrderCreateEvent(this, savedOrder));
+        return savedOrder;
     }
 
     @Transactional

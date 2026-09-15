@@ -1,4 +1,5 @@
 package dev.ordy.erp.sales.order;
+import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public Order newOrder(@RequestBody OrderRequest request) {
+    public Order newOrder(@Valid @RequestBody OrderRequest request) {
         return orderService.createOrder(request);
     }
 

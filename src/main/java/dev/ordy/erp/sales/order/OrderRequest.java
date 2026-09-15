@@ -1,15 +1,31 @@
 package dev.ordy.erp.sales.order;
 
 import dev.ordy.erp.common.Currency;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public class OrderRequest {
 
+    @NotNull
     private Long businessId;
+
+    @NotNull
     private Long customerId;
+
+    @PositiveOrZero
     private double totalLogisticPrice;
+
+    @PositiveOrZero
     private double discountInPercent;
+
+    @PositiveOrZero
     private double discountInCurrency;
+
+    @NotNull
     private Currency currency;
+
+    @NotBlank
     private String paymentType;
 
     public Long getBusinessId() {

@@ -1,4 +1,5 @@
 package dev.ordy.erp.user_management.auth;
+import org.springframework.beans.factory.annotation.Value;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -11,7 +12,8 @@ import java.util.Date;
 
 @Component
 public class JwtUtils {
-    private String jwtSecret ="***REMOVED***"; //todo change to a strong secret key
+    @Value("${jwt.secret}")
+    private String jwtSecret;
     private int jwtExpirationMs = 86400000;
 
     private Key getSigningKey() {

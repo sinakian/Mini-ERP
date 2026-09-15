@@ -1,6 +1,6 @@
 package dev.ordy.erp.finance.tax;
 
-class TaxNotFoundException extends RuntimeException {
+class TaxNotFoundException extends dev.ordy.erp.common.ResourceNotFoundException {
 
     TaxNotFoundException(Long id) {
         super("Could not find tax " + id);

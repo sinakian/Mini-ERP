@@ -1,6 +1,6 @@
 package dev.ordy.erp.finance.financialTransaction;
 
-class FinancialTransactionNotFoundException extends RuntimeException {
+class FinancialTransactionNotFoundException extends dev.ordy.erp.common.ResourceNotFoundException {
 
     FinancialTransactionNotFoundException(Long id) {
         super("Could not find financial transaction " + id);

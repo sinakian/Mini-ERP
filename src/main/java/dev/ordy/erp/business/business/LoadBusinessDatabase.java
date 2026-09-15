@@ -128,7 +128,7 @@ public class LoadBusinessDatabase {
     ) {
 
         //user
-        userService.createUser("sina","123",null);
+        userService.createUser("sina","123","ADMIN");
         log.info("Preloaded user");
         log.info("Now getting user");
         log.info("user is .."+userService.findByUsername("sina").getUsername());
